@@ -77,6 +77,8 @@ export * from "./move-left-right";
 export * from "./calendar";
 export * from "./filter";
 export * from "./shield-charged";
+export * from "./info-gray";
+export * from "./gear-gray";
 export * from "./bulb";
 export * from "./settings2";
 export * from "./lamp";
