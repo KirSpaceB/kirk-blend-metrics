@@ -118,3 +118,5 @@ export * from "./image-outlined";
 export * from "./video-outlined";
 export * from "./check2";
 export * from "./search2";
+export * from "./info-gray";
+export * from "./gear-gray";

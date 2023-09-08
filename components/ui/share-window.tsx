@@ -1,27 +1,46 @@
-import React from 'react'
+import React, { ReactComponentElement } from 'react'
 import { Input } from './input'
-import { Settings } from '../icons'
-import { HelpCircle } from '../icons'
+import { GearGray, Settings } from '../icons'
 import { Label } from './label'
 import { Inter } from 'next/font/google'
 import { Button } from './button'
 import { Plus2 } from '../icons'
-import { Link } from '../icons'
+import { Avatar, AvatarFallback, AvatarImage } from './avatar'
+import { InfoGray } from '../icons'
+
+import { useState } from 'react'
+
+import { AvatarProps } from '@radix-ui/react-avatar'
+
+interface IAvatarItem {
+  email: string;
+  image: React.ForwardRefExoticComponent<AvatarProps & React.RefAttributes<HTMLSpanElement>>;
+}
+
 
 const inter = Inter({subsets:["latin"]})
 
 export default function ShareWindow() {
+
+  const [inputValue, setInputValue] = useState("");
+
+  const [avatars, setAvatars] = useState<IAvatarItem[]>([
+    { email: 'chris@gmail.com', image: Avatar }
+  ]);
+
+  const filteredAvatars = avatars.filter(avatar => avatar.email.startsWith(inputValue));
+
   return (
     <div className={inter.className}>
       <div
         id='Modal'
-        className='flex w-[690px] p-6 gap-8 flex-col items-center flex-shrink-0 rounded-lg bg-white'
+        className='flex w-[690px] p-5 gap-8 flex-col items-center flex-shrink-0 rounded-lg bg-white shadow-xl'
       >
 
         <div id='Frame' className='flex justify-between items-center self-stretch'>
           <h1 className='text-[#1D2939] text-lg font-semibold'>Share "File/Folder name</h1>
           <div className='flex items-start gap-4'>
-            <HelpCircle className='w-6 h-6 text-gray-500'/>
+            <InfoGray className='w-6 h-6'/>
             <Settings className='w-6 h-6 text-gray-500'/>
           </div>
         </div>
@@ -41,9 +60,72 @@ export default function ShareWindow() {
                   </Label>
                 <Input
                   id="email"
-                  placeholder="olivia@untitledui.com"
+                  placeholder="Add emails or find contacts"
                   type="email"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  className='relative'
                 />
+                {inputValue && (
+                  <ul 
+                  id='_Input dropdown menu'
+                  className="flex flex-col items-start absolute bottom-[110px] gap-2 rounded-lg shadow-lg border-spacing-4 border-solid bg-white sm:w-[562px]"
+                  >
+                    {filteredAvatars.map((avatarItem, index) => (
+                      <div id='Menu items' className='flex py-1 flex-col items-start flex-grow flex-shrink-0'>
+                        <li id='list-item-1' className='flex p-2.5 px-3.5 items-center space-x-2' key={index}>
+                          <div className="inline-flex items-center gap-x-2.5">
+                            <avatarItem.image
+                              isOnline
+                              size="sm"
+                            >
+                              <AvatarImage
+                                alt="Man"
+                                src="/man.jpg"
+                              />
+                              <AvatarFallback>
+                                M
+                              </AvatarFallback>
+                            </avatarItem.image>
+                            <div className="flex flex-col">
+                              <span className="text-sm font-semibold text-gray-700">
+                                Christopher Torres
+                              </span>
+                              <span className="text-xs leading-[18px] text-gray-500">
+                                chris@blendmetrics.com
+                              </span>
+                            </div>
+                          </div>
+                        </li>
+
+                        <li id='list-item-2'>
+                          <div className="inline-flex items-center gap-x-2.5">
+                            <avatarItem.image
+                              isOnline
+                              size="sm"
+                            >
+                              <AvatarImage
+                                alt="Man"
+                                src="/man.jpg"
+                              />
+                              <AvatarFallback>
+                                M
+                              </AvatarFallback>
+                            </avatarItem.image>
+                            <div className="flex flex-col">
+                              <span className="text-sm font-semibold text-gray-700">
+                                Christopher Torres
+                              </span>
+                              <span className="text-xs leading-[18px] text-gray-500">
+                                chris@blendmetrics.com
+                              </span>
+                            </div>
+                          </div>
+                        </li>
+                      </div>
+                    ))}
+                  </ul>
+                )}
               </div>
               
               <Button 
@@ -74,7 +156,7 @@ export default function ShareWindow() {
         >
 
           <Button
-            leftIcon={<Link className='w-[15px] h-[15px]'/>}
+            leftIcon={<GearGray/>}
             size='xl'
             variant='link'
             className='p-0'
