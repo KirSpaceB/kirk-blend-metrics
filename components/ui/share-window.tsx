@@ -11,8 +11,9 @@ import { InfoGray } from '../icons'
 import { useState } from 'react'
 
 import { AvatarProps } from '@radix-ui/react-avatar'
+import Dropdown from './avatar-dropdown'
 
-interface IAvatarItem {
+export interface IAvatarItem {
   email: string;
   image: React.ForwardRefExoticComponent<AvatarProps & React.RefAttributes<HTMLSpanElement>>;
 }
@@ -25,7 +26,8 @@ export default function ShareWindow() {
   const [inputValue, setInputValue] = useState("");
 
   const [avatars, setAvatars] = useState<IAvatarItem[]>([
-    { email: 'chris@gmail.com', image: Avatar }
+    { email: 'chris@gmail.com', image: Avatar },
+    {email:'tranthuy.nute@gmail.com', image:Avatar}
   ]);
 
   const filteredAvatars = avatars.filter(avatar => avatar.email.startsWith(inputValue));
@@ -66,66 +68,7 @@ export default function ShareWindow() {
                   onChange={(e) => setInputValue(e.target.value)}
                   className='relative'
                 />
-                {inputValue && (
-                  <ul 
-                  id='_Input dropdown menu'
-                  className="flex flex-col items-start absolute bottom-[110px] gap-2 rounded-lg shadow-lg border-spacing-4 border-solid bg-white sm:w-[562px]"
-                  >
-                    {filteredAvatars.map((avatarItem, index) => (
-                      <div id='Menu items' className='flex py-1 flex-col items-start flex-grow flex-shrink-0'>
-                        <li id='list-item-1' className='flex p-2.5 px-3.5 items-center space-x-2' key={index}>
-                          <div className="inline-flex items-center gap-x-2.5">
-                            <avatarItem.image
-                              isOnline
-                              size="sm"
-                            >
-                              <AvatarImage
-                                alt="Man"
-                                src="/man.jpg"
-                              />
-                              <AvatarFallback>
-                                M
-                              </AvatarFallback>
-                            </avatarItem.image>
-                            <div className="flex flex-col">
-                              <span className="text-sm font-semibold text-gray-700">
-                                Christopher Torres
-                              </span>
-                              <span className="text-xs leading-[18px] text-gray-500">
-                                chris@blendmetrics.com
-                              </span>
-                            </div>
-                          </div>
-                        </li>
-
-                        <li id='list-item-2'>
-                          <div className="inline-flex items-center gap-x-2.5">
-                            <avatarItem.image
-                              isOnline
-                              size="sm"
-                            >
-                              <AvatarImage
-                                alt="Man"
-                                src="/man.jpg"
-                              />
-                              <AvatarFallback>
-                                M
-                              </AvatarFallback>
-                            </avatarItem.image>
-                            <div className="flex flex-col">
-                              <span className="text-sm font-semibold text-gray-700">
-                                Christopher Torres
-                              </span>
-                              <span className="text-xs leading-[18px] text-gray-500">
-                                chris@blendmetrics.com
-                              </span>
-                            </div>
-                          </div>
-                        </li>
-                      </div>
-                    ))}
-                  </ul>
-                )}
+                {inputValue &&  <Dropdown avatars={filteredAvatars}/>}
               </div>
               
               <Button 
@@ -148,7 +91,6 @@ export default function ShareWindow() {
 
           </div>
         </div>
-
 
         <div 
           id='_Modal actions' 
