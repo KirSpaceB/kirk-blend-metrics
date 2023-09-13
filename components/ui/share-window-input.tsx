@@ -4,6 +4,7 @@ import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 import * as tagsInput from "@zag-js/tags-input"
 import { useMachine, normalizeProps } from '@zag-js/react'
+import { Input } from './input'
 
 
 const people = [
@@ -38,33 +39,53 @@ export default function ShareWindowInput() {
             .includes(query.toLowerCase().replace(/\s+/g, ''))
         )
         
-
   return (
     <div className="">
       {/* This is the tag */}
-      <div {...api.rootProps}>
+      <div {...api.rootProps} className='py-2.5 border flex-wrap border-gray-200 rounded-[5px] bg-white flex items-center min-w-[44px] w-full px-[14px]'>
         {api.value.map((value, index) => (
-          <span key={index}>
-            <div {...api.getTagProps({ index, value })}>
+          <div key={index}>
+            <div {...api.getTagProps({ index, value })} className='m-1 px-2 inline-flex items-center gap-x-1 bg-gray-400 text-base text-gray-900'>
+              {/* We can use div instead of span */}
               <span>{value} </span>
-              <button {...api.getTagDeleteTriggerProps({ index, value })}>
+              {/* Remove class to see error */}
+              <button {...api.getTagDeleteTriggerProps({ index, value })} 
+              // className='bg-red-500 w-10 h-10'
+              >
                 &#x2715;
               </button>
             </div>
-            <input {...api.getTagInputProps({ index, value })} />
-          </span>
+            {/* What does this in put element do? */}
+            <input {...api.getTagInputProps({ index, value })} className='bg-red-500 w-10 h-10'/>
+          </div>
         ))}
-        <input placeholder="Add tag..." {...api.inputProps} />
+        {/* This is where you want to move your input for new tags */}
+        <input className='flex-grow h-full border-0 focus:ring-0 focus:border-0' type="text" placeholder="Add tag..." {...api.inputProps} />
       </div>
 
       <Combobox value={selected} onChange={setSelected}>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+            {/* Figure out how the state will work with the Combobox */}
             <Combobox.Input
-              className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+              className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 bg-red-500"
               displayValue={(person) => person.name}
               onChange={(event) => setQuery(event.target.value)}
             />
+            {/* <div {...api.rootProps}>
+              {api.value.map((value, index) => (
+                <span key={index}>
+                  <div {...api.getTagProps({ index, value })}>
+                    <span>{value} </span>
+                    <button {...api.getTagDeleteTriggerProps({ index, value })}>
+                      &#x2715;
+                    </button>
+                  </div>
+                  <input {...api.getTagInputProps({ index, value })} />
+                </span>
+              ))}
+              <input placeholder="Add tag..." {...api.inputProps} />
+            </div> */}
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronsUpDownIcon
                 className="h-5 w-5 text-gray-400"

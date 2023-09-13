@@ -55,11 +55,11 @@ export default function ShareWindow() {
                 className='flex flex-col items-start self-stretch gap-2 w-full h-auto'
               >
                 <Label
-                    htmlFor="email"
-                    size="sm"
-                  >
-                    Share with Email
-                  </Label>
+                  htmlFor="email"
+                  size="sm"
+                >
+                  Share with Email
+                </Label>
                 <Input
                   id="email"
                   placeholder="Add emails or find contacts"
