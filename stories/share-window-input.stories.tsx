@@ -1,6 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
-import ShareWindowInput from "@/components/ui/share-window-input";
-
+import { ShareWindowInput } from "@/components/ui/share-window-input";
 const meta: Meta = {
   title: "ShareWindowInput",
   component: ShareWindowInput,
