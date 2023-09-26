@@ -1,4 +1,4 @@
-import React, { ReactComponentElement } from "react";
+import React, { ChangeEvent, ReactComponentElement } from "react";
 import { Input } from "./input";
 import { GearGray, Settings } from "../icons";
 import { Label } from "./label";
@@ -12,6 +12,7 @@ import { useState } from "react";
 
 import { AvatarProps } from "@radix-ui/react-avatar";
 import Dropdown from "./avatar-dropdown";
+import Invites from "./invites";
 
 export interface IAvatarItem {
   email: string;
@@ -23,6 +24,16 @@ export interface IAvatarItem {
 const inter = Inter({ subsets: ["latin"] });
 
 export default function ShareWindow() {
+  const [renderInvites, setRenderInvites] = useState(false);
+  const [inputVal, setInputVal] = useState("");
+
+  const handleClick = () => {
+    setRenderInvites(true);
+  };
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputVal(e.target.value);
+  };
+
   return (
     <div className={inter.className}>
       <div
@@ -58,11 +69,16 @@ export default function ShareWindow() {
                 <Label htmlFor="email" size="sm">
                   Share with Email
                 </Label>
+                <input
+                  className="bg-black text-white"
+                  onChange={handleInputChange}
+                />
               </div>
 
               <Button
                 variant="light"
                 className="flex h-auto w-auto items-center justify-center gap-2 rounded-md px-5 py-3 opacity-50"
+                onClick={handleClick}
               >
                 Add
               </Button>
@@ -77,6 +93,8 @@ export default function ShareWindow() {
             >
               Add a Message
             </Button>
+
+            {renderInvites ? <Invites inputVal={inputVal} /> : null}
           </div>
         </div>
 
