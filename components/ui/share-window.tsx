@@ -1,17 +1,22 @@
-import React, { ChangeEvent, ReactComponentElement } from "react";
-import { Input } from "./input";
-import { GearGray, Settings } from "../icons";
-import { Label } from "./label";
+import React, { ChangeEvent } from "react";
+//Font
 import { Inter } from "next/font/google";
-import { Button } from "./button";
-import { Plus2 } from "../icons";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-import { InfoGray } from "../icons";
 
+// Design System Components
+import { Label } from "./label";
+import { Button } from "./button";
+import { Textarea } from "./textarea";
+
+//Icons
+import { InfoGray } from "../icons";
+import { Link2 } from "../icons";
+import { Plus2 } from "../icons";
+import { Settings } from "../icons";
+
+//State
 import { useState } from "react";
 
 import { AvatarProps } from "@radix-ui/react-avatar";
-import Dropdown from "./avatar-dropdown";
 import Invites from "./invites";
 
 export interface IAvatarItem {
@@ -24,8 +29,11 @@ export interface IAvatarItem {
 const inter = Inter({ subsets: ["latin"] });
 
 export default function ShareWindow() {
+  // State for Input Value
   const [renderInvites, setRenderInvites] = useState(false);
   const [inputVal, setInputVal] = useState("");
+
+  const [renderTextBox, setRenderTextBox] = useState(false);
 
   const handleClick = () => {
     setRenderInvites(true);
@@ -93,6 +101,12 @@ export default function ShareWindow() {
             >
               Add a Message
             </Button>
+            <Textarea />
+
+            <textarea
+              className="h-[100px] w-[100px]"
+              placeholder="Write Message Here"
+            />
 
             {renderInvites ? <Invites inputVal={inputVal} /> : null}
           </div>
@@ -102,12 +116,7 @@ export default function ShareWindow() {
           id="_Modal actions"
           className="flex items-center justify-between self-stretch"
         >
-          <Button
-            leftIcon={<GearGray />}
-            size="xl"
-            variant="link"
-            className="p-0"
-          >
+          <Button leftIcon={<Link2 />} size="xl" variant="link" className="p-0">
             Copy Link
           </Button>
 
