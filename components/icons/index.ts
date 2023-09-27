@@ -121,3 +121,4 @@ export * from "./search2";
 export * from "./info-gray";
 export * from "./gear-gray";
 export * from "./link2";
+export * from "./minus";
