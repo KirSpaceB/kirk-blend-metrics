@@ -12,6 +12,7 @@ import { InfoGray } from "../icons";
 import { Link2 } from "../icons";
 import { Plus2 } from "../icons";
 import { Settings } from "../icons";
+import { Minus } from "../icons";
 
 //State
 import { useState } from "react";
@@ -33,13 +34,24 @@ export default function ShareWindow() {
   const [renderInvites, setRenderInvites] = useState(false);
   const [inputVal, setInputVal] = useState("");
 
+  // State for rendering textbox
   const [renderTextBox, setRenderTextBox] = useState(false);
 
-  const handleClick = () => {
+  // Event handlers for rendering Invites
+  const handleInputClick = () => {
     setRenderInvites(true);
   };
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputVal(e.target.value);
+  };
+  // Event handlers for rendering Textbox
+  const handleRenderTextBox = () => {
+    if (renderTextBox == true) {
+      setRenderTextBox(false);
+    }
+    if (renderTextBox == false) {
+      setRenderTextBox(true);
+    }
   };
 
   return (
@@ -86,7 +98,7 @@ export default function ShareWindow() {
               <Button
                 variant="light"
                 className="flex h-auto w-auto items-center justify-center gap-2 rounded-md px-5 py-3 opacity-50"
-                onClick={handleClick}
+                onClick={handleInputClick}
               >
                 Add
               </Button>
@@ -95,18 +107,20 @@ export default function ShareWindow() {
             <Button
               variant="link"
               visual="gray"
-              rightIcon={<Plus2 className="h-6 w-6" />}
               className="p-0 text-base font-semibold text-gray-700"
               id="_Button base"
+              onClick={handleRenderTextBox}
+              rightIcon={
+                renderTextBox ? (
+                  <Minus className="h-6 w-6" />
+                ) : (
+                  <Plus2 className="h-6 w-6" />
+                )
+              }
             >
               Add a Message
             </Button>
-            <Textarea />
-
-            <textarea
-              className="h-[100px] w-[100px]"
-              placeholder="Write Message Here"
-            />
+            {renderTextBox ? <Textarea placeholder="Write a message" /> : null}
 
             {renderInvites ? <Invites inputVal={inputVal} /> : null}
           </div>
