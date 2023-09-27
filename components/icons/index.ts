@@ -119,3 +119,4 @@ export * from "./toggle";
 export * from "./image-outlined";
 export * from "./video-outlined";
 export * from "./check2";
+export * from "./link2";
