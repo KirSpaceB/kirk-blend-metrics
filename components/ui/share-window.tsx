@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, Dispatch, SetStateAction } from "react";
 //Font
 import { Inter } from "next/font/google";
 
@@ -26,10 +26,14 @@ export interface IAvatarItem {
     AvatarProps & React.RefAttributes<HTMLSpanElement>
   >;
 }
-
+interface IShareWindowProps {
+  settingsClickHandlerProp?: Dispatch<SetStateAction<boolean>>;
+}
 const inter = Inter({ subsets: ["latin"] });
 
-export default function ShareWindow() {
+export default function ShareWindow({
+  settingsClickHandlerProp,
+}: IShareWindowProps) {
   // State for Input Value
   const [renderInvites, setRenderInvites] = useState(false);
   const [inputVal, setInputVal] = useState("");
@@ -53,6 +57,10 @@ export default function ShareWindow() {
       setRenderTextBox(true);
     }
   };
+  //Event handler for Settings
+  const handlerForSettings = () => {
+    settingsClickHandlerProp(true);
+  };
 
   return (
     <div className={inter.className}>
@@ -69,7 +77,10 @@ export default function ShareWindow() {
           </h1>
           <div className="flex items-start gap-4">
             <InfoGray className="h-6 w-6" />
-            <Settings className="h-6 w-6 text-gray-500" />
+            <Settings
+              className="h-6 w-6 cursor-pointer text-gray-500"
+              onClick={handlerForSettings}
+            />
           </div>
         </div>
 
