@@ -1,8 +1,8 @@
-import { Meta, StoryObj } from "@storybook/react";
-import PersonalInfoPageSidebar from "@/components/ui/personal-info-page-inner-sidebar";
+import { Meta } from "@storybook/react";
+import AccountInfoSettingsLayout from "@/components/ui/account-settings-info-page/account-info-settings-layout";
 
 const meta: Meta = {
-  title: "PersonalInfoPageSidebar",
+  title: "AccountInfoSettingsLayout",
   parameters: {
     backgrounds: {
       default: "black",
@@ -22,7 +22,7 @@ export const PersonalInfoPageSidebarStory = () => {
   return (
     <>
       <div>
-        <PersonalInfoPageSidebar />;
+        <AccountInfoSettingsLayout />;
       </div>
     </>
   );

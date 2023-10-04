@@ -22,14 +22,10 @@ import { MyGoals } from "../icons";
 import { Privacy } from "../icons";
 import { Trash01 } from "../icons/trash-01";
 
-export default function PersonalInfoPageSidebar() {
+export default function PersonalInfoPageInnerSideBar() {
   return (
-    <nav className="absolute inset-y-0 left-0 h-screen w-[224px] border-r border-gray-200">
+    <nav className="fixed bottom-0 left-[70px] top-[70px] h-screen w-[260px]  border-r border-gray-200 ">
       <ScrollArea className="h-[calc(100%-69px)] overflow-y-auto px-[15px] pt-[15px]">
-        <select className="w-full rounded-[5px] border-gray-300 text-sm leading-6 text-gray-black focus:border-primary-500 focus:ring-0">
-          <option value="Select">Select</option>
-        </select>
-
         <div className="mt-6 space-y-6">
           <div className="space-y-2">
             <span className="text-xs font-medium uppercase leading-5 text-gray-500">
@@ -87,7 +83,7 @@ export default function PersonalInfoPageSidebar() {
                 href="/"
               >
                 <span className="flex items-center gap-x-3">
-                  <Privacy className="h-[18px] w-[18px] text-gray-400 group-focus:text-primary-500" />
+                  <FolderClosed className="h-[18px] w-[18px] text-gray-400 group-focus:text-primary-500" />
                   <span className="text-sm font-semibold leading-6 text-gray-500 group-focus:text-primary-500">
                     Privacy
                   </span>
