@@ -37,7 +37,7 @@ export default function PersonalInfoInterface() {
           <p className="text-sm font-normal text-[#667085]">
             Euismod amet dolor sem phasellus viverra ac. Et cras enim cursus
             lobortis nec lorem dapibus proin. Lacus diam rhoncus blandit ipsum
-            nibh morbi at gravida in.
+            nibh morbi at gravida in.s
           </p>
 
           <div id="Avatar Parent Div" className="mb-[32px] mt-[24px]">
