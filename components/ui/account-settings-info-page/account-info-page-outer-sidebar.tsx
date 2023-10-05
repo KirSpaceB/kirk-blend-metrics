@@ -21,21 +21,14 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "../tooltip";
-import {
-  Home,
-  Users,
-  Settings,
-  User,
-  UserPlus,
-  HelpCircle,
-  LogOut,
-} from "lucide-react";
+import { Settings, User, UserPlus, HelpCircle, LogOut } from "lucide-react";
+import { Home, Users } from "@/components/icons";
 import Link from "next/link";
 import React from "react";
 
 export default function AccountIfoPageOuterSidebar() {
   return (
-    <nav className="fixed inset-y-0 h-screen w-[70px] flex-col items-center border-r border-gray-200 bg-white">
+    <nav className="fixed inset-y-0 flex h-screen w-[70px] flex-col items-center border-r border-gray-200 bg-white">
       <div className="flex justify-center self-stretch border-b border-gray-200 py-[22px]">
         <Link
           className="text-primary-500 focus:outline-none"

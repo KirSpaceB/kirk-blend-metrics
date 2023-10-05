@@ -11,7 +11,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "../breadcrumb";
 
 export default function AccountInfoSettingsNav() {
   return (
-    <nav className="fixed left-[86px] right-0 top-[23px] flex h-16 items-center justify-start border-b border-gray-200 px-4">
+    <nav className="fixed left-[86px] top-[7px] flex h-16 w-screen items-center justify-start border-b border-gray-200 px-4">
       <div className="flex items-center gap-x-5">
         <TooltipProvider>
           <Tooltip>
