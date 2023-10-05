@@ -24,9 +24,11 @@ import { Trash01 } from "../icons/trash-01";
 
 export default function PersonalInfoPageInnerSideBar() {
   return (
-    <nav className="fixed bottom-0 left-[70px] top-[70px] h-screen w-[260px]  border-r border-gray-200 ">
-      <ScrollArea className="h-[calc(100%-69px)] overflow-y-auto px-[15px] pt-[15px]">
-        <div className="mt-6 space-y-6">
+    // Changes here
+    <nav className="fixed bottom-0 left-[70px] top-[85px] h-screen w-[224px]  border-r border-gray-200 ">
+      {/* Changes here */}
+      <ScrollArea className="fixed bottom-[10px] left-[25px] h-[calc(100%-69px)] overflow-y-auto px-[15px] pt-[15px]">
+        <div className="mt-0 space-y-6">
           <div className="space-y-2">
             <span className="text-xs font-medium uppercase leading-5 text-gray-500">
               Account
@@ -43,9 +45,6 @@ export default function PersonalInfoPageInnerSideBar() {
                     Personal Info
                   </span>
                 </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
-                </span>
               </Link>
 
               <Link
@@ -57,9 +56,6 @@ export default function PersonalInfoPageInnerSideBar() {
                   <span className="text-sm font-semibold leading-6 text-gray-500 group-focus:text-primary-500">
                     Company Info
                   </span>
-                </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
                 </span>
               </Link>
 
@@ -73,9 +69,6 @@ export default function PersonalInfoPageInnerSideBar() {
                     My Goals
                   </span>
                 </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
-                </span>
               </Link>
 
               <Link
@@ -87,9 +80,6 @@ export default function PersonalInfoPageInnerSideBar() {
                   <span className="text-sm font-semibold leading-6 text-gray-500 group-focus:text-primary-500">
                     Privacy
                   </span>
-                </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
                 </span>
               </Link>
 
@@ -103,9 +93,6 @@ export default function PersonalInfoPageInnerSideBar() {
                     Billing
                   </span>
                 </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
-                </span>
               </Link>
 
               <Link
@@ -117,9 +104,6 @@ export default function PersonalInfoPageInnerSideBar() {
                   <span className="text-sm font-semibold leading-6 text-gray-500 group-focus:text-primary-500">
                     Notifications
                   </span>
-                </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
                 </span>
               </Link>
             </div>
@@ -141,9 +125,6 @@ export default function PersonalInfoPageInnerSideBar() {
                     Login & Password
                   </span>
                 </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
-                </span>
               </Link>
 
               <Link
@@ -156,9 +137,6 @@ export default function PersonalInfoPageInnerSideBar() {
                     Two-Factor Auth
                   </span>
                 </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
-                </span>
               </Link>
 
               <Link
@@ -170,9 +148,6 @@ export default function PersonalInfoPageInnerSideBar() {
                   <span className="text-sm font-semibold leading-6 text-gray-500 group-focus:text-primary-500">
                     Account Recovery
                   </span>
-                </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
                 </span>
               </Link>
 
@@ -190,9 +165,6 @@ export default function PersonalInfoPageInnerSideBar() {
                     Users
                   </span>
                 </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
-                </span>
               </Link>
 
               <Link
@@ -204,9 +176,6 @@ export default function PersonalInfoPageInnerSideBar() {
                   <span className="text-sm font-semibold leading-6 text-gray-500 group-focus:text-primary-500">
                     Roles
                   </span>
-                </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
                 </span>
               </Link>
 
@@ -224,9 +193,6 @@ export default function PersonalInfoPageInnerSideBar() {
                     Devices
                   </span>
                 </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
-                </span>
               </Link>
               <Link
                 className="group flex items-center justify-between rounded-[5px] px-3 py-2 hover:bg-gray-100 focus:bg-primary-50 focus:text-primary-500 focus-visible:outline-none disabled:opacity-50"
@@ -237,9 +203,6 @@ export default function PersonalInfoPageInnerSideBar() {
                   <span className="text-sm font-semibold leading-6 text-gray-500 group-focus:text-primary-500">
                     IP Restriction
                   </span>
-                </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
                 </span>
               </Link>
 
@@ -257,9 +220,6 @@ export default function PersonalInfoPageInnerSideBar() {
                     Users
                   </span>
                 </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
-                </span>
               </Link>
               <Link
                 className="group flex items-center justify-between rounded-[5px] px-3 py-2 hover:bg-gray-100 focus:bg-primary-50 focus:text-primary-500 focus-visible:outline-none disabled:opacity-50"
@@ -270,9 +230,6 @@ export default function PersonalInfoPageInnerSideBar() {
                   <span className="text-sm font-semibold leading-6 text-gray-500 group-focus:text-primary-500">
                     Users
                   </span>
-                </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
                 </span>
               </Link>
               <span className="text-xs font-medium uppercase leading-5 text-gray-500">
@@ -287,9 +244,6 @@ export default function PersonalInfoPageInnerSideBar() {
                   <span className="text-sm font-semibold leading-6 text-gray-500 group-focus:text-primary-500">
                     Archive & Trash
                   </span>
-                </span>
-                <span className="text-[10px] font-bold leading-5 text-gray-400 group-focus:text-primary-500">
-                  172
                 </span>
               </Link>
             </div>
