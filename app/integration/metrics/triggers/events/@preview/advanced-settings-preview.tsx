@@ -1,18 +1,23 @@
-import React from "react";
+import * as React from "react";
+import { Transition } from "@headlessui/react";
 
-import { PreviewMachineContext, SettingsMachineContext } from "@/machines";
-import { isEmpty } from "@/lib/utils";
+import { PreviewMachineContext, SettingMachineContext } from "@/machines";
 import { SearchFieldPreview } from "@/components/search-field-preview";
 import { DropdownPreview } from "@/components/dropdown-preview";
 import { TogglePreview } from "@/components/toggle-preview";
 
 export const AdvancedSettingsPreview = () => {
   const [state, send] = PreviewMachineContext.useActor();
-  const settings = SettingsMachineContext.useSelector(
+  const settings = SettingMachineContext.useSelector(
     (state) => state.context.advancedSettings
   );
 
-  if (isEmpty(settings)) {
+  React.useEffect(() => {
+    send({ type: "HIDDEN", settings });
+    send({ type: "TOGGLE", settings });
+  }, [settings, send]);
+
+  if (state.matches("active.hidden")) {
     return null;
   }
 
@@ -28,20 +33,31 @@ export const AdvancedSettingsPreview = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <Transition
+      appear
+      show
+      enter="transition duration-150 ease-in"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
+      className="space-y-6"
+    >
       {settings.map((setting) => (
         <React.Fragment key={setting.id}>
-          {setting.for === "search" && <SearchFieldPreview {...setting} />}
-          {setting.for === "dropdown" && <DropdownPreview {...setting} />}
-          {setting.for === "toggle" && <TogglePreview {...setting} />}
+          {setting.kind === "search" && (
+            <SearchFieldPreview {...setting.search} />
+          )}
+          {setting.kind === "dropdown" && (
+            <DropdownPreview {...setting.dropdown} />
+          )}
+          {setting.kind === "toggle" && <TogglePreview {...setting.toggle} />}
         </React.Fragment>
       ))}
       <button
         className="text-sm font-semibold text-primary-500 focus:outline-none"
         onClick={() => send("HIDE")}
       >
-        Hide
+        Hide Advanced
       </button>
-    </div>
+    </Transition>
   );
 };

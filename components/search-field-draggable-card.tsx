@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { SearchSettings, SettingsMachineContext } from "@/machines";
+import { SearchSettings, SettingMachineContext } from "@/machines";
 import {
   Copy,
   GridVertical3,
@@ -26,27 +26,27 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui";
-import { getId } from "@/lib/utils";
+import { cn, getId } from "@/lib/utils";
 
 interface SearchFieldDraggableCardProps extends SearchSettings {
+  settingId: number;
   advanced: boolean;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
+  active: boolean;
 }
 
-export const SearchFieldDraggableCard = ({
-  advanced,
-  id,
-  settings,
-  onDrag,
-}: SearchFieldDraggableCardProps) => {
-  const { setup } = settings;
+export const SearchFieldDraggableCard = (
+  props: SearchFieldDraggableCardProps
+) => {
+  const { setup, advanced, settingId, onDrag, active } = props;
   const { label, tooltip, placeholder, hint } = setup || {};
 
-  const [, send] = SettingsMachineContext.useActor();
+  const [, send] = SettingMachineContext.useActor();
+  const id = React.useId();
 
   const options = {
     advanced,
-    settingId: id,
+    settingId,
   };
 
   const handleClick = () => {
@@ -57,7 +57,7 @@ export const SearchFieldDraggableCard = ({
     send({
       ...options,
       type: "DUPLICATE",
-      targetSettingId: id,
+      targetSettingId: settingId,
       settingId: getId(),
     });
   };
@@ -68,7 +68,13 @@ export const SearchFieldDraggableCard = ({
 
   return (
     <article
-      className="flex cursor-pointer items-start gap-x-3 rounded-[10px] border border-gray-200 bg-white p-[21px] pl-[13px] transition duration-300 hover:border-2 hover:border-gray-300 hover:p-5 hover:pl-3 active:border-primary-500 active:p-5 active:pl-3"
+      className={cn(
+        "flex cursor-pointer items-start gap-x-3 rounded-[10px] border border-gray-200 bg-white p-[21px] pl-[13px] transition duration-300 hover:border-2 hover:border-gray-300 hover:p-5 hover:pl-3 active:border-2 active:border-primary-500 active:p-5 active:pl-3",
+        {
+          "border-2 border-primary-500 p-5 pl-3 hover:border-primary-500":
+            active,
+        }
+      )}
       onClick={handleClick}
     >
       <button
@@ -80,29 +86,24 @@ export const SearchFieldDraggableCard = ({
 
       <div className="flex-grow">
         <div className="flex items-center justify-between">
-          <div className="flex-grow">
+          <div className="flex flex-grow items-center gap-x-2">
             <Label
-              className="flex items-center gap-x-2 text-gray-700"
+              className="pointer-events-none text-gray-700"
               size="sm"
+              htmlFor={id}
             >
               {label ? label : "Search"}
-
-              {tooltip && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <HelpCircle className="text-gray-400" />
-                    </TooltipTrigger>
-                    <TooltipContent>{tooltip}</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
             </Label>
 
-            {hint && (
-              <HelperText className="mt-1.5" size="sm">
-                {hint}
-              </HelperText>
+            {tooltip && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HelpCircle className="text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>{tooltip}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
 
@@ -121,11 +122,20 @@ export const SearchFieldDraggableCard = ({
           </DropdownMenu>
         </div>
 
+        {hint && (
+          <HelperText className="mt-1.5" size="sm">
+            {hint}
+          </HelperText>
+        )}
+
         <InputGroup className="pointer-events-none mt-3">
           <InputLeftElement>
             <Search className="h-5 w-5 text-gray-500" />
           </InputLeftElement>
-          <Input placeholder={placeholder ? placeholder : "Type to search"} />
+          <Input
+            id={id}
+            placeholder={placeholder ? placeholder : "Type to search"}
+          />
         </InputGroup>
       </div>
     </article>

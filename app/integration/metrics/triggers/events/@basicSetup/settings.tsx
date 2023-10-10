@@ -2,17 +2,26 @@
 
 import * as React from "react";
 
-import { SettingsMachineContext } from "@/machines";
+import { SettingMachineContext } from "@/machines";
 import { ReorderGroup, ReorderItem } from "@/components/ui";
 import { SearchFieldDraggableCard } from "@/components/search-field-draggable-card";
 import { DropdownDraggableCard } from "@/components/dropdown-draggable-card";
 import { ToggleDraggableCard } from "@/components/toggle-draggable-card";
+import { ShortTextDraggableCard } from "@/components/short-text-draggable-card";
 
 export const Settings = (props: { advanced: boolean }) => {
-  const settings = SettingsMachineContext.useSelector((state) =>
-    props.advanced ? state.context.advancedSettings : state.context.settings
+  const settings = SettingMachineContext.useSelector((state) =>
+    props.advanced
+      ? state.context.advancedSettings
+      : state.context.basicSettings
   );
-  const [, send] = SettingsMachineContext.useActor();
+  const currentId = SettingMachineContext.useSelector(
+    (state) => state.context.currentId
+  );
+  const currentAdvanced = SettingMachineContext.useSelector(
+    (state) => state.context.currentAdvanced
+  );
+  const [, send] = SettingMachineContext.useActor();
 
   return (
     <ReorderGroup
@@ -22,35 +31,55 @@ export const Settings = (props: { advanced: boolean }) => {
         send({ type: "REORDER", advanced: props.advanced, settings: values })
       }
     >
-      {settings.map((setting) => (
-        <ReorderItem value={setting} key={setting.id}>
-          {({ dragControls }) => (
-            <>
-              {setting.for === "search" && (
-                <SearchFieldDraggableCard
-                  onDrag={(event) => dragControls.start(event)}
-                  {...props}
-                  {...setting}
-                />
-              )}
-              {setting.for === "dropdown" && (
-                <DropdownDraggableCard
-                  onDrag={(event) => dragControls.start(event)}
-                  {...props}
-                  {...setting}
-                />
-              )}
-              {setting.for === "toggle" && (
-                <ToggleDraggableCard
-                  onDrag={(event) => dragControls.start(event)}
-                  {...props}
-                  {...setting}
-                />
-              )}
-            </>
-          )}
-        </ReorderItem>
-      ))}
+      {settings.map((setting) => {
+        const active =
+          currentAdvanced === props.advanced && currentId === setting.id;
+
+        return (
+          <ReorderItem value={setting} key={setting.id}>
+            {({ onDrag }) => (
+              <>
+                {setting.kind === "search" && (
+                  <SearchFieldDraggableCard
+                    onDrag={onDrag}
+                    settingId={setting.id}
+                    active={active}
+                    {...props}
+                    {...setting.search}
+                  />
+                )}
+                {setting.kind === "dropdown" && (
+                  <DropdownDraggableCard
+                    onDrag={onDrag}
+                    settingId={setting.id}
+                    active={active}
+                    {...props}
+                    {...setting.dropdown}
+                  />
+                )}
+                {setting.kind === "toggle" && (
+                  <ToggleDraggableCard
+                    onDrag={onDrag}
+                    settingId={setting.id}
+                    active={active}
+                    {...props}
+                    {...setting.toggle}
+                  />
+                )}
+                {setting.kind === "short-text" && (
+                  <ShortTextDraggableCard
+                    onDrag={onDrag}
+                    settingId={setting.id}
+                    active={active}
+                    {...props}
+                    {...setting.shortText}
+                  />
+                )}
+              </>
+            )}
+          </ReorderItem>
+        );
+      })}
     </ReorderGroup>
   );
 };

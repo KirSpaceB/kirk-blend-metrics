@@ -2,14 +2,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { isUndefined } from "@/lib/utils";
-import { SettingsMachineContext } from "@/machines";
+import { SettingMachineContext } from "@/machines";
 import { useEnhancedWatch } from "@/lib/hooks";
-import { HelperText, Input, Label } from "@/components/ui";
+import {
+  HelperText,
+  Input,
+  Label,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui";
 import { HelpCircle } from "@/components/icons";
+import { RemainCharacters } from "@/components/remain-characters";
 
 const schema = z.object({
-  fieldLabel: z.string().max(30),
+  label: z.string().max(30),
   hint: z.string().max(30),
   tooltip: z.string().max(50),
 });
@@ -17,55 +25,43 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const defaultValues: FormValues = {
-  fieldLabel: "",
+  label: "",
   hint: "",
   tooltip: "",
 };
 
 export default function SetupTab() {
-  const [, send] = SettingsMachineContext.useActor();
-  const { currentAdvanced, currentId } = SettingsMachineContext.useSelector(
-    (state) => ({
-      currentId: state.context.currentId,
-      currentAdvanced: state.context.currentAdvanced,
-    })
+  const [, send] = SettingMachineContext.useActor();
+  const currentId = SettingMachineContext.useSelector(
+    (state) => state.context.currentId
   );
-  const settings = SettingsMachineContext.useSelector((state) =>
-    currentAdvanced ? state.context.advancedSettings : state.context.settings
+  const settings = SettingMachineContext.useSelector((state) =>
+    state.context.currentAdvanced
+      ? state.context.advancedSettings
+      : state.context.basicSettings
   );
 
   const setting = settings.find((setting) => setting.id === currentId);
-  const values = setting
-    ? setting.for === "toggle"
-      ? setting.settings
-      : {}
-    : {};
+  const { toggle } = setting || {};
+  const { setup: values } = toggle || {};
 
   const { register, handleSubmit, control, getValues } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    values: values.setup || defaultValues,
+    values: values || defaultValues,
   });
 
   useEnhancedWatch({
     control,
-    onChange: () => {
-      const shouldNotUpdate =
-        isUndefined(currentId) || isUndefined(currentAdvanced);
-
-      if (shouldNotUpdate) return;
-
+    onChange: () =>
       send({
         type: "UPDATE",
-        advanced: currentAdvanced,
         value: {
-          id: currentId,
-          for: "toggle",
-          settings: {
+          kind: "toggle",
+          setting: {
             setup: getValues(),
           },
         },
-      });
-    },
+      }),
   });
 
   const onSubmit: SubmitHandler<FormValues> = (variables) => {};
@@ -78,9 +74,11 @@ export default function SetupTab() {
         </Label>
         <div className="flex items-center justify-between">
           <HelperText size="sm">Enter a user friendly name.</HelperText>
-          <HelperText className="leading-5">0/30</HelperText>
+          <HelperText className="leading-5">
+            <RemainCharacters control={control} name="label" max={30} />
+          </HelperText>
         </div>
-        <Input id="field-label" {...register("fieldLabel")} />
+        <Input id="field-label" {...register("label")} />
       </div>
 
       <div className="border-t border-gray-200 p-5">
@@ -92,7 +90,9 @@ export default function SetupTab() {
             <HelperText size="sm">
               Add a short prompt about the field.
             </HelperText>
-            <HelperText className="leading-5">0/30</HelperText>
+            <HelperText className="leading-5">
+              <RemainCharacters control={control} name="hint" max={30} />
+            </HelperText>
           </div>
           <Input id="hint-text" {...register("hint")} />
         </div>
@@ -104,14 +104,23 @@ export default function SetupTab() {
             <Label className="text-gray-700" htmlFor="tooltip" size="sm">
               Tooltip <span className="text-gray-400">(optional)</span>
             </Label>
-            <HelpCircle className="flex-none text-gray-400" />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger className="flex-none">
+                  <HelpCircle className="text-gray-400" />
+                </TooltipTrigger>
+                <TooltipContent>Make optional field</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           <div className="flex items-center justify-between">
             <HelperText size="sm">
               Add a short prompt about the field.
             </HelperText>
-            <HelperText className="leading-5">0/50</HelperText>
+            <HelperText className="leading-5">
+              <RemainCharacters control={control} name="tooltip" max={50} />
+            </HelperText>
           </div>
           <Input id="tooltip" {...register("tooltip")} />
         </div>

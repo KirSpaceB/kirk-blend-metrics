@@ -6,7 +6,7 @@ import { Plus2 } from "@/components/icons";
 import { Button } from "@/components/ui";
 import {
   PreviewMachineContext,
-  SettingsMachineContext,
+  SettingMachineContext,
   ToggleMachineContext,
 } from "@/machines";
 
@@ -47,7 +47,7 @@ export default function Layout({
   }
 
   return (
-    <SettingsMachineContext.Provider>
+    <SettingMachineContext.Provider>
       <PreviewMachineContext.Provider>
         {sidebar}
 
@@ -67,9 +67,9 @@ export default function Layout({
             {basicSetup}
             {advancedSettings}
           </div>
-          <div className="sticky top-[70px]">{preview}</div>
+          <div className="sticky top-[86px]">{preview}</div>
         </div>
       </PreviewMachineContext.Provider>
-    </SettingsMachineContext.Provider>
+    </SettingMachineContext.Provider>
   );
 }

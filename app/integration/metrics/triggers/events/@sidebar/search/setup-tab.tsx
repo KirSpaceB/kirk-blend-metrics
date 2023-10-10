@@ -13,15 +13,19 @@ import {
   RadioGroup,
   RadioGroupItemSelector,
   Switch,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui";
-import { useEnhancedWatch, useUpdateEffect } from "@/lib/hooks";
-import { SettingsMachineContext } from "@/machines";
-import { isUndefined } from "@/lib/utils";
+import { useEnhancedWatch } from "@/lib/hooks";
+import { SettingMachineContext } from "@/machines";
+import { RemainCharacters } from "@/components/remain-characters";
 
 const schema = z.object({
   label: z.string().max(30),
   singleOrMultiSelect: z.enum(["single", "multiple"]),
-  optionalField: z.boolean(),
+  optional: z.boolean(),
   placeholder: z.string().max(30),
   hint: z.string().max(30),
   tooltip: z.string().max(50),
@@ -33,59 +37,48 @@ type FormValues = z.infer<typeof schema>;
 const defaultValues: FormValues = {
   label: "",
   singleOrMultiSelect: "single",
-  optionalField: false,
+  optional: false,
   placeholder: "",
   hint: "",
   tooltip: "",
 };
 
 export default function SetupTab() {
-  const [, send] = SettingsMachineContext.useActor();
-  const { currentId, currentAdvanced } = SettingsMachineContext.useSelector(
-    (state) => ({
-      currentId: state.context.currentId,
-      currentAdvanced: state.context.currentAdvanced,
-    })
+  const [, send] = SettingMachineContext.useActor();
+  const currentId = SettingMachineContext.useSelector(
+    (state) => state.context.currentId
   );
-  const settings = SettingsMachineContext.useSelector((state) =>
-    currentAdvanced ? state.context.advancedSettings : state.context.settings
+  const settings = SettingMachineContext.useSelector((state) =>
+    state.context.currentAdvanced
+      ? state.context.advancedSettings
+      : state.context.basicSettings
   );
 
   const setting = settings.find((setting) => setting.id === currentId);
-  const values = setting
-    ? setting.for === "search"
-      ? setting.settings
-      : {}
-    : {};
+  const { search } = setting || {};
+  const { setup: values } = search || {};
 
   const { register, handleSubmit, watch, control, getValues } =
     useForm<FormValues>({
       resolver: zodResolver(schema),
-      values: values.setup || defaultValues,
+      values: values || defaultValues,
     });
-  const singleOrMultiSelect = watch("singleOrMultiSelect");
 
   useEnhancedWatch({
     control,
-    onChange: () => {
-      const shouldNotUpdate =
-        isUndefined(currentAdvanced) || isUndefined(currentId);
-
-      if (shouldNotUpdate) return;
-
+    onChange: () =>
       send({
         type: "UPDATE",
-        advanced: currentAdvanced,
         value: {
-          for: "search",
-          id: currentId,
-          settings: {
+          kind: "search",
+          setting: {
             setup: getValues(),
           },
         },
-      });
-    },
+      }),
   });
+
+  const singleOrMultiSelect = watch("singleOrMultiSelect");
 
   const onSubmit: SubmitHandler<FormValues> = (variables) => {};
 
@@ -98,7 +91,9 @@ export default function SetupTab() {
           </Label>
           <div className="flex items-center justify-between">
             <HelperText size="sm">Enter a user friendly name.</HelperText>
-            <HelperText size="xs">0/30</HelperText>
+            <HelperText size="xs">
+              <RemainCharacters control={control} name="label" max={30} />
+            </HelperText>
           </div>
           <Input {...register("label")} id="field-label" placeholder="Search" />
         </div>
@@ -112,12 +107,12 @@ export default function SetupTab() {
               onValueChange={onChange}
               {...props}
             >
-              <RadioGroupItemSelector value="single">
+              <RadioGroupItemSelector className="gap-x-4" value="single">
                 <Label className="leading-4" size="xs">
                   Single Select
                 </Label>
               </RadioGroupItemSelector>
-              <RadioGroupItemSelector value="multiple">
+              <RadioGroupItemSelector className="gap-x-4" value="multiple">
                 <Label className="leading-4" size="xs">
                   Multiple Select
                 </Label>
@@ -129,16 +124,23 @@ export default function SetupTab() {
         <div className="space-y-5">
           {singleOrMultiSelect === "multiple" && (
             <div className="flex items-start justify-between">
-              <Label
-                className="inline-flex items-center gap-x-2 text-gray-700"
-                htmlFor="limit-selections"
-                size="sm"
-              >
-                Limit Selections{" "}
-                <span className="text-gray-400">
-                  <HelpCircle />
-                </span>
-              </Label>
+              <div className="flex items-center gap-x-2">
+                <Label
+                  className="text-gray-700"
+                  htmlFor="limit-selections"
+                  size="sm"
+                >
+                  Limit Selections
+                </Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <HelpCircle className="text-gray-400" />
+                    </TooltipTrigger>
+                    <TooltipContent>Make optional field</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <Controller
                 control={control}
                 name="limitSelections"
@@ -154,19 +156,26 @@ export default function SetupTab() {
             </div>
           )}
           <div className="flex items-start justify-between">
-            <Label
-              className="inline-flex items-center gap-x-2 text-gray-700"
-              htmlFor="optional-field"
-              size="sm"
-            >
-              Optional Field{" "}
-              <span className="text-gray-400">
-                <HelpCircle />
-              </span>
-            </Label>
+            <div className="flex items-center gap-x-2">
+              <Label
+                className="text-gray-700"
+                htmlFor="optional-field"
+                size="sm"
+              >
+                Optional Field{" "}
+              </Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HelpCircle className="text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>Make optional field</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <Controller
               control={control}
-              name="optionalField"
+              name="optional"
               render={({ field: { value, onChange, ...props } }) => (
                 <Switch
                   checked={value}
@@ -187,7 +196,9 @@ export default function SetupTab() {
           </Label>
           <div className="flex items-center justify-between">
             <HelperText size="sm">Add a clear placeholder text.</HelperText>
-            <HelperText className="leading-5">0/30</HelperText>
+            <HelperText className="leading-5">
+              <RemainCharacters control={control} name="placeholder" max={30} />
+            </HelperText>
           </div>
           <Input {...register("placeholder")} id="placeholder-text" />
         </div>
@@ -200,27 +211,34 @@ export default function SetupTab() {
             <HelperText size="sm">
               Add a short prompt about the field.
             </HelperText>
-            <HelperText className="leading-5">0/30</HelperText>
+            <HelperText className="leading-5">
+              <RemainCharacters control={control} name="hint" max={30} />
+            </HelperText>
           </div>
           <Input {...register("hint")} id="hint-text" />
         </div>
 
         <div className="space-y-1.5">
-          <Label
-            className="flex items-center gap-x-2 text-gray-700"
-            htmlFor="tooltip"
-            size="sm"
-          >
-            <span>
+          <div className="flex items-center gap-x-2">
+            <Label className="text-gray-700" htmlFor="tooltip" size="sm">
               Tooltip <span className="text-gray-400">(optional)</span>
-            </span>
-            <HelpCircle className="text-gray-400" />
-          </Label>
+            </Label>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <HelpCircle className="text-gray-400" />
+                </TooltipTrigger>
+                <TooltipContent>Make optional field</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <div className="flex items-center justify-between">
             <HelperText size="sm">
               Add additional information about the field.
             </HelperText>
-            <HelperText className="leading-5">0/50</HelperText>
+            <HelperText className="leading-5">
+              <RemainCharacters control={control} name="tooltip" max={50} />
+            </HelperText>
           </div>
           <Input {...register("tooltip")} id="tooltip" />
         </div>

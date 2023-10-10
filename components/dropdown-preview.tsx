@@ -19,8 +19,12 @@ import {
   InputLeftElement,
   Label,
 } from "./ui";
-import { isEmpty, keys } from "@/lib/utils";
-import { useArray, useControllableState } from "@/lib/hooks";
+import { getSize, isEmpty, keys, toPxIfNumber } from "@/lib/utils";
+import {
+  useArray,
+  useControllableState,
+  useIsomorphicLayoutEffect,
+} from "@/lib/hooks";
 
 interface Option {
   id: string;
@@ -80,9 +84,9 @@ const options: Options = [
 
 interface DropdownPreviewProps extends DropdownSettings {}
 
-export const DropdownPreview = ({ settings }: DropdownPreviewProps) => {
-  const { setup, source } = settings;
-  const { fieldLabel, hint, optionalField } = setup || {};
+export const DropdownPreview = (props: DropdownPreviewProps) => {
+  const { setup, source } = props;
+  const { label, hint, optional } = setup || {};
   const { metrics = [] } = source || {};
 
   const hasServiceName = metrics.includes("Service Name");
@@ -105,7 +109,8 @@ export const DropdownPreview = ({ settings }: DropdownPreviewProps) => {
     service: hasService,
   };
 
-  const [badges, { patch, remove }] = useArray<string>();
+  const [badges, { patch, remove, clear }] = useArray<string>();
+  // FIXME: selected can be null, so fix its types
   const [selected, setSelected] = useControllableState<Option>({
     onChange: (value) => {
       if (!value) {
@@ -117,15 +122,31 @@ export const DropdownPreview = ({ settings }: DropdownPreviewProps) => {
       patch(filteredResult);
     },
   });
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [{ width }, setSize] = React.useState<{
+    width?: number;
+    height?: number;
+  }>({});
 
+  useIsomorphicLayoutEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const size = getSize(element);
+    setSize(size);
+  }, []);
+
+  const style: Record<string, string> = {
+    "--width": width ? toPxIfNumber(width) : "auto",
+  };
   const noResults = isEmpty(metrics);
 
   return (
-    <div>
+    <div ref={ref}>
       <Label className="flex items-center gap-x-2 text-gray-700" size="sm">
-        {fieldLabel ? fieldLabel : "Dropdown"}
+        {label ? label : "Dropdown"}
 
-        {optionalField && <HelpCircle className="text-gray-400" />}
+        {optional && <HelpCircle className="text-gray-400" />}
       </Label>
 
       {hint && (
@@ -144,7 +165,7 @@ export const DropdownPreview = ({ settings }: DropdownPreviewProps) => {
             )}
             <ChevronDown className="ml-auto h-5 w-5 text-gray-500" />
           </DropdownPopoverTrigger>
-          <DropdownPopoverContent>
+          <DropdownPopoverContent className="w-[--width]" style={{ ...style }}>
             <DropdownCommand className="overflow-hidden">
               <InputGroup>
                 <InputLeftElement className="w-8">
@@ -243,24 +264,35 @@ export const DropdownPreview = ({ settings }: DropdownPreviewProps) => {
         </DropdownPopover>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        {badges?.map((badge, index) => (
-          <Badge
-            className="gap-x-1 rounded-2xl px-1.5 py-1"
-            size="lg"
-            visual="primary"
-            key={index}
-          >
-            {badge}
-            <button
-              className="flex-none focus-visible:outline-none"
-              onClick={() => remove(index)}
+      {badges && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {badges.map((badge, index) => (
+            <Badge
+              className="gap-x-1 rounded-2xl px-1.5 py-1"
+              size="lg"
+              visual="primary"
+              key={index}
             >
-              <X />
-            </button>
-          </Badge>
-        ))}
-      </div>
+              {badge}
+              <button
+                className="flex-none focus-visible:outline-none"
+                onClick={() => remove(index)}
+              >
+                <X />
+              </button>
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      {badges && (
+        <button
+          className="mt-4 text-sm font-semibold text-primary-500"
+          onClick={clear}
+        >
+          Clear All
+        </button>
+      )}
     </div>
   );
 };

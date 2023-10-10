@@ -3,7 +3,7 @@
 import * as React from "react";
 import dynamic from "next/dynamic";
 
-import { ChevronLeft, PlayCircle, Toggle } from "@/components/icons";
+import { ChevronLeft, PlayCircle, ShortText } from "@/components/icons";
 import {
   ScrollArea,
   ScrollBar,
@@ -87,8 +87,8 @@ export default function Page() {
     <>
       <div className="flex items-center justify-between p-5 pb-2">
         <div className="inline-flex flex-none items-center gap-x-2 text-base font-medium text-gray-900 focus-visible:outline-none">
-          <Toggle className="h-[18px] w-[18px] flex-none text-gray-800" />
-          Toggle
+          <ShortText className="h-[18px] w-[18px] flex-none text-gray-800" />
+          Short Text
         </div>
         <button className="inline-flex items-center justify-center gap-x-2 text-sm font-semibold text-primary-500 focus-visible:outline-none">
           <PlayCircle className="h-[15px] w-[15px]" />

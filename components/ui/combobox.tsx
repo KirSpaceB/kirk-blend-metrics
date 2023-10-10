@@ -3,8 +3,21 @@ import { Combobox as ComboboxPrimitive, Transition } from "@headlessui/react";
 import { VariantProps, cva } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
+import { labelVariants } from "./label";
 
-const ComboboxLabel = ComboboxPrimitive.Label;
+const ComboboxLabel = ({
+  className,
+  size,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof ComboboxPrimitive.Label> &
+  VariantProps<typeof labelVariants>) => {
+  return (
+    <ComboboxPrimitive.Label
+      className={cn(labelVariants({ className, size }))}
+      {...props}
+    />
+  );
+};
 
 const Combobox = React.forwardRef<
   React.ElementRef<typeof ComboboxPrimitive>,

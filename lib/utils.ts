@@ -300,3 +300,8 @@ export function noop() {}
 export function keys<T extends Record<string, any>>(record: T): (keyof T)[] {
   return Object.keys(record);
 }
+
+export function withId<T = unknown>(arr: T[]) {
+  let id = 0;
+  return arr.map((value) => ({ value, id: id++ }));
+}

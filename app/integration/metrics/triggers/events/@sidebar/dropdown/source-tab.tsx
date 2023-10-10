@@ -31,9 +31,9 @@ import {
   ScaleOutIn,
   inputVariants,
 } from "@/components/ui";
-import { cn, isNotEmpty, isUndefined } from "@/lib/utils";
+import { cn, isNotEmpty } from "@/lib/utils";
 import { METRICS_OPTIONS } from "@/lib/constants";
-import { SettingsMachineContext } from "@/machines";
+import { SettingMachineContext } from "@/machines";
 import { useEnhancedWatch } from "@/lib/hooks";
 
 const schema = z.object({
@@ -53,57 +53,45 @@ const defaultValue: FormValues = {
 };
 
 const SourceTab = () => {
-  const [, send] = SettingsMachineContext.useActor();
-  const { currentAdvanced, currentId } = SettingsMachineContext.useSelector(
-    (state) => ({
-      currentAdvanced: state.context.currentAdvanced,
-      currentId: state.context.currentId,
-    })
+  const [, send] = SettingMachineContext.useActor();
+  const currentId = SettingMachineContext.useSelector(
+    (state) => state.context.currentId
   );
-  const settings = SettingsMachineContext.useSelector((state) =>
-    currentAdvanced ? state.context.advancedSettings : state.context.settings
+  const settings = SettingMachineContext.useSelector((state) =>
+    state.context.currentAdvanced
+      ? state.context.advancedSettings
+      : state.context.basicSettings
   );
 
   const setting = settings.find((setting) => setting.id === currentId);
-  const values = setting
-    ? setting.for === "dropdown"
-      ? setting.settings
-      : {}
-    : {};
+  const { dropdown } = setting || {};
+  const { source: values } = dropdown || {};
 
   const { handleSubmit, register, control, setValue, getValues } =
     useForm<FormValues>({
       shouldUnregister: true,
-      values: values.source || defaultValue,
+      values: values || defaultValue,
       resolver: zodResolver(schema),
     });
 
-  const onSubmit: SubmitHandler<FormValues> = (variables) => {};
-
   const { category, dataset } = useEnhancedWatch({
     control,
-    onChange: () => {
-      const shouldNotUpdate =
-        isUndefined(currentAdvanced) || isUndefined(currentId);
-
-      if (shouldNotUpdate) return;
-
+    onChange: () =>
       send({
         type: "UPDATE",
-        advanced: currentAdvanced,
         value: {
-          for: "dropdown",
-          id: currentId,
-          settings: {
+          kind: "dropdown",
+          setting: {
             source: getValues(),
           },
         },
-      });
-    },
+      }),
   });
 
   const metrics = getValues("metrics");
   const isMetricsNotEmpty = isNotEmpty(metrics);
+
+  const onSubmit: SubmitHandler<FormValues> = (variables) => {};
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="pb-8">

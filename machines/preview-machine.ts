@@ -1,9 +1,10 @@
-import { createActorContext } from "@xstate/react";
 import { createMachine } from "xstate";
+import { createActorContext } from "@xstate/react";
+
+import { Settings } from "./setting-machine";
 
 export const previewMachine = createMachine(
   {
-    /** @xstate-layout N4IgpgJg5mDOIC5QAcBOYBuBLMB3AdFgHYCGAxgC5YZgDEAggMIAqAkgGr3MCiA2gAwBdRCgD2sLFVFERIAB6IAjADZl+AEz8t-AMxaA7AA4ALIf0BWADQgAnkv3r8hwzp3qAnIveH3-d8YBfAOs0TBwCcioaWlYAOSY2Th4BYSQQZHFJLGlZBQQVNU1tPX4jUwtrO3z1HXxFF1dFfnV9RXrzQyCQ9Gw8fEjqMHwACywIYihaAGUACQB5AHUU2QyJKRk0vONW-HLzRWNlNx1lVqtbRCKNdxv3feU7zXd9LvSe8P7KQfxYYdFcCa0GasAAifCEK0y61yiFMtXMynU5n4hkUyPMxnMz0qSmR+Cxtwez30ehUQWCICIoggcBW7zwkLW2Q2oDyAFplDiEGz1MZ8NoBYKDK9Qr0CMQBjRGVkcptYeouYp1IYnKplBjnMo2kdOhTRR9JWBpdC5QgPO4NGZ9ipefsTFyjtdbiZvIZ1aURfSIl8aCMxhNjcyYQgdNtLRZtbb6sZFQjLa5NIYEQ59N5PWE+oafn8AUQoIHZazEB1FPydBH2g9QzpYyqjK5jvp+AiOuSAkA */
     id: "preview",
     initial: "inactive",
     states: {
@@ -15,8 +16,16 @@ export const previewMachine = createMachine(
         },
       },
       active: {
-        initial: "hiding",
+        initial: "hidden",
         states: {
+          hidden: {
+            on: {
+              TOGGLE: {
+                target: "hiding",
+                cond: "isNotEmpty",
+              },
+            },
+          },
           hiding: {
             on: {
               SHOW: {
@@ -33,27 +42,40 @@ export const previewMachine = createMachine(
           },
         },
         on: {
-          INACTIVATE: {
-            target: "inactive",
+          HIDDEN: {
+            target: ".hidden",
+            cond: "IsEmpty",
+            internal: true,
           },
         },
       },
     },
+    tsTypes: {} as import("./preview-machine.typegen").Typegen0,
     schema: {
       events: {} as
+        | { type: "" }
         | { type: "HIDE" }
         | { type: "SHOW" }
+        | { type: "HIDDEN"; settings: Settings }
+        | { type: "TOGGLE"; settings: Settings }
         | { type: "ACTIVATE" }
         | { type: "INACTIVATE" },
     },
-    tsTypes: {} as import("./preview-machine.typegen").Typegen0,
     predictableActionArguments: true,
     preserveActionOrder: true,
   },
   {
     actions: {},
     services: {},
-    guards: {},
+    guards: {
+      isNotEmpty: (ctx, event) => {
+        return event.settings.length >= 1;
+      },
+
+      IsEmpty: (ctx, event) => {
+        return event.settings.length === 0;
+      },
+    },
     delays: {},
   }
 );

@@ -1,6 +1,8 @@
 "use client";
 
-import { SettingsMachineContext, ToggleSettings } from "@/machines";
+import * as React from "react";
+
+import { SettingMachineContext, ToggleSettings } from "@/machines";
 import {
   Copy,
   GridVertical3,
@@ -21,29 +23,27 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui";
-import { getId } from "@/lib/utils";
+import { cn, getId } from "@/lib/utils";
 
 interface ToggleDraggableCardProps extends ToggleSettings {
   advanced: boolean;
+  settingId: number;
   onDrag?: (event: React.PointerEvent<HTMLButtonElement>) => void;
+  active: boolean;
 }
 
-export const ToggleDraggableCard = ({
-  onDrag,
-  settings,
-  advanced,
-  id,
-}: ToggleDraggableCardProps) => {
-  const { setup } = settings;
-  const { fieldLabel, hint, tooltip } = setup || {};
+export const ToggleDraggableCard = (props: ToggleDraggableCardProps) => {
+  const { setup, advanced, settingId, onDrag, active } = props;
+  const { label, hint, tooltip } = setup || {};
 
-  const [, send] = SettingsMachineContext.useActor();
+  const [, send] = SettingMachineContext.useActor();
+  const id = React.useId();
 
   const handleClick = () => {
     send({
       advanced,
       type: "EDIT-TOGGLE",
-      settingId: id,
+      settingId,
     });
   };
 
@@ -52,7 +52,7 @@ export const ToggleDraggableCard = ({
       advanced,
       type: "DUPLICATE",
       settingId: getId(),
-      targetSettingId: id,
+      targetSettingId: settingId,
     });
   };
 
@@ -60,13 +60,19 @@ export const ToggleDraggableCard = ({
     send({
       advanced,
       type: "DELETE",
-      settingId: id,
+      settingId,
     });
   };
 
   return (
     <article
-      className="flex cursor-pointer items-start gap-x-3 rounded-[10px] border border-gray-200 bg-white p-[21px] pl-[13px] hover:border-2 hover:p-5 hover:pl-3 active:border-primary-500 active:p-5 active:pl-3"
+      className={cn(
+        "flex cursor-pointer items-start gap-x-3 rounded-[10px] border border-gray-200 bg-white p-[21px] pl-[13px] hover:border-2 hover:border-gray-300 hover:p-5 hover:pl-3 active:border-2 active:border-primary-500 active:p-5 active:pl-3",
+        {
+          "border-2 border-primary-500 p-5 pl-3 hover:border-primary-500":
+            active,
+        }
+      )}
       onClick={handleClick}
     >
       <button
@@ -78,8 +84,8 @@ export const ToggleDraggableCard = ({
       <div className="flex-auto">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-x-2">
-            <Label className="text-gray-700" size="sm">
-              Toggle
+            <Label className="text-gray-700" size="sm" asChild>
+              <span>Toggle</span>
             </Label>
 
             {tooltip && (
@@ -110,10 +116,10 @@ export const ToggleDraggableCard = ({
         </div>
 
         <div className="pointer-events-none mt-3 flex items-start gap-x-2">
-          <Switch size="md" />
+          <Switch size="md" id={id} />
           <div>
-            <Label className="text-gray-700" size="sm">
-              {fieldLabel ? fieldLabel : " Remember me"}
+            <Label className="text-gray-700" size="sm" htmlFor={id}>
+              {label ? label : " Remember me"}
             </Label>
             <HelperText size="sm">
               {hint ? hint : "Save my login details for next time."}

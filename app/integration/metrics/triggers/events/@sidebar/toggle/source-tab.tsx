@@ -1,11 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { HelperText, Label, inputVariants } from "@/components/ui";
+import {
+  HelperText,
+  Listbox,
+  ListboxButton,
+  ListboxContent,
+  ListboxLabel,
+  ListboxOption,
+  ListboxOptions,
+} from "@/components/ui";
 import { useEnhancedWatch } from "@/lib/hooks";
-import { SettingsMachineContext } from "@/machines";
-import { isUndefined } from "@/lib/utils";
+import { SettingMachineContext } from "@/machines";
 
 const schema = z.object({
   dataset: z.string(),
@@ -22,105 +29,114 @@ const defaultValues: FormValues = {
 };
 
 export default function SourceTab() {
-  const [, send] = SettingsMachineContext.useActor();
-  const { currentAdvanced, currentId } = SettingsMachineContext.useSelector(
-    (state) => ({
-      currentId: state.context.currentId,
-      currentAdvanced: state.context.currentAdvanced,
-    })
+  const [, send] = SettingMachineContext.useActor();
+  const currentId = SettingMachineContext.useSelector(
+    (state) => state.context.currentId
   );
-  const settings = SettingsMachineContext.useSelector((state) =>
-    currentAdvanced ? state.context.advancedSettings : state.context.settings
+  const settings = SettingMachineContext.useSelector((state) =>
+    state.context.currentAdvanced
+      ? state.context.advancedSettings
+      : state.context.basicSettings
   );
 
   const setting = settings.find((setting) => setting.id === currentId);
-  const values = setting
-    ? setting.for === "toggle"
-      ? setting.settings
-      : {}
-    : {};
+  const { toggle } = setting || {};
+  const { source: values } = toggle || {};
 
-  const { register, handleSubmit, control, getValues } = useForm<FormValues>({
+  const { handleSubmit, control, getValues } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: values.source || defaultValues,
+    values: values || defaultValues,
   });
 
   const { dataset, category } = useEnhancedWatch({
     control,
-    onChange: () => {
-      const shouldNotUpdate =
-        isUndefined(currentId) || isUndefined(currentAdvanced);
-
-      if (shouldNotUpdate) return;
-
+    onChange: () =>
       send({
         type: "UPDATE",
-        advanced: currentAdvanced,
         value: {
-          id: currentId,
-          for: "toggle",
-          settings: {
+          kind: "toggle",
+          setting: {
             source: getValues(),
           },
         },
-      });
-    },
+      }),
   });
 
   const onSubmit: SubmitHandler<FormValues> = (variables) => {};
 
   return (
     <form className="space-y-6 p-5" onSubmit={handleSubmit(onSubmit)}>
-      <div className="space-y-1.5">
-        <Label className="text-gray-700" htmlFor="dataset" size="sm">
-          Data Set
-        </Label>
-        <HelperText size="sm">
-          Where do you want your data to come from?
-        </HelperText>
-        <select
-          className={inputVariants()}
-          id="dataset"
-          {...register("dataset")}
-        >
-          <option value="">Select Data Set</option>
-        </select>
-      </div>
+      <Controller
+        control={control}
+        name="dataset"
+        render={({ field: { value, onChange } }) => (
+          <Listbox className="space-y-1.5" value={value} onChange={onChange}>
+            <ListboxLabel className="text-gray-700" size="sm">
+              Data Set
+            </ListboxLabel>
+
+            <HelperText size="sm">
+              Where do you want your data to come from?
+            </HelperText>
+
+            <ListboxContent>
+              <ListboxButton placeholder="Select Data Set" />
+              <ListboxOptions>
+                <ListboxOption value="Data Set 1">Data Set 1</ListboxOption>
+              </ListboxOptions>
+            </ListboxContent>
+          </Listbox>
+        )}
+      />
 
       {dataset && (
-        <div className="space-y-1.5">
-          <Label className="text-gray-700" htmlFor="category" size="sm">
-            Category
-          </Label>
-          <HelperText size="sm">
-            Select the category of data you want to see in the toggle.
-          </HelperText>
-          <select
-            className={inputVariants()}
-            id="category"
-            {...register("category")}
-          >
-            <option value="">Select Category</option>
-          </select>
-        </div>
+        <Controller
+          control={control}
+          name="category"
+          render={({ field: { value, onChange } }) => (
+            <Listbox className="space-y-1.5" value={value} onChange={onChange}>
+              <ListboxLabel className="text-gray-700" size="sm">
+                Category
+              </ListboxLabel>
+
+              <HelperText size="sm">
+                Select the category of data you want to see in the toggle.
+              </HelperText>
+
+              <ListboxContent>
+                <ListboxButton placeholder="Select Category" />
+                <ListboxOptions>
+                  <ListboxOption value="Tags">Tags</ListboxOption>
+                </ListboxOptions>
+              </ListboxContent>
+            </Listbox>
+          )}
+        />
       )}
 
       {category && (
-        <div className="space-y-1.5">
-          <Label className="text-gray-700" htmlFor="metric" size="sm">
-            Metric
-          </Label>
-          <HelperText size="sm">
-            Where do you want list of items to come from?
-          </HelperText>
-          <select
-            className={inputVariants()}
-            id="metric"
-            {...register("metric")}
-          >
-            <option value="">Select Metrics</option>
-          </select>
-        </div>
+        <Controller
+          control={control}
+          name="metric"
+          render={({ field: { value, onChange } }) => (
+            <Listbox className="space-y-1.5" value={value} onChange={onChange}>
+              <ListboxLabel className="text-gray-700" size="sm">
+                Metric
+              </ListboxLabel>
+
+              <HelperText size="sm">
+                Where do you want list of items to come from?
+              </HelperText>
+
+              <ListboxContent>
+                <ListboxButton placeholder="Select Metrics" />
+                <ListboxOptions>
+                  <ListboxOption value="Name">Name</ListboxOption>
+                </ListboxOptions>
+              </ListboxContent>
+            </Listbox>
+          )}
+        />
       )}
     </form>
   );

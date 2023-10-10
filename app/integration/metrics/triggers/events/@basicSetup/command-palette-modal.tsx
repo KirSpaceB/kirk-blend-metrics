@@ -39,7 +39,7 @@ import {
 } from "@/components/ui";
 import {
   PreviewMachineContext,
-  SettingsMachineContext,
+  SettingMachineContext,
   ToggleMachineContext,
 } from "@/machines";
 import { getId } from "@/lib/utils";
@@ -50,18 +50,18 @@ export default function CommandPaletteModal({
   advanced: boolean;
 }) {
   const [state, dispatch] = ToggleMachineContext.useActor();
-  const [, send] = SettingsMachineContext.useActor();
+  const [, send] = SettingMachineContext.useActor();
   const [, sendToMachine] = PreviewMachineContext.useActor();
 
   const onSelectedChange = (value: string) => {
-    const options = { advanced };
+    const options = { advanced, settingId: getId() };
 
     switch (value) {
       case "search":
         send({
           ...options,
           type: "INSERT",
-          value: { for: "search", id: getId() },
+          kind: "search",
         });
         break;
 
@@ -69,7 +69,7 @@ export default function CommandPaletteModal({
         send({
           ...options,
           type: "INSERT",
-          value: { for: "dropdown", id: getId() },
+          kind: "dropdown",
         });
         break;
 
@@ -77,7 +77,15 @@ export default function CommandPaletteModal({
         send({
           ...options,
           type: "INSERT",
-          value: { for: "toggle", id: getId() },
+          kind: "toggle",
+        });
+        break;
+
+      case "short text":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "short-text",
         });
         break;
     }

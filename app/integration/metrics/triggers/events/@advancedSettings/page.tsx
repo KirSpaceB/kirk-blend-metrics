@@ -1,9 +1,10 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
 import { HelpCircle, Plus2 } from "@/components/icons";
 import { Button } from "@/components/ui";
 import { ToggleMachineContext } from "@/machines";
-import dynamic from "next/dynamic";
 import { Settings } from "../@basicSetup/settings";
 
 const CommandPaletteModal = dynamic(
@@ -18,7 +19,7 @@ export const AdvancedSettings = ({
   const [, send] = ToggleMachineContext.useActor();
 
   return (
-    <div className="mt-4 h-[472px] space-y-6 rounded-lg border border-gray-200 bg-white p-6">
+    <div className="mt-4 min-h-[472px] space-y-6 rounded-lg border border-gray-200 bg-white p-6">
       <div className="space-y-2">
         <h2 className="flex items-center gap-x-2 text-sm font-medium text-gray-700">
           Advanced Settings

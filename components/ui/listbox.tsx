@@ -1,79 +1,122 @@
 "use client";
 
-import React from "react";
+import * as React from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Listbox as ListboxPrimitive, Transition } from "@headlessui/react";
 
-import { cn, createContext } from "@/lib/utils";
+import { cn, isString } from "@/lib/utils";
 import { useControllableState } from "@/lib/hooks";
+import { labelVariants } from "./label";
+import { VariantProps } from "class-variance-authority";
 
-const [ListboxProvider, useListboxContext] = createContext<{
-  selected: string;
-}>({
-  displayName: "ListboxProvider",
-  errorMessage: `useListboxContext returned is 'undefined'. Seems you forgot to wrap the components in "<Listbox />"`,
-});
-
-export const Listbox = React.forwardRef<
-  React.ElementRef<typeof ListboxPrimitive>,
-  Omit<
+interface ListboxProps<T>
+  extends Omit<
     Omit<React.ComponentPropsWithoutRef<typeof ListboxPrimitive>, "value">,
     "onChange"
-  > & {
-    value?: string;
-    onChange?: (value: string) => void;
-  }
->(({ className, as = "div", value, onChange, ...props }, ref) => {
-  const [selected, setSelected] = useControllableState({
-    defaultValue: "",
+  > {
+  value?: T;
+  onChange?: (value: T) => void;
+}
+
+export const Listbox = <T,>({
+  className,
+  as = "div",
+  value,
+  onChange,
+  ...props
+}: ListboxProps<T>) => {
+  const [selected, setSelected] = useControllableState<T>({
     value,
     onChange,
   });
 
   return (
-    <ListboxProvider value={{ selected }}>
-      <ListboxPrimitive
-        className={cn("relative w-full", className)}
-        as={as}
-        ref={ref}
-        value={selected}
-        onChange={setSelected}
-        {...props}
-      />
-    </ListboxProvider>
+    <ListboxPrimitive
+      className={cn("relative w-full", className)}
+      as={as}
+      value={selected}
+      onChange={setSelected}
+      {...props}
+    />
   );
-});
+};
 
-Listbox.displayName = "Listbox";
+export const ListboxLabel = ({
+  className,
+  size,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof ListboxPrimitive.Label> &
+  VariantProps<typeof labelVariants>) => {
+  return (
+    <ListboxPrimitive.Label
+      className={cn(labelVariants({ className, size }))}
+      {...props}
+    />
+  );
+};
 
-export const ListboxButton = React.forwardRef<
-  React.ElementRef<typeof ListboxPrimitive.Button>,
-  React.ComponentPropsWithoutRef<typeof ListboxPrimitive.Button> & {
-    placeholder?: string;
-    iconClassName?: string;
-  }
->(({ className, placeholder, iconClassName, ...props }, ref) => {
-  const { selected } = useListboxContext();
+export const ListboxContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("relative", className)} {...props} />
+));
 
+ListboxContent.displayName = "ListboxContent";
+
+interface ListboxButtonProps<T = any>
+  extends Omit<
+    React.ComponentPropsWithoutRef<typeof ListboxPrimitive.Button>,
+    "children"
+  > {
+  children?: ({
+    value,
+    disabled,
+    open,
+  }: {
+    value: T;
+    disabled: boolean;
+    open: boolean;
+  }) => React.ReactNode;
+  iconClassName?: string;
+  placeholder?: string;
+}
+
+export const ListboxButton = ({
+  className,
+  placeholder,
+  iconClassName,
+  children,
+  ...props
+}: ListboxButtonProps) => {
   return (
     <ListboxPrimitive.Button
-      className="flex h-11 w-full items-center gap-x-2 rounded-[5px] border border-gray-300 bg-white px-2.5 py-2.5 text-base text-gray-black shadow-xs focus:border-primary-500 focus:ring-4 focus:ring-primary-50 focus-visible:outline-none"
-      {...props}
-      ref={ref}
-    >
-      {selected ? (
-        selected
-      ) : (
-        <span className="text-gray-500">{placeholder}</span>
+      className={cn(
+        "flex h-11 w-full items-center gap-x-2 rounded-[5px] border border-gray-300 bg-white px-3.5 py-2.5 text-base text-gray-black shadow-xs focus:border-primary-500 focus:ring-4 focus:ring-primary-50 focus-visible:outline-none",
+        className
       )}
-      <ChevronDown
-        className={cn("ml-auto h-5 w-5 flex-none text-gray-500", iconClassName)}
-      />
+      {...props}
+    >
+      {({ value, disabled, open }) => (
+        <>
+          {value
+            ? children
+              ? children?.({ disabled, open, value })
+              : isString(value) && value
+            : placeholder && (
+                <span className="text-gray-500">{placeholder}</span>
+              )}
+          <ChevronDown
+            className={cn(
+              "ml-auto h-5 w-5 flex-none text-gray-500",
+              iconClassName
+            )}
+          />
+        </>
+      )}
     </ListboxPrimitive.Button>
   );
-});
-
-ListboxButton.displayName = "ListboxButton";
+};
 
 export const ListboxOptions = React.forwardRef<
   React.ElementRef<typeof ListboxPrimitive.Options>,
@@ -88,7 +131,7 @@ export const ListboxOptions = React.forwardRef<
     <ListboxPrimitive.Options
       ref={ref}
       className={cn(
-        "absolute mt-1 h-[206px] w-full space-y-1 overflow-y-auto rounded-md bg-white py-1 text-base shadow-lg scrollbar-thin scrollbar-track-gray-200 scrollbar-track-rounded-lg focus:outline-none sm:text-sm",
+        "absolute z-10 mt-1 h-[206px] w-full space-y-1 overflow-y-auto rounded-md bg-white py-1 text-base shadow-lg scrollbar-thin scrollbar-track-gray-200 scrollbar-track-rounded-lg focus:outline-none sm:text-sm",
         className
       )}
       {...props}
@@ -98,34 +141,43 @@ export const ListboxOptions = React.forwardRef<
 
 ListboxOptions.displayName = "ListboxOptions";
 
-export const ListboxOption = React.forwardRef<
-  React.ElementRef<typeof ListboxPrimitive.Option>,
-  Omit<
+interface ListboxOption<T>
+  extends Omit<
     Omit<
       React.ComponentPropsWithoutRef<typeof ListboxPrimitive.Option>,
       "value"
     >,
     "children"
-  > & {
-    value: string;
-    children?: React.ReactNode;
-  }
->(({ className, value, children, ...props }, ref) => (
+  > {
+  value: T;
+  children?: React.ReactNode;
+  iconClassName?: string;
+}
+
+export const ListboxOption = <T,>({
+  className,
+  value,
+  children,
+  iconClassName,
+  ...props
+}: ListboxOption<T>) => (
   <ListboxPrimitive.Option
     className={cn(
-      "flex cursor-pointer items-center gap-x-2 p-3 text-[13px] leading-[13.25px] text-gray-500 ui-active:bg-gray-50 ui-active:text-gray-black"
+      "flex cursor-pointer items-center gap-x-2 p-3 text-[13px] leading-[13.25px] text-gray-500 ui-active:bg-gray-50 ui-active:text-gray-black",
+      className
     )}
-    ref={ref}
     value={value}
     {...props}
   >
     {({ selected }) => (
       <>
         {children}
-        {selected && <Check className="ml-auto h-4 w-4 text-primary-500" />}
+        {selected && (
+          <Check
+            className={cn("ml-auto h-4 w-4 text-primary-500", iconClassName)}
+          />
+        )}
       </>
     )}
   </ListboxPrimitive.Option>
-));
-
-ListboxOption.displayName = "ListboxOption";
+);

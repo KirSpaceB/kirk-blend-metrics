@@ -1,7 +1,15 @@
-"use client";
-
 import * as React from "react";
-
+import { cn, getId } from "@/lib/utils";
+import { SettingMachineContext, ShortTextSettings } from "@/machines";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  HelperText,
+  Input,
+  Label,
+} from "./ui";
 import {
   Copy,
   GridVertical3,
@@ -9,33 +17,20 @@ import {
   MoreHorizontal,
   Trash,
 } from "./icons";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  HelperText,
-  Listbox,
-  ListboxButton,
-  ListboxContent,
-  ListboxLabel,
-  ListboxOptions,
-} from "./ui";
-import { DropdownSettings, SettingMachineContext } from "@/machines";
-import { cn, getId } from "@/lib/utils";
 
-interface DropdownDraggableCardProps extends DropdownSettings {
-  onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
+interface ShortTextDraggableCardProps extends ShortTextSettings {
   advanced: boolean;
   settingId: number;
+  onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
 
-export const DropdownDraggableCard = (props: DropdownDraggableCardProps) => {
-  const { setup, advanced, settingId, onDrag, active } = props;
-  const { label, hint, optional } = setup || {};
+export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
+  const { setup, onDrag, advanced, settingId, active } = props;
+  const { label, placeholder, hint, optional } = setup || {};
 
   const [, send] = SettingMachineContext.useActor();
+  const id = React.useId();
 
   const options = {
     advanced,
@@ -43,32 +38,26 @@ export const DropdownDraggableCard = (props: DropdownDraggableCardProps) => {
   };
 
   const handleClick = () => {
-    send({
-      ...options,
-      type: "EDIT-DROPDOWN",
-    });
-  };
-
-  const handleDelete = () => {
-    send({
-      ...options,
-      type: "DELETE",
-    });
+    send({ ...options, type: "EDIT-SHORT-TEXT" });
   };
 
   const handleDuplicate = () => {
     send({
       ...options,
+      type: "DUPLICATE",
       targetSettingId: settingId,
       settingId: getId(),
-      type: "DUPLICATE",
     });
+  };
+
+  const handleDelete = () => {
+    send({ ...options, type: "DELETE" });
   };
 
   return (
     <article
       className={cn(
-        "flex cursor-pointer items-start gap-x-3 rounded-[10px] border border-gray-200 bg-white p-[21px] pl-[13px] hover:border-2 hover:border-gray-300 hover:p-5 hover:pl-3 active:border-2 active:border-primary-500 active:p-5 active:pl-3",
+        "flex cursor-pointer items-start gap-x-3 rounded-[10px] border border-gray-200 bg-white p-[21px] pl-[13px] transition duration-300 hover:border-2 hover:border-gray-300 hover:p-5 hover:pl-3 active:border-primary-500 active:p-5 active:pl-3",
         {
           "border-2 border-primary-500 p-5 pl-3 hover:border-primary-500":
             active,
@@ -77,22 +66,22 @@ export const DropdownDraggableCard = (props: DropdownDraggableCardProps) => {
       onClick={handleClick}
     >
       <button
-        className="flex-none focus-visible:outline-none"
+        className="flex-none select-none text-gray-400 focus-visible:outline-none"
         onPointerDown={onDrag}
       >
-        <GridVertical3 className="text-gray-400" />
+        <GridVertical3 />
       </button>
 
-      <Listbox className="flex-grow">
-        <div className="flex justify-between">
+      <div className="flex-grow">
+        <div className="flex items-center justify-between">
           <div className="flex flex-grow items-center gap-x-2">
-            <ListboxLabel
+            <Label
               className="pointer-events-none text-gray-700"
               size="sm"
+              htmlFor={id}
             >
-              {label ? label : "Dropdown"}
-            </ListboxLabel>
-
+              {label ? label : "Short Text"}
+            </Label>
             {optional && <HelpCircle className="text-gray-400" />}
           </div>
 
@@ -117,11 +106,12 @@ export const DropdownDraggableCard = (props: DropdownDraggableCardProps) => {
           </HelperText>
         )}
 
-        <ListboxContent className="pointer-events-none mt-3">
-          <ListboxButton placeholder="Select a tag" />
-          <ListboxOptions />
-        </ListboxContent>
-      </Listbox>
+        <Input
+          className="mt-3"
+          placeholder={placeholder ? placeholder : "Enter text here"}
+          id={id}
+        />
+      </div>
     </article>
   );
 };

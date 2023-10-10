@@ -14,13 +14,17 @@ export interface Typegen0 {
   };
   eventsCausingActions: {};
   eventsCausingDelays: {};
-  eventsCausingGuards: {};
+  eventsCausingGuards: {
+    IsEmpty: "HIDDEN";
+    isNotEmpty: "TOGGLE";
+  };
   eventsCausingServices: {};
   matchesStates:
     | "active"
+    | "active.hidden"
     | "active.hiding"
     | "active.showing"
     | "inactive"
-    | { active?: "hiding" | "showing" };
+    | { active?: "hidden" | "hiding" | "showing" };
   tags: never;
 }

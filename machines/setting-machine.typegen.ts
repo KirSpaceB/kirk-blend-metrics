@@ -16,23 +16,32 @@ export interface Typegen0 {
     delete: "DELETE";
     duplicate: "DUPLICATE";
     insert: "INSERT";
+    patch: "TO-SEARCH" | "TO-TOGGLE";
     reorder: "REORDER";
     resetCurrent: "DELETE" | "TOGGLE";
-    setCurrent: "EDIT-DROPDOWN" | "EDIT-SEARCH" | "EDIT-TOGGLE";
+    setCurrent:
+      | "EDIT-DROPDOWN"
+      | "EDIT-SEARCH"
+      | "EDIT-SHORT-TEXT"
+      | "EDIT-TOGGLE";
     update: "UPDATE";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
-    hasSameCurrentId: "DELETE";
-    ifDropdown: "EDIT-DROPDOWN";
-    ifSearch: "EDIT-SEARCH";
-    ifToggle: "EDIT-TOGGLE";
+    equalToCurrentId: "DELETE";
+    isDropdown: "EDIT-DROPDOWN";
+    isMatching: "UPDATE";
+    isSearch: "EDIT-SEARCH";
+    isShortText: "EDIT-SHORT-TEXT";
+    isToggle: "EDIT-TOGGLE";
+    notEqualToPreviousKind: "TO-SEARCH" | "TO-TOGGLE";
   };
   eventsCausingServices: {};
   matchesStates:
-    | "editing"
     | "editing dropdown"
     | "editing search"
-    | "editing toggle";
+    | "editing short text"
+    | "editing toggle"
+    | "idle";
   tags: never;
 }

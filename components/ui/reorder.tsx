@@ -16,7 +16,12 @@ const ReorderItem = React.forwardRef<
   React.ComponentRef<typeof Reorder.Item>,
   Omit<React.ComponentPropsWithoutRef<typeof Reorder.Item>, "children"> & {
     children:
-      | (({ dragControls }: { dragControls: DragControls }) => React.ReactNode)
+      | (({
+          dragControls,
+        }: {
+          dragControls: DragControls;
+          onDrag: (event: React.PointerEvent<Element>) => void;
+        }) => React.ReactNode)
       | React.ReactNode;
   }
 >(({ children, className, ...props }, ref) => {
@@ -31,7 +36,12 @@ const ReorderItem = React.forwardRef<
       {...props}
       ref={ref}
     >
-      {shouldUseRenderProps ? children({ dragControls }) : children}
+      {shouldUseRenderProps
+        ? children({
+            dragControls,
+            onDrag: (event) => dragControls.start(event),
+          })
+        : children}
     </Reorder.Item>
   );
 });

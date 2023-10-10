@@ -7,6 +7,7 @@ import {
   Combobox,
   ComboboxButton,
   ComboboxInput,
+  ComboboxLabel,
   ComboboxOption,
   ComboboxOptions,
   ComboboxTrigger,
@@ -21,7 +22,7 @@ import {
 } from "@/components/ui";
 import { HelpCircle, Search, X } from "./icons";
 import { SearchSettings } from "@/machines";
-import { isEmpty, isNotEmpty, keys } from "@/lib/utils";
+import { isEmpty, keys } from "@/lib/utils";
 import { useArray, useControllableState } from "@/lib/hooks";
 
 interface Option {
@@ -82,8 +83,8 @@ const options: Options = [
 
 interface SearchFieldPreview extends SearchSettings {}
 
-export const SearchFieldPreview = ({ settings }: SearchSettings) => {
-  const { setup, source } = settings;
+export const SearchFieldPreview = (props: SearchFieldPreview) => {
+  const { setup, source } = props;
   const { label, hint, placeholder, tooltip } = setup || {};
   const { metrics = [] } = source || {};
 
@@ -107,8 +108,8 @@ export const SearchFieldPreview = ({ settings }: SearchSettings) => {
     service: hasService,
   };
 
-  const [badges, { patch, remove }] = useArray<string>();
-  const [selected, setSelected] = useControllableState<Option>({
+  const [badges, { patch, remove, clear }] = useArray<string>();
+  const [selected, setSelected] = useControllableState<Option | undefined>({
     onChange(value) {
       if (!value) {
         return patch(undefined);
@@ -120,6 +121,7 @@ export const SearchFieldPreview = ({ settings }: SearchSettings) => {
     },
   });
   const [query, setQuery] = React.useState("");
+  const id = React.useId();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -139,145 +141,162 @@ export const SearchFieldPreview = ({ settings }: SearchSettings) => {
 
   return (
     <div>
-      <Label className="flex items-center gap-x-2 text-gray-700" size="sm">
-        {label ? label : "Search"}
+      <Combobox className="w-full" value={selected} onChange={setSelected}>
+        <div className="flex items-center gap-x-2">
+          <ComboboxLabel className="text-gray-700" size="sm">
+            {label ? label : "Search"}
+          </ComboboxLabel>
 
-        {tooltip && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <HelpCircle className="text-gray-400" />
-              </TooltipTrigger>
-              <TooltipContent>{tooltip}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          {tooltip && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <HelpCircle className="text-gray-400" />
+                </TooltipTrigger>
+                <TooltipContent>{tooltip}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+
+        {hint && (
+          <HelperText className="mt-1.5 text-gray-500" size="sm">
+            {hint}
+          </HelperText>
         )}
-      </Label>
 
-      {hint && (
-        <HelperText className="mt-1.5 text-gray-500" size="sm">
-          {hint}
-        </HelperText>
-      )}
-
-      <Combobox className="mt-3 w-full" value={selected} onChange={setSelected}>
-        <ComboboxTrigger>
-          <ComboboxInput
-            size="lg"
-            as={React.Fragment}
-            displayValue={(option: Option) => option.serviceName}
-            onChange={handleChange}
-          >
-            <input placeholder={placeholder ? placeholder : "Type to search"} />
-          </ComboboxInput>
-          <ComboboxButton className="peer-focus:text-gray-400" size="lg">
-            <Search className="h-5 w-5" />
-          </ComboboxButton>
-        </ComboboxTrigger>
-        <ScaleOutIn afterLeave={resetQuery}>
-          <ComboboxOptions className="z-10">
-            <ScrollArea className="h-[304px]">
-              {noResults ? (
-                <span className="flex justify-center p-3 text-center text-[13px] font-medium leading-none text-gray-900">
-                  No results found
-                </span>
-              ) : (
-                filetedOptions.map((option) => (
-                  <ComboboxOption
-                    className="space-y-1.5"
-                    key={option.id}
-                    value={option}
-                  >
-                    <div className="flex items-center gap-x-1.5">
-                      {hasServiceName && (
-                        <span className="text-sm font-medium text-gray-700">
-                          {option.serviceName}
-                        </span>
-                      )}
-
-                      {hasPersonal && (
-                        <>
-                          <span className="inline-flex h-1 w-1 flex-none rounded-full bg-gray-700" />
+        <div className="relative mt-3">
+          <ComboboxTrigger>
+            <ComboboxInput
+              size="lg"
+              as={React.Fragment}
+              displayValue={(option: Option) => option.serviceName}
+              onChange={handleChange}
+            >
+              <input
+                placeholder={placeholder ? placeholder : "Type to search"}
+              />
+            </ComboboxInput>
+            <ComboboxButton className="peer-focus:text-gray-400" size="lg">
+              <Search className="h-5 w-5" />
+            </ComboboxButton>
+          </ComboboxTrigger>
+          <ScaleOutIn afterLeave={resetQuery}>
+            <ComboboxOptions className="z-10">
+              <ScrollArea className="h-[304px]">
+                {noResults ? (
+                  <span className="flex justify-center p-3 text-center text-[13px] font-medium leading-none text-gray-900">
+                    No results found
+                  </span>
+                ) : (
+                  filetedOptions.map((option) => (
+                    <ComboboxOption
+                      className="space-y-1.5"
+                      key={option.id}
+                      value={option}
+                    >
+                      <div className="flex items-center gap-x-1.5">
+                        {hasServiceName && (
                           <span className="text-sm font-medium text-gray-700">
-                            {option.personal}
+                            {option.serviceName}
                           </span>
-                        </>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-x-1.5">
-                      {hasServiceType && (
-                        <span className="text-sm text-gray-500">
-                          {option.serviceType}
-                        </span>
-                      )}
+                        )}
 
-                      {hasType && (
-                        <>
-                          <span className="inline-flex h-1 w-1 flex-none rounded-full bg-gray-400" />
+                        {hasPersonal && (
+                          <>
+                            <span className="inline-flex h-1 w-1 flex-none rounded-full bg-gray-700" />
+                            <span className="text-sm font-medium text-gray-700">
+                              {option.personal}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-x-1.5">
+                        {hasServiceType && (
                           <span className="text-sm text-gray-500">
-                            {option.type}
+                            {option.serviceType}
                           </span>
-                        </>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-x-1.5">
-                      {hasId && (
-                        <span className="text-sm text-gray-500">
-                          {option.id}
-                        </span>
-                      )}
+                        )}
 
-                      {hasService && (
-                        <>
-                          <span className="inline-flex h-1 w-1 flex-none rounded-full bg-gray-400" />
+                        {hasType && (
+                          <>
+                            <span className="inline-flex h-1 w-1 flex-none rounded-full bg-gray-400" />
+                            <span className="text-sm text-gray-500">
+                              {option.type}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-x-1.5">
+                        {hasId && (
                           <span className="text-sm text-gray-500">
-                            {option.service}
+                            {option.id}
                           </span>
-                        </>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-x-1.5">
-                      {hasLastDateAndTime && (
-                        <span className="text-sm text-gray-500">
-                          {option.lastDateAndTime}
-                        </span>
-                      )}
+                        )}
 
-                      {hasCountryCode && (
-                        <>
-                          <span className="inline-flex h-1 w-1 flex-none rounded-full bg-gray-400" />
+                        {hasService && (
+                          <>
+                            <span className="inline-flex h-1 w-1 flex-none rounded-full bg-gray-400" />
+                            <span className="text-sm text-gray-500">
+                              {option.service}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-x-1.5">
+                        {hasLastDateAndTime && (
                           <span className="text-sm text-gray-500">
-                            {option.countryCode}
+                            {option.lastDateAndTime}
                           </span>
-                        </>
-                      )}
-                    </div>
-                  </ComboboxOption>
-                ))
-              )}
-            </ScrollArea>
-          </ComboboxOptions>
-        </ScaleOutIn>
+                        )}
+
+                        {hasCountryCode && (
+                          <>
+                            <span className="inline-flex h-1 w-1 flex-none rounded-full bg-gray-400" />
+                            <span className="text-sm text-gray-500">
+                              {option.countryCode}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </ComboboxOption>
+                  ))
+                )}
+              </ScrollArea>
+            </ComboboxOptions>
+          </ScaleOutIn>
+        </div>
       </Combobox>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        {badges?.map((badge, index) => (
-          <Badge
-            className="gap-x-1 rounded-2xl px-1.5 py-1"
-            size="lg"
-            visual="primary"
-            key={index}
-          >
-            {badge}
-            <button
-              className="flex-none focus-visible:outline-none"
-              onClick={() => remove(index)}
+      {badges && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {badges.map((badge, index) => (
+            <Badge
+              className="gap-x-1 rounded-2xl px-1.5 py-1"
+              size="lg"
+              visual="primary"
+              key={index}
             >
-              <X />
-            </button>
-          </Badge>
-        ))}
-      </div>
+              {badge}
+              <button
+                className="flex-none focus-visible:outline-none"
+                onClick={() => remove(index)}
+              >
+                <X />
+              </button>
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      {badges && (
+        <button
+          className="mt-4 text-sm font-semibold text-primary-500"
+          onClick={clear}
+        >
+          Clear All
+        </button>
+      )}
     </div>
   );
 };

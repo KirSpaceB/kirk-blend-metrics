@@ -20,6 +20,17 @@ export const METRICS_OPTIONS = [
   "Country Code",
 ];
 
+export const OPTIONS = [
+  "Service Name",
+  "Personal",
+  "Service Type",
+  "Type",
+  "ID",
+  "Service",
+  "Last Date & Time",
+  "Country Code",
+];
+
 export const EXIT_ANIMATION = {
   opacity: 0,
 };
