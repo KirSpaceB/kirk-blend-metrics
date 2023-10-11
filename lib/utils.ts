@@ -305,3 +305,27 @@ export function withId<T = unknown>(arr: T[]) {
   let id = 0;
   return arr.map((value) => ({ value, id: id++ }));
 }
+
+export function pick<T extends Record<string, any>, K extends keyof T>(
+  record?: T,
+  ...keys: K[]
+) {
+  if (!record) {
+    return;
+  }
+
+  let result = {} as {
+    [Property in K]: T[Property];
+  };
+
+  keys.forEach((key) => {
+    if (record[key]) {
+      result = {
+        ...result,
+        [key]: record[key],
+      };
+    }
+  });
+
+  return result;
+}

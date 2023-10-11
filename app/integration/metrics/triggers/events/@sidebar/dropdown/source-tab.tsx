@@ -16,6 +16,7 @@ import {
   Autocomplete,
   AutocompleteButton,
   AutocompleteInput,
+  AutocompleteLabel,
   AutocompleteOption,
   AutocompleteOptions,
   AutocompleteRoot,
@@ -23,6 +24,12 @@ import {
   Badge,
   HelperText,
   Label,
+  Listbox,
+  ListboxButton,
+  ListboxContent,
+  ListboxLabel,
+  ListboxOption,
+  ListboxOptions,
   Rearrange,
   RearrangeButton,
   RearrangeGroup,
@@ -32,9 +39,10 @@ import {
   inputVariants,
 } from "@/components/ui";
 import { cn, isNotEmpty } from "@/lib/utils";
-import { METRICS_OPTIONS } from "@/lib/constants";
+import { OPTIONS } from "@/lib/constants";
 import { SettingMachineContext } from "@/machines";
 import { useEnhancedWatch } from "@/lib/hooks";
+import { RemainCharacters } from "@/components/remain-characters";
 
 const schema = z.object({
   dataset: z.string(),
@@ -96,66 +104,95 @@ const SourceTab = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="pb-8">
       <div className="space-y-5 p-5">
-        <div className="space-y-1.5">
-          <Label className="text-gray-700" htmlFor="data-set" size="sm">
-            Data Set
-          </Label>
-          <HelperText size="sm">
-            Where do you want your data to come from?
-          </HelperText>
-          <select
-            className={inputVariants()}
-            id="data-set"
-            {...register("dataset")}
-          >
-            <option value="">Select Data Set</option>
-            <option value="Data Set 1">Data Set 1</option>
-          </select>
-        </div>
+        <Controller
+          control={control}
+          name="dataset"
+          render={({ field: { value, onChange } }) => (
+            <Listbox className="space-y-1.5" value={value} onChange={onChange}>
+              <ListboxLabel className="text-gray-700" size="sm">
+                Data Set
+              </ListboxLabel>
+
+              <HelperText size="sm">
+                Where do you want your data to come from?
+              </HelperText>
+
+              <ListboxContent>
+                <ListboxButton placeholder="Select Data Set" />
+                <ListboxOptions>
+                  <ListboxOption value="Data Set 1">Data Set 1</ListboxOption>
+                </ListboxOptions>
+              </ListboxContent>
+            </Listbox>
+          )}
+        />
 
         {dataset && (
-          <div className="space-y-1.5">
-            <Label className="text-gray-700" htmlFor="category" size="sm">
-              Category
-            </Label>
-            <HelperText size="sm">
-              Select the category of data you want to see in the search field.
-            </HelperText>
-            <select
-              className={inputVariants()}
-              id="category"
-              {...register("category")}
-            >
-              <option value="">Select Category</option>
-              <option value="tags">Tags</option>
-            </select>
-          </div>
+          <Controller
+            control={control}
+            name="category"
+            render={({ field: { value, onChange } }) => (
+              <Listbox
+                className="space-y-1.5"
+                value={value}
+                onChange={onChange}
+              >
+                <ListboxLabel className="text-gray-700" size="sm">
+                  Category
+                </ListboxLabel>
+
+                <HelperText size="sm">
+                  Select the category of data you want to see in the search
+                  field.
+                </HelperText>
+
+                <ListboxContent>
+                  <ListboxButton placeholder="Select Category" />
+                  <ListboxOptions className="z-20">
+                    <ListboxOption value="Tags">Tags</ListboxOption>
+                  </ListboxOptions>
+                </ListboxContent>
+              </Listbox>
+            )}
+          />
         )}
 
         {category && (
           <>
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <Label className="text-gray-700" htmlFor="metrics" size="sm">
-                  Metrics
-                </Label>
-                <HelperText className="leading-5" size="sm">
-                  0/10
-                </HelperText>
-              </div>
-              <HelperText size="sm">
-                Where do you want search result to come from?
-              </HelperText>
-
               <Controller
                 control={control}
                 name="metrics"
                 render={({ field: { value, onChange, name } }) => (
                   <Combobox
+                    header={() => (
+                      <>
+                        <div className="flex items-center justify-between">
+                          <AutocompleteLabel
+                            className="text-gray-700"
+                            size="sm"
+                          >
+                            Metrics
+                          </AutocompleteLabel>
+
+                          <HelperText className="leading-5" size="sm">
+                            <RemainCharacters
+                              control={control}
+                              name="metrics"
+                              max={30}
+                            />
+                          </HelperText>
+                        </div>
+
+                        <HelperText size="sm">
+                          Where do you want search result to come from?
+                        </HelperText>
+                      </>
+                    )}
                     value={value}
                     onChange={onChange}
                     name={name}
-                    options={METRICS_OPTIONS}
+                    options={OPTIONS}
                   />
                 )}
               />
@@ -203,26 +240,40 @@ const SourceTab = () => {
       </div>
 
       {isMetricsNotEmpty && (
-        <div className="space-y-1.5 border-y border-gray-200 p-5">
-          <Label className="text-gray-700" htmlFor="sort-by" size="sm">
-            Sort by <span className="text-gray-400">(optional)</span>
-          </Label>
-          <HelperText size="sm">
-            How do you want to sort your list of items?
-          </HelperText>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-3.5 inline-flex items-center justify-center">
-              <ArrowDownAZ className="flex-none text-gray-700" />
-            </div>
-            <select
-              className={cn(inputVariants({ className: "pl-[46px]" }))}
-              id="sort-by"
-              {...register("sort")}
-            >
-              <option value="asc">Default - A to Z</option>
-              <option value="desc">Descending - Z to A</option>
-            </select>
-          </div>
+        <div className="border-y border-gray-200 p-5">
+          <Controller
+            control={control}
+            name="sort"
+            render={({ field: { onChange, value } }) => (
+              <Listbox
+                className="space-y-1.5"
+                value={value}
+                onChange={onChange}
+              >
+                <ListboxLabel className="text-gray-700" size="sm">
+                  Sort by <span className="text-gray-400">(optional)</span>
+                </ListboxLabel>
+
+                <HelperText size="sm">
+                  How do you want to sort your list of items?
+                </HelperText>
+
+                <ListboxContent>
+                  <div className="absolute inset-y-0 left-3.5 inline-flex items-center justify-center">
+                    <ArrowDownAZ className="flex-none text-gray-700" />
+                  </div>
+                  <ListboxButton className="pl-[46px]" />
+
+                  <ListboxOptions>
+                    <ListboxOption value="asc">Default - A to Z</ListboxOption>
+                    <ListboxOption value="desc">
+                      Descending - Z to A
+                    </ListboxOption>
+                  </ListboxOptions>
+                </ListboxContent>
+              </Listbox>
+            )}
+          />
         </div>
       )}
     </form>
@@ -234,11 +285,13 @@ const Combobox = ({
   value,
   name,
   options,
+  header,
 }: {
   onChange: (...args: any[]) => any;
   value: string[];
   name: string;
   options: string[];
+  header?: ({ open }: { open: boolean }) => React.ReactNode;
 }) => {
   const [query, setQuery] = React.useState("");
 
@@ -260,30 +313,33 @@ const Combobox = ({
   return (
     <AutocompleteRoot value={value} onChange={onChange} name={name} {...props}>
       {({ open }) => (
-        <Autocomplete className="w-full">
-          <AutocompleteTrigger>
-            <AutocompleteInput
-              as={React.Fragment}
-              onChange={onAutocompleteInputChange}
-            >
-              <input placeholder={open ? "Find metrics" : "Select Metrics"} />
-            </AutocompleteInput>
-            <AutocompleteButton>
-              {({ open }) =>
-                open ? <Search /> : <ChevronDown className="h-5 w-5" />
-              }
-            </AutocompleteButton>
-          </AutocompleteTrigger>
-          <ScaleOutIn afterLeave={resetQuery}>
-            <AutocompleteOptions>
-              {filteredOptions.map((option) => (
-                <AutocompleteOption key={option} value={option}>
-                  {option}
-                </AutocompleteOption>
-              ))}
-            </AutocompleteOptions>
-          </ScaleOutIn>
-        </Autocomplete>
+        <>
+          {header?.({ open })}
+          <Autocomplete className="w-full">
+            <AutocompleteTrigger>
+              <AutocompleteInput
+                as={React.Fragment}
+                onChange={onAutocompleteInputChange}
+              >
+                <input placeholder={open ? "Find metrics" : "Select Metrics"} />
+              </AutocompleteInput>
+              <AutocompleteButton>
+                {({ open }) =>
+                  open ? <Search /> : <ChevronDown className="h-5 w-5" />
+                }
+              </AutocompleteButton>
+            </AutocompleteTrigger>
+            <ScaleOutIn afterLeave={resetQuery}>
+              <AutocompleteOptions>
+                {filteredOptions.map((option) => (
+                  <AutocompleteOption key={option} value={option}>
+                    {option}
+                  </AutocompleteOption>
+                ))}
+              </AutocompleteOptions>
+            </ScaleOutIn>
+          </Autocomplete>
+        </>
       )}
     </AutocompleteRoot>
   );
