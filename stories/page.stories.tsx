@@ -1097,7 +1097,16 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
         </nav>
       )}
 
-      <main className="pl-[294px] pt-[70px]">Starting point</main>
+      <main className="pl-[294px] pt-[70px]">
+        <div className="px-8 pt-8">
+          <h1 className="text-base font-semibold text-gray-600">
+            3 Integrations
+          </h1>
+          <p className="mt-1 text-sm text-gray-500">Description text here</p>
+
+          <div className="mt-6">Starting point</div>
+        </div>
+      </main>
     </div>
   ),
 };
