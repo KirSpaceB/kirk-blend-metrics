@@ -8,8 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   HelperText,
-  Input,
   Label,
+  Textarea,
 } from "./ui";
 import {
   Copy,
@@ -19,14 +19,14 @@ import {
   Trash,
 } from "./icons";
 
-interface ShortTextDraggableCardProps extends Setting {
+interface LongTextDraggableCardProps extends Setting {
   advanced: boolean;
   settingId: number;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
 
-export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
+export const LongTextDraggableCard = (props: LongTextDraggableCardProps) => {
   const {
     onDrag,
     advanced,
@@ -47,7 +47,7 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
   };
 
   const handleClick = () => {
-    send({ ...options, type: "EDIT-SHORT-TEXT" });
+    send({ ...options, type: "EDIT-LONG-TEXT" });
   };
 
   const handleDuplicate = () => {
@@ -89,7 +89,7 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
               size="sm"
               htmlFor={id}
             >
-              {label ? label : "Short Text"}
+              {label ? label : "Long Text"}
             </Label>
             {optional && <HelpCircle className="text-gray-400" />}
           </div>
@@ -115,8 +115,8 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
           </HelperText>
         )}
 
-        <Input
-          className="mt-3"
+        <Textarea
+          className="mt-3 h-[92px]"
           placeholder={placeholder ? placeholder : "Enter text here"}
           id={id}
         />

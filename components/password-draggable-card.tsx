@@ -9,24 +9,29 @@ import {
   DropdownMenuTrigger,
   HelperText,
   Input,
+  InputGroup,
+  InputRightElement,
   Label,
 } from "./ui";
 import {
   Copy,
+  Eye,
+  EyeOff,
   GridVertical3,
   HelpCircle,
   MoreHorizontal,
   Trash,
 } from "./icons";
+import { useToggle } from "@/lib/hooks";
 
-interface ShortTextDraggableCardProps extends Setting {
+interface PasswordDraggableCardProps extends Setting {
   advanced: boolean;
   settingId: number;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
 
-export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
+export const PasswordDraggableCard = (props: PasswordDraggableCardProps) => {
   const {
     onDrag,
     advanced,
@@ -40,6 +45,7 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
 
   const [, send] = SettingMachineContext.useActor();
   const id = React.useId();
+  const [show, { toggle }] = useToggle();
 
   const options = {
     advanced,
@@ -47,7 +53,7 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
   };
 
   const handleClick = () => {
-    send({ ...options, type: "EDIT-SHORT-TEXT" });
+    send({ ...options, type: "EDIT-PASSWORD" });
   };
 
   const handleDuplicate = () => {
@@ -89,7 +95,7 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
               size="sm"
               htmlFor={id}
             >
-              {label ? label : "Short Text"}
+              {label ? label : "Password"}
             </Label>
             {optional && <HelpCircle className="text-gray-400" />}
           </div>
@@ -115,11 +121,22 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
           </HelperText>
         )}
 
-        <Input
-          className="mt-3"
-          placeholder={placeholder ? placeholder : "Enter text here"}
-          id={id}
-        />
+        <InputGroup className="pointer-events-none mt-3">
+          <Input
+            placeholder={placeholder ? placeholder : "Enter text here"}
+            type={show ? "text" : "password"}
+            id={id}
+          />
+          <InputRightElement>
+            <button className="flex-none focus:outline-none" onClick={toggle}>
+              {show ? (
+                <EyeOff className="h-5 w-5 text-gray-500" />
+              ) : (
+                <Eye className="h-5 w-5 text-gray-500" />
+              )}
+            </button>
+          </InputRightElement>
+        </InputGroup>
       </div>
     </article>
   );

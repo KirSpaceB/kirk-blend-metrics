@@ -9,7 +9,13 @@ import {
   DropdownMenuTrigger,
   HelperText,
   Input,
+  InputGroup,
+  InputLeftAddon,
   Label,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "./ui";
 import {
   Copy,
@@ -19,24 +25,15 @@ import {
   Trash,
 } from "./icons";
 
-interface ShortTextDraggableCardProps extends Setting {
+interface WebsiteDraggableCardProps extends Setting {
   advanced: boolean;
   settingId: number;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
 
-export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
-  const {
-    onDrag,
-    advanced,
-    settingId,
-    active,
-    label,
-    placeholder,
-    hint,
-    optional,
-  } = props;
+export const WebsiteDraggableCard = (props: WebsiteDraggableCardProps) => {
+  const { onDrag, advanced, settingId, active, label, hint, tooltip } = props;
 
   const [, send] = SettingMachineContext.useActor();
   const id = React.useId();
@@ -47,7 +44,7 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
   };
 
   const handleClick = () => {
-    send({ ...options, type: "EDIT-SHORT-TEXT" });
+    send({ ...options, type: "EDIT-PASSWORD" });
   };
 
   const handleDuplicate = () => {
@@ -89,9 +86,19 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
               size="sm"
               htmlFor={id}
             >
-              {label ? label : "Short Text"}
+              {label ? label : "Website"}
             </Label>
-            {optional && <HelpCircle className="text-gray-400" />}
+
+            {tooltip && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HelpCircle className="text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>{tooltip}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
           </div>
 
           <DropdownMenu>
@@ -115,11 +122,10 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
           </HelperText>
         )}
 
-        <Input
-          className="mt-3"
-          placeholder={placeholder ? placeholder : "Enter text here"}
-          id={id}
-        />
+        <InputGroup className="pointer-events-none mt-3">
+          <InputLeftAddon>http://</InputLeftAddon>
+          <Input placeholder="www.untitledui.com" id={id} />
+        </InputGroup>
       </div>
     </article>
   );

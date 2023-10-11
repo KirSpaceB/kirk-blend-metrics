@@ -19,14 +19,14 @@ import {
   Trash,
 } from "./icons";
 
-interface ShortTextDraggableCardProps extends Setting {
+interface NumbersDraggableCardProps extends Setting {
   advanced: boolean;
   settingId: number;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
 
-export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
+export const NumbersDraggableCard = (props: NumbersDraggableCardProps) => {
   const {
     onDrag,
     advanced,
@@ -47,7 +47,7 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
   };
 
   const handleClick = () => {
-    send({ ...options, type: "EDIT-SHORT-TEXT" });
+    send({ ...options, type: "EDIT-NUMBERS" });
   };
 
   const handleDuplicate = () => {
@@ -89,7 +89,7 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
               size="sm"
               htmlFor={id}
             >
-              {label ? label : "Short Text"}
+              {label ? label : "Numbers"}
             </Label>
             {optional && <HelpCircle className="text-gray-400" />}
           </div>
@@ -116,8 +116,8 @@ export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
         )}
 
         <Input
-          className="mt-3"
-          placeholder={placeholder ? placeholder : "Enter text here"}
+          className="pointer-events-none mt-3"
+          placeholder={placeholder ? placeholder : "Enter quantity here"}
           id={id}
         />
       </div>

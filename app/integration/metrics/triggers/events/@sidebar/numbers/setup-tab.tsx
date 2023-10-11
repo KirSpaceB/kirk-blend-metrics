@@ -3,11 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import {
-  HelpCircle,
-  ShortText,
-  Number,
   Email,
+  HelpCircle,
+  Number,
   Password,
+  ShortText,
   Website,
 } from "@/components/icons";
 import { RemainCharacters } from "@/components/remain-characters";
@@ -29,7 +29,7 @@ import {
 } from "@/components/ui";
 import { useEnhancedWatch } from "@/lib/hooks";
 import { pick } from "@/lib/utils";
-import { Kind, SettingMachineContext } from "@/machines";
+import { SettingMachineContext } from "@/machines";
 
 const schema = z.object({
   label: z.string().max(30),
@@ -59,14 +59,14 @@ type Options = Option[];
 
 const options: Options = [
   {
-    icon: <ShortText className="h-6 w-6 text-gray-500" />,
-    label: "Short Text",
-    value: "short-text",
-  },
-  {
     icon: <Number className="h-6 w-6 text-gray-500" />,
     label: "Numbers",
     value: "numbers",
+  },
+  {
+    icon: <ShortText className="h-6 w-6 text-gray-500" />,
+    label: "Short Text",
+    value: "short-text",
   },
   {
     icon: <Email className="h-6 w-6 text-gray-500" />,
@@ -117,17 +117,17 @@ export default function SetupTab() {
     onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: "short-text",
+        value: "numbers",
         setting: variables,
       }),
   });
 
   const handleListboxChange = (selected: Option) => {
     switch (selected.value) {
-      case "numbers":
+      case "short-text":
         send({
-          type: "TO-NUMBERS",
-          newKind: "numbers",
+          type: "TO-SHORT-TEXT",
+          newKind: "short-text",
         });
         break;
 

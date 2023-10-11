@@ -5,6 +5,12 @@ import { PreviewMachineContext, SettingMachineContext } from "@/machines";
 import { SearchFieldPreview } from "@/components/search-field-preview";
 import { DropdownPreview } from "@/components/dropdown-preview";
 import { TogglePreview } from "@/components/toggle-preview";
+import { ShortTextPreview } from "@/components/short-text-preview";
+import { LongTextPreview } from "@/components/long-text-preview";
+import { PasswordPreview } from "@/components/password-preview";
+import { EmailPreview } from "@/components/email-preview";
+import { NumbersPreview } from "@/components/numbers-preview";
+import { WebsitePreview } from "@/components/website-preview";
 
 export const AdvancedSettingsPreview = () => {
   const [state, send] = PreviewMachineContext.useActor();
@@ -46,6 +52,12 @@ export const AdvancedSettingsPreview = () => {
           {setting.kind === "search" && <SearchFieldPreview {...setting} />}
           {setting.kind === "dropdown" && <DropdownPreview {...setting} />}
           {setting.kind === "toggle" && <TogglePreview {...setting} />}
+          {setting.kind === "short-text" && <ShortTextPreview {...setting} />}
+          {setting.kind === "long-text" && <LongTextPreview {...setting} />}
+          {setting.kind === "password" && <PasswordPreview {...setting} />}
+          {setting.kind === "email" && <EmailPreview {...setting} />}
+          {setting.kind === "numbers" && <NumbersPreview {...setting} />}
+          {setting.kind === "website" && <WebsitePreview {...setting} />}
         </React.Fragment>
       ))}
       <button

@@ -53,7 +53,7 @@ export default function SetupTab() {
     onChange: () =>
       send({
         type: "UPDATE",
-        value: "short-text",
+        value: "password",
         setting: getValues(),
       }),
   });

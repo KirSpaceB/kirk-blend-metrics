@@ -3,11 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import {
-  HelpCircle,
-  ShortText,
-  Number,
   Email,
+  HelpCircle,
+  Number,
   Password,
+  ShortText,
   Website,
 } from "@/components/icons";
 import { RemainCharacters } from "@/components/remain-characters";
@@ -29,7 +29,7 @@ import {
 } from "@/components/ui";
 import { useEnhancedWatch } from "@/lib/hooks";
 import { pick } from "@/lib/utils";
-import { Kind, SettingMachineContext } from "@/machines";
+import { SettingMachineContext } from "@/machines";
 
 const schema = z.object({
   label: z.string().max(30),
@@ -59,6 +59,11 @@ type Options = Option[];
 
 const options: Options = [
   {
+    icon: <Password className="h-6 w-6 text-gray-500" />,
+    label: "Password",
+    value: "password",
+  },
+  {
     icon: <ShortText className="h-6 w-6 text-gray-500" />,
     label: "Short Text",
     value: "short-text",
@@ -72,11 +77,6 @@ const options: Options = [
     icon: <Email className="h-6 w-6 text-gray-500" />,
     label: "Email",
     value: "email",
-  },
-  {
-    icon: <Password className="h-6 w-6 text-gray-500" />,
-    label: "Password",
-    value: "password",
   },
   {
     icon: <Website className="h-6 w-6 text-gray-500" />,
@@ -117,7 +117,7 @@ export default function SetupTab() {
     onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: "short-text",
+        value: "password",
         setting: variables,
       }),
   });
@@ -138,10 +138,10 @@ export default function SetupTab() {
         });
         break;
 
-      case "password":
+      case "short-text":
         send({
-          type: "TO-PASSWORD",
-          newKind: "password",
+          type: "TO-SHORT-TEXT",
+          newKind: "short-text",
         });
         break;
 

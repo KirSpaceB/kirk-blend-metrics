@@ -51,7 +51,7 @@ export default function CommandPaletteModal({
 }) {
   const [state, dispatch] = ToggleMachineContext.useActor();
   const [, send] = SettingMachineContext.useActor();
-  const [, sendToMachine] = PreviewMachineContext.useActor();
+  const [, sendTo] = PreviewMachineContext.useActor();
 
   const onSelectedChange = (value: string) => {
     const options = { advanced, settingId: getId() };
@@ -104,9 +104,69 @@ export default function CommandPaletteModal({
           type: "EDIT-SHORT-TEXT",
         });
         break;
+
+      case "long text":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "long-text",
+        });
+        send({
+          ...options,
+          type: "EDIT-LONG-TEXT",
+        });
+        break;
+
+      case "password":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "password",
+        });
+        send({
+          ...options,
+          type: "EDIT-PASSWORD",
+        });
+        break;
+
+      case "email":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "email",
+        });
+        send({
+          ...options,
+          type: "EDIT-EMAIL",
+        });
+        break;
+
+      case "numbers":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "numbers",
+        });
+        send({
+          ...options,
+          type: "EDIT-NUMBERS",
+        });
+        break;
+
+      case "website":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "website",
+        });
+        send({
+          ...options,
+          type: "EDIT-WEBSITE",
+        });
+        break;
     }
 
-    sendToMachine("ACTIVATE");
+    sendTo("ACTIVATE");
   };
 
   const open = state.matches("turned on");

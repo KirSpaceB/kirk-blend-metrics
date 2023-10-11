@@ -3,11 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import {
-  HelpCircle,
-  ShortText,
-  Number,
   Email,
+  HelpCircle,
+  Number,
   Password,
+  ShortText,
   Website,
 } from "@/components/icons";
 import { RemainCharacters } from "@/components/remain-characters";
@@ -29,13 +29,13 @@ import {
 } from "@/components/ui";
 import { useEnhancedWatch } from "@/lib/hooks";
 import { pick } from "@/lib/utils";
-import { Kind, SettingMachineContext } from "@/machines";
+import { SettingMachineContext } from "@/machines";
 
 const schema = z.object({
   label: z.string().max(30),
   hasCharacterLimit: z.boolean(),
   optional: z.boolean(),
-  placeholder: z.string().max(30),
+  tooltip: z.string().max(30),
   hint: z.string().max(30),
 });
 
@@ -45,7 +45,7 @@ const defaultValues: FormValues = {
   label: "",
   hasCharacterLimit: false,
   optional: false,
-  placeholder: "",
+  tooltip: "",
   hint: "",
 };
 
@@ -59,6 +59,11 @@ type Options = Option[];
 
 const options: Options = [
   {
+    icon: <Email className="h-6 w-6 text-gray-500" />,
+    label: "Email",
+    value: "email",
+  },
+  {
     icon: <ShortText className="h-6 w-6 text-gray-500" />,
     label: "Short Text",
     value: "short-text",
@@ -67,11 +72,6 @@ const options: Options = [
     icon: <Number className="h-6 w-6 text-gray-500" />,
     label: "Numbers",
     value: "numbers",
-  },
-  {
-    icon: <Email className="h-6 w-6 text-gray-500" />,
-    label: "Email",
-    value: "email",
   },
   {
     icon: <Password className="h-6 w-6 text-gray-500" />,
@@ -103,7 +103,7 @@ export default function SetupTab() {
     "label",
     "hasCharacterLimit",
     "optional",
-    "placeholder",
+    "tooltip",
     "hint"
   );
 
@@ -117,7 +117,7 @@ export default function SetupTab() {
     onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: "short-text",
+        value: "email",
         setting: variables,
       }),
   });
@@ -131,10 +131,10 @@ export default function SetupTab() {
         });
         break;
 
-      case "email":
+      case "short-text":
         send({
-          type: "TO-EMAIL",
-          newKind: "email",
+          type: "TO-SHORT-TEXT",
+          newKind: "short-text",
         });
         break;
 
@@ -272,20 +272,7 @@ export default function SetupTab() {
 
       <div className="space-y-5 border-t border-gray-200 p-5">
         <div className="space-y-1.5">
-          <Label className="text-gray-700" htmlFor="placeholder-text" size="sm">
-            Placeholder Text
-          </Label>
-          <div className="flex items-center justify-between">
-            <HelperText size="sm">Add a clear placeholder text.</HelperText>
-            <HelperText className="leading-5">
-              <RemainCharacters control={control} name="placeholder" max={30} />
-            </HelperText>
-          </div>
-          <Input {...register("placeholder")} id="placeholder-text" />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label className="text-gray-700" htmlFor="hint-text" size="sm">
+          <Label className="text-gray-700" htmlFor="hint" size="sm">
             Hint Text <span className="text-gray-400">(optional)</span>
           </Label>
           <div className="flex items-center justify-between">
@@ -296,7 +283,22 @@ export default function SetupTab() {
               <RemainCharacters control={control} name="hint" max={30} />
             </HelperText>
           </div>
-          <Input {...register("hint")} id="hint-text" />
+          <Input {...register("hint")} id="hint" />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-gray-700" htmlFor="tooltip" size="sm">
+            Tooltip <span className="text-gray-400">(optional)</span>
+          </Label>
+          <div className="flex items-center justify-between">
+            <HelperText size="sm">
+              Add additional information about the field.
+            </HelperText>
+            <HelperText className="leading-5">
+              <RemainCharacters control={control} name="tooltip" max={30} />
+            </HelperText>
+          </div>
+          <Input {...register("tooltip")} id="tooltip" />
         </div>
       </div>
     </form>

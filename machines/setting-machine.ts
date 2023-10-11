@@ -1,7 +1,16 @@
 import { createActorContext } from "@xstate/react";
 import { assign, createMachine } from "xstate";
 
-export type Kind = "search" | "dropdown" | "toggle" | "short-text";
+export type Kind =
+  | "search"
+  | "dropdown"
+  | "toggle"
+  | "short-text"
+  | "long-text"
+  | "password"
+  | "email"
+  | "numbers"
+  | "website";
 
 export interface Setting {
   id: number;
@@ -19,7 +28,7 @@ export interface Setting {
   hint?: string;
   limitSelections?: boolean;
   placeholderOrDefaultValue?: "placeholder" | "defaultValue";
-  hasCharactorLimit?: string;
+  hasCharacterLimit?: boolean;
 }
 
 export type Settings = Setting[];
@@ -62,6 +71,46 @@ export const settingMachine = createMachine(
         },
       },
       "editing short text": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing long text": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing password": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing email": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing numbers": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing website": {
         on: {
           TOGGLE: {
             target: "idle",
@@ -128,6 +177,36 @@ export const settingMachine = createMachine(
         cond: "isShortText",
         actions: "setCurrent",
       },
+      "EDIT-LONG-TEXT": {
+        target: "editing long text",
+        internal: true,
+        cond: "isLongText",
+        actions: "setCurrent",
+      },
+      "EDIT-PASSWORD": {
+        target: "editing password",
+        internal: true,
+        cond: "isPassword",
+        actions: "setCurrent",
+      },
+      "EDIT-EMAIL": {
+        target: "editing email",
+        internal: true,
+        cond: "isEmail",
+        actions: "setCurrent",
+      },
+      "EDIT-NUMBERS": {
+        target: "editing numbers",
+        internal: true,
+        cond: "isNumbers",
+        actions: "setCurrent",
+      },
+      "EDIT-WEBSITE": {
+        target: "editing website",
+        internal: true,
+        cond: "isWebsite",
+        actions: "setCurrent",
+      },
       "TO-TOGGLE": {
         target: "editing toggle",
         internal: true,
@@ -136,6 +215,36 @@ export const settingMachine = createMachine(
       },
       "TO-SEARCH": {
         target: "editing search",
+        internal: true,
+        cond: "notEqualToPreviousKind",
+        actions: ["patch"],
+      },
+      "TO-SHORT-TEXT": {
+        target: "editing short text",
+        internal: true,
+        cond: "notEqualToPreviousKind",
+        actions: ["patch"],
+      },
+      "TO-NUMBERS": {
+        target: "editing numbers",
+        internal: true,
+        cond: "notEqualToPreviousKind",
+        actions: ["patch"],
+      },
+      "TO-EMAIL": {
+        target: "editing email",
+        internal: true,
+        cond: "notEqualToPreviousKind",
+        actions: ["patch"],
+      },
+      "TO-PASSWORD": {
+        target: "editing password",
+        internal: true,
+        cond: "notEqualToPreviousKind",
+        actions: ["patch"],
+      },
+      "TO-WEBSITE": {
+        target: "editing website",
         internal: true,
         cond: "notEqualToPreviousKind",
         actions: ["patch"],
@@ -150,7 +259,7 @@ export const settingMachine = createMachine(
         | { type: "TOGGLE" }
         | {
             type: "UPDATE";
-            value: "search" | "dropdown" | "toggle" | "short-text";
+            value: Kind;
             setting: Omit<Omit<Setting, "kind">, "id">;
           }
         | { type: "REORDER"; advanced: boolean; settings: Settings }
@@ -164,8 +273,18 @@ export const settingMachine = createMachine(
         | { type: "EDIT-TOGGLE"; advanced: boolean; settingId: number }
         | { type: "EDIT-DROPDOWN"; advanced: boolean; settingId: number }
         | { type: "EDIT-SHORT-TEXT"; advanced: boolean; settingId: number }
+        | { type: "EDIT-LONG-TEXT"; advanced: boolean; settingId: number }
+        | { type: "EDIT-PASSWORD"; advanced: boolean; settingId: number }
+        | { type: "EDIT-EMAIL"; advanced: boolean; settingId: number }
+        | { type: "EDIT-NUMBERS"; advanced: boolean; settingId: number }
+        | { type: "EDIT-WEBSITE"; advanced: boolean; settingId: number }
         | { type: "TO-TOGGLE"; newKind: "toggle" }
-        | { type: "TO-SEARCH"; newKind: "search" },
+        | { type: "TO-SEARCH"; newKind: "search" }
+        | { type: "TO-NUMBERS"; newKind: "numbers" }
+        | { type: "TO-EMAIL"; newKind: "email" }
+        | { type: "TO-PASSWORD"; newKind: "password" }
+        | { type: "TO-WEBSITE"; newKind: "website" }
+        | { type: "TO-SHORT-TEXT"; newKind: "short-text" },
       context: {} as {
         currentId: number | undefined;
         currentAdvanced: boolean | undefined;
@@ -443,6 +562,66 @@ export const settingMachine = createMachine(
           (setting) => setting.id === event.settingId
         );
         return setting ? setting.kind === "short-text" : false;
+      },
+      isLongText: (ctx, event) => {
+        if (event.advanced) {
+          const setting = ctx.advancedSettings.find(
+            (setting) => setting.id === event.settingId
+          );
+          return setting ? setting.kind === "long-text" : false;
+        }
+        const setting = ctx.basicSettings.find(
+          (setting) => setting.id === event.settingId
+        );
+        return setting ? setting.kind === "long-text" : false;
+      },
+      isPassword: (ctx, event) => {
+        if (event.advanced) {
+          const setting = ctx.advancedSettings.find(
+            (setting) => setting.id === event.settingId
+          );
+          return setting ? setting.kind === "password" : false;
+        }
+        const setting = ctx.basicSettings.find(
+          (setting) => setting.id === event.settingId
+        );
+        return setting ? setting.kind === "password" : false;
+      },
+      isEmail: (ctx, event) => {
+        if (event.advanced) {
+          const setting = ctx.advancedSettings.find(
+            (setting) => setting.id === event.settingId
+          );
+          return setting ? setting.kind === "email" : false;
+        }
+        const setting = ctx.basicSettings.find(
+          (setting) => setting.id === event.settingId
+        );
+        return setting ? setting.kind === "email" : false;
+      },
+      isNumbers: (ctx, event) => {
+        if (event.advanced) {
+          const setting = ctx.advancedSettings.find(
+            (setting) => setting.id === event.settingId
+          );
+          return setting ? setting.kind === "numbers" : false;
+        }
+        const setting = ctx.basicSettings.find(
+          (setting) => setting.id === event.settingId
+        );
+        return setting ? setting.kind === "numbers" : false;
+      },
+      isWebsite: (ctx, event) => {
+        if (event.advanced) {
+          const setting = ctx.advancedSettings.find(
+            (setting) => setting.id === event.settingId
+          );
+          return setting ? setting.kind === "website" : false;
+        }
+        const setting = ctx.basicSettings.find(
+          (setting) => setting.id === event.settingId
+        );
+        return setting ? setting.kind === "website" : false;
       },
     },
     delays: {},

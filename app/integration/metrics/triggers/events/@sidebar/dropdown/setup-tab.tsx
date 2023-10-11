@@ -76,6 +76,8 @@ const options: Options = [
   },
 ];
 
+const [defaultValue] = options;
+
 export default function SetupTab() {
   const [, send] = SettingMachineContext.useActor();
   const currentId = SettingMachineContext.useSelector(
@@ -143,7 +145,7 @@ export default function SetupTab() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Listbox
         className="space-y-1.5 p-5"
-        defaultValue={options[0]}
+        defaultValue={defaultValue}
         onChange={handleListboxChange}
       >
         <ListboxLabel className="text-gray-700" size="sm">

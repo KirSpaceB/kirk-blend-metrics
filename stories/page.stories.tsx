@@ -85,7 +85,7 @@ export default meta;
 
 export const Default: StoryObj<{ sidebar: string; nav: string }> = {
   render: (args) => (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen bg-gray-50">
       <nav className="absolute inset-y-0 left-0 z-[25] flex w-[70px] flex-col items-center border-r border-gray-200 bg-white">
         <div className="flex h-[70px] flex-none items-center justify-center self-stretch border-b border-gray-200">
           <Link
@@ -223,7 +223,7 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
           <ul className="grid gap-2">
             <li>
               <Link
-                className="flex h-10 cursor-pointer items-center gap-x-3 rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-500 focus:bg-primary-50 focus:text-primary-500 focus-visible:outline-none"
+                className="flex h-10 cursor-pointer items-center gap-x-3 rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-500 hover:bg-gray-100 focus:bg-primary-50 focus:text-primary-500 focus-visible:outline-none"
                 href="#"
               >
                 <ShieldCharged />
@@ -232,7 +232,7 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
             </li>
             <li>
               <Link
-                className="flex h-10 cursor-pointer items-center gap-x-3 rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-500 focus:bg-primary-50 focus:text-primary-500 focus-visible:outline-none"
+                className="flex h-10 cursor-pointer items-center gap-x-3 rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-500 hover:bg-gray-100 focus:bg-primary-50 focus:text-primary-500 focus-visible:outline-none"
                 href="#"
               >
                 <ShieldCharged />
