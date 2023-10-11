@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cn, getId } from "@/lib/utils";
-import { SettingMachineContext, ShortTextSettings } from "@/machines";
+import { SettingMachineContext, Setting } from "@/machines";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,7 @@ import {
   Trash,
 } from "./icons";
 
-interface ShortTextDraggableCardProps extends ShortTextSettings {
+interface ShortTextDraggableCardProps extends Setting {
   advanced: boolean;
   settingId: number;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
@@ -26,8 +26,16 @@ interface ShortTextDraggableCardProps extends ShortTextSettings {
 }
 
 export const ShortTextDraggableCard = (props: ShortTextDraggableCardProps) => {
-  const { setup, onDrag, advanced, settingId, active } = props;
-  const { label, placeholder, hint, optional } = setup || {};
+  const {
+    onDrag,
+    advanced,
+    settingId,
+    active,
+    label,
+    placeholder,
+    hint,
+    optional,
+  } = props;
 
   const [, send] = SettingMachineContext.useActor();
   const id = React.useId();

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui";
 import { HelpCircle } from "@/components/icons";
 import { RemainCharacters } from "@/components/remain-characters";
+import { pick } from "@/lib/utils";
 
 const schema = z.object({
   label: z.string().max(30),
@@ -42,25 +43,20 @@ export default function SetupTab() {
   );
 
   const setting = settings.find((setting) => setting.id === currentId);
-  const { toggle } = setting || {};
-  const { setup: values } = toggle || {};
+  const values = pick(setting, "label", "hint", "tooltip");
 
-  const { register, handleSubmit, control, getValues } = useForm<FormValues>({
+  const { register, handleSubmit, control } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    values: values || defaultValues,
+    values: { ...defaultValues, ...values },
   });
 
   useEnhancedWatch({
     control,
-    onChange: () =>
+    onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: {
-          kind: "toggle",
-          setting: {
-            setup: getValues(),
-          },
-        },
+        value: "toggle",
+        setting: variables,
       }),
   });
 

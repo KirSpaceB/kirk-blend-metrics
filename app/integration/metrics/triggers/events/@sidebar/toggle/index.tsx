@@ -12,7 +12,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui";
-import { SettingMachineContext } from "@/machines";
+import { SettingMachineContext, TabsMachineContext } from "@/machines";
 
 const SourceTab = dynamic(() => import("./source-tab"));
 const SetupTab = dynamic(() => import("./setup-tab"));
@@ -28,11 +28,35 @@ function Panels({
   testTab?: React.ReactNode;
 }) {
   const [, send] = SettingMachineContext.useActor();
+  const [state, sendTo] = TabsMachineContext.useActor();
+
+  const onValueChange = (value: string) => {
+    switch (value) {
+      case "setup":
+        sendTo({
+          type: "SETUP",
+        });
+        break;
+
+      case "source":
+        sendTo({
+          type: "SOURCE",
+        });
+        break;
+
+      case "test":
+        sendTo({
+          type: "TEST",
+        });
+        break;
+    }
+  };
 
   return (
     <Tabs
       className="relative h-[calc(theme(height.full)-52px)]"
-      defaultValue="source"
+      value={state.value as string}
+      onValueChange={onValueChange}
     >
       <TabsList className="grid h-11 w-full grid-cols-3 justify-between">
         <TabsTrigger value="source">Source</TabsTrigger>

@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { ToggleSettings } from "@/machines";
+import { Setting } from "@/machines";
 import { HelpCircle } from "./icons";
 import {
   HelperText,
@@ -14,11 +14,10 @@ import {
   TooltipTrigger,
 } from "./ui";
 
-interface TogglePreviewProps extends ToggleSettings {}
+interface TogglePreviewProps extends Setting {}
 
 export const TogglePreview = (props: TogglePreviewProps) => {
-  const { setup } = props;
-  const { label, hint, tooltip } = setup || {};
+  const { label, hint, tooltip } = props;
 
   const id = React.useId();
 

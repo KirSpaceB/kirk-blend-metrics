@@ -36,7 +36,7 @@ import {
   RearrangeTrack,
   ScaleOutIn,
 } from "@/components/ui";
-import { isNotEmpty } from "@/lib/utils";
+import { isNotEmpty, pick } from "@/lib/utils";
 import { OPTIONS } from "@/lib/constants";
 import { SettingMachineContext } from "@/machines";
 import { useEnhancedWatch } from "@/lib/hooks";
@@ -51,7 +51,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-const defaultValue: FormValues = {
+const defaultValues: FormValues = {
   dataset: "",
   category: "",
   sort: "asc",
@@ -70,15 +70,13 @@ const SourceTab = () => {
   );
 
   const setting = settings.find((setting) => setting.id === currentId);
-  const { search } = setting || {};
-  const { source: values } = search || {};
+  const values = pick(setting, "dataset", "category", "sort", "metrics");
 
-  const { handleSubmit, register, control, setValue, getValues } =
-    useForm<FormValues>({
-      shouldUnregister: true,
-      values: values || defaultValue,
-      resolver: zodResolver(schema),
-    });
+  const { handleSubmit, control, setValue, getValues } = useForm<FormValues>({
+    shouldUnregister: true,
+    values: { ...defaultValues, ...values },
+    resolver: zodResolver(schema),
+  });
 
   const onSubmit: SubmitHandler<FormValues> = (variables) => {};
 
@@ -87,12 +85,8 @@ const SourceTab = () => {
     onChange: () =>
       send({
         type: "UPDATE",
-        value: {
-          kind: "search",
-          setting: {
-            source: getValues(),
-          },
-        },
+        value: "search",
+        setting: getValues(),
       }),
   });
 

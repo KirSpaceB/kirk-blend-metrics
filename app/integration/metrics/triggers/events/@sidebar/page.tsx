@@ -4,13 +4,13 @@ import React from "react";
 import * as PortalPrimitive from "@radix-ui/react-portal";
 
 import { TileTransition } from "@/components/ui/transitions";
-import { SettingMachineContext } from "@/machines";
+import { SettingMachineContext, TabsMachineContext } from "@/machines";
 import Search from "./search";
 import Dropdown from "./dropdown";
 import Toggle from "./toggle";
 import ShortText from "./short-text";
 
-export default function Sidebar() {
+const Sidebar = () => {
   const [state] = SettingMachineContext.useActor();
 
   const show =
@@ -30,5 +30,13 @@ export default function Sidebar() {
         </div>
       </TileTransition>
     </PortalPrimitive.Portal>
+  );
+};
+
+export default function SidebarSegment() {
+  return (
+    <TabsMachineContext.Provider>
+      <Sidebar />
+    </TabsMachineContext.Provider>
   );
 }

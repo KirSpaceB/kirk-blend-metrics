@@ -43,13 +43,9 @@ export const AdvancedSettingsPreview = () => {
     >
       {settings.map((setting) => (
         <React.Fragment key={setting.id}>
-          {setting.kind === "search" && (
-            <SearchFieldPreview {...setting.search} />
-          )}
-          {setting.kind === "dropdown" && (
-            <DropdownPreview {...setting.dropdown} />
-          )}
-          {setting.kind === "toggle" && <TogglePreview {...setting.toggle} />}
+          {setting.kind === "search" && <SearchFieldPreview {...setting} />}
+          {setting.kind === "dropdown" && <DropdownPreview {...setting} />}
+          {setting.kind === "toggle" && <TogglePreview {...setting} />}
         </React.Fragment>
       ))}
       <button

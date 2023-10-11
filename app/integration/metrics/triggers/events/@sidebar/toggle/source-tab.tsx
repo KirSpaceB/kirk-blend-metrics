@@ -13,6 +13,7 @@ import {
 } from "@/components/ui";
 import { useEnhancedWatch } from "@/lib/hooks";
 import { SettingMachineContext } from "@/machines";
+import { pick } from "@/lib/utils";
 
 const schema = z.object({
   dataset: z.string(),
@@ -40,12 +41,11 @@ export default function SourceTab() {
   );
 
   const setting = settings.find((setting) => setting.id === currentId);
-  const { toggle } = setting || {};
-  const { source: values } = toggle || {};
+  const values = pick(setting, "dataset", "category", "metric");
 
   const { handleSubmit, control, getValues } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    values: values || defaultValues,
+    values: { ...defaultValues, ...values },
   });
 
   const { dataset, category } = useEnhancedWatch({
@@ -53,12 +53,8 @@ export default function SourceTab() {
     onChange: () =>
       send({
         type: "UPDATE",
-        value: {
-          kind: "toggle",
-          setting: {
-            source: getValues(),
-          },
-        },
+        value: "toggle",
+        setting: getValues(),
       }),
   });
 

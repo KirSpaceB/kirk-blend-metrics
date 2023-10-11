@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { SettingMachineContext, ToggleSettings } from "@/machines";
+import { SettingMachineContext, Setting } from "@/machines";
 import {
   Copy,
   GridVertical3,
@@ -25,7 +25,7 @@ import {
 } from "./ui";
 import { cn, getId } from "@/lib/utils";
 
-interface ToggleDraggableCardProps extends ToggleSettings {
+interface ToggleDraggableCardProps extends Setting {
   advanced: boolean;
   settingId: number;
   onDrag?: (event: React.PointerEvent<HTMLButtonElement>) => void;
@@ -33,8 +33,7 @@ interface ToggleDraggableCardProps extends ToggleSettings {
 }
 
 export const ToggleDraggableCard = (props: ToggleDraggableCardProps) => {
-  const { setup, advanced, settingId, onDrag, active } = props;
-  const { label, hint, tooltip } = setup || {};
+  const { label, hint, tooltip, advanced, settingId, onDrag, active } = props;
 
   const [, send] = SettingMachineContext.useActor();
   const id = React.useId();

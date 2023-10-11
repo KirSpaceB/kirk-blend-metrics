@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { DropdownSettings } from "@/machines";
+import { Setting } from "@/machines";
 import { Check2, ChevronDown, HelpCircle, Search, X } from "./icons";
 import {
   Badge,
@@ -82,12 +82,10 @@ const options: Options = [
   },
 ];
 
-interface DropdownPreviewProps extends DropdownSettings {}
+interface DropdownPreviewProps extends Setting {}
 
 export const DropdownPreview = (props: DropdownPreviewProps) => {
-  const { setup, source } = props;
-  const { label, hint, optional } = setup || {};
-  const { metrics = [] } = source || {};
+  const { label, hint, optional, placeholder, metrics = [] } = props;
 
   const hasServiceName = metrics.includes("Service Name");
   const hasPersonal = metrics.includes("Personal");
@@ -161,7 +159,9 @@ export const DropdownPreview = (props: DropdownPreviewProps) => {
             {selected ? (
               selected.serviceName
             ) : (
-              <span className="text-gray-400">Select a tag</span>
+              <span className="text-gray-400">
+                {placeholder ? placeholder : "Select a tag"}
+              </span>
             )}
             <ChevronDown className="ml-auto h-5 w-5 text-gray-500" />
           </DropdownPopoverTrigger>

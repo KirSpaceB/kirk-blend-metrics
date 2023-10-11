@@ -63,6 +63,10 @@ export default function CommandPaletteModal({
           type: "INSERT",
           kind: "search",
         });
+        send({
+          ...options,
+          type: "EDIT-SEARCH",
+        });
         break;
 
       case "dropdown":
@@ -70,6 +74,10 @@ export default function CommandPaletteModal({
           ...options,
           type: "INSERT",
           kind: "dropdown",
+        });
+        send({
+          ...options,
+          type: "EDIT-DROPDOWN",
         });
         break;
 
@@ -79,6 +87,10 @@ export default function CommandPaletteModal({
           type: "INSERT",
           kind: "toggle",
         });
+        send({
+          ...options,
+          type: "EDIT-TOGGLE",
+        });
         break;
 
       case "short text":
@@ -86,6 +98,10 @@ export default function CommandPaletteModal({
           ...options,
           type: "INSERT",
           kind: "short-text",
+        });
+        send({
+          ...options,
+          type: "EDIT-SHORT-TEXT",
         });
         break;
     }

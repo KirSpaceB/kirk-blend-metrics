@@ -21,10 +21,10 @@ import {
   ListboxLabel,
   ListboxOptions,
 } from "./ui";
-import { DropdownSettings, SettingMachineContext } from "@/machines";
+import { Setting, SettingMachineContext } from "@/machines";
 import { cn, getId } from "@/lib/utils";
 
-interface DropdownDraggableCardProps extends DropdownSettings {
+interface DropdownDraggableCardProps extends Setting {
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   advanced: boolean;
   settingId: number;
@@ -32,8 +32,16 @@ interface DropdownDraggableCardProps extends DropdownSettings {
 }
 
 export const DropdownDraggableCard = (props: DropdownDraggableCardProps) => {
-  const { setup, advanced, settingId, onDrag, active } = props;
-  const { label, hint, optional } = setup || {};
+  const {
+    advanced,
+    settingId,
+    onDrag,
+    active,
+    label,
+    hint,
+    optional,
+    placeholder,
+  } = props;
 
   const [, send] = SettingMachineContext.useActor();
 
@@ -118,7 +126,9 @@ export const DropdownDraggableCard = (props: DropdownDraggableCardProps) => {
         )}
 
         <ListboxContent className="pointer-events-none mt-3">
-          <ListboxButton placeholder="Select a tag" />
+          <ListboxButton
+            placeholder={placeholder ? placeholder : "Select a tag"}
+          />
           <ListboxOptions />
         </ListboxContent>
       </Listbox>

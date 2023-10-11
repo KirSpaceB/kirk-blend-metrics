@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { SearchSettings, SettingMachineContext } from "@/machines";
+import { Setting, SettingMachineContext } from "@/machines";
 import {
   Copy,
   GridVertical3,
@@ -28,7 +28,7 @@ import {
 } from "./ui";
 import { cn, getId } from "@/lib/utils";
 
-interface SearchFieldDraggableCardProps extends SearchSettings {
+interface SearchFieldDraggableCardProps extends Setting {
   settingId: number;
   advanced: boolean;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
@@ -38,8 +38,16 @@ interface SearchFieldDraggableCardProps extends SearchSettings {
 export const SearchFieldDraggableCard = (
   props: SearchFieldDraggableCardProps
 ) => {
-  const { setup, advanced, settingId, onDrag, active } = props;
-  const { label, tooltip, placeholder, hint } = setup || {};
+  const {
+    label,
+    tooltip,
+    placeholder,
+    hint,
+    advanced,
+    settingId,
+    onDrag,
+    active,
+  } = props;
 
   const [, send] = SettingMachineContext.useActor();
   const id = React.useId();

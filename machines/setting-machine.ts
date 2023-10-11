@@ -1,80 +1,25 @@
 import { createActorContext } from "@xstate/react";
 import { assign, createMachine } from "xstate";
 
-export interface SearchSettings {
-  source?: {
-    dataset: string;
-    category: string;
-    metrics: string[];
-    sort: "asc" | "desc";
-  };
-  setup?: {
-    label: string;
-    placeholder: string;
-    tooltip: string;
-    singleOrMultiSelect: "multiple" | "single";
-    optional: boolean;
-    hint: string;
-    limitSelections?: boolean | undefined;
-  };
-}
-
-export interface DropdownSettings {
-  source?: {
-    dataset: string;
-    category: string;
-    metrics: string[];
-    sort: "asc" | "desc";
-  };
-  setup?: {
-    label: string;
-    singleOrMultiSelect: "single" | "multiple";
-    optional: boolean;
-    placeholderOrDefaultValue: "placeholder" | "defaultValue";
-    placeholder: string;
-    hint: string;
-    limitSelections?: boolean;
-  };
-}
-
-export interface ToggleSettings {
-  source?: {
-    dataset: string;
-    category: string;
-    metric: string;
-  };
-  setup?: {
-    label: string;
-    hint: string;
-    tooltip: string;
-  };
-}
-
-export interface ShortTextSettings {
-  source?: {
-    dataset: string;
-    category: string;
-    metric: string;
-  };
-  setup?: {
-    fieldType: string;
-    label: string;
-    hasCharactorLimit: string;
-    optional: string;
-    placeholder: string;
-    hint: string;
-  };
-}
-
-type Kind = "search" | "dropdown" | "toggle" | "short-text";
+export type Kind = "search" | "dropdown" | "toggle" | "short-text";
 
 export interface Setting {
   id: number;
   kind: Kind;
-  search?: SearchSettings;
-  dropdown?: DropdownSettings;
-  toggle?: ToggleSettings;
-  shortText?: ShortTextSettings;
+  dataset?: string;
+  category?: string;
+  metrics?: string[];
+  metric?: string;
+  sort?: "asc" | "desc";
+  label?: string;
+  placeholder?: string;
+  tooltip?: string;
+  singleOrMultiSelect?: "multiple" | "single";
+  optional?: boolean;
+  hint?: string;
+  limitSelections?: boolean;
+  placeholderOrDefaultValue?: "placeholder" | "defaultValue";
+  hasCharactorLimit?: string;
 }
 
 export type Settings = Setting[];
@@ -205,14 +150,8 @@ export const settingMachine = createMachine(
         | { type: "TOGGLE" }
         | {
             type: "UPDATE";
-            value:
-              | {
-                  kind: "search";
-                  setting: SearchSettings;
-                }
-              | { kind: "dropdown"; setting: DropdownSettings }
-              | { kind: "toggle"; setting: ToggleSettings }
-              | { kind: "short-text"; setting: ShortTextSettings };
+            value: "search" | "dropdown" | "toggle" | "short-text";
+            setting: Omit<Omit<Setting, "kind">, "id">;
           }
         | { type: "REORDER"; advanced: boolean; settings: Settings }
         | {
@@ -278,53 +217,11 @@ export const settingMachine = createMachine(
             return ctx.basicSettings;
           }
 
-          const { value } = event;
-          const { kind, setting } = value;
-
-          switch (kind) {
-            case "search":
-              return ctx.basicSettings.map((value) =>
-                value.id === ctx.currentId
-                  ? {
-                      ...basicSetting,
-                      search: { ...basicSetting.search, ...setting },
-                    }
-                  : value
-              );
-
-            case "dropdown":
-              return ctx.basicSettings.map((value) =>
-                value.id === ctx.currentId
-                  ? {
-                      ...basicSetting,
-                      dropdown: { ...basicSetting.dropdown, ...setting },
-                    }
-                  : value
-              );
-
-            case "toggle":
-              return ctx.basicSettings.map((value) =>
-                value.id === ctx.currentId
-                  ? {
-                      ...basicSetting,
-                      toggle: { ...basicSetting.toggle, ...setting },
-                    }
-                  : value
-              );
-
-            case "short-text":
-              return ctx.basicSettings.map((value) =>
-                value.id === ctx.currentId
-                  ? {
-                      ...basicSetting,
-                      shortText: { ...basicSetting.shortText, ...setting },
-                    }
-                  : value
-              );
-
-            default:
-              return ctx.basicSettings;
-          }
+          return ctx.basicSettings.map((setting) =>
+            setting.id === ctx.currentId
+              ? { ...setting, ...event.setting }
+              : setting
+          );
         },
 
         advancedSettings: (ctx, event) => {
@@ -332,7 +229,7 @@ export const settingMachine = createMachine(
             ctx.currentAdvanced === undefined ||
             ctx.currentId === undefined
           ) {
-            return ctx.basicSettings;
+            return ctx.advancedSettings;
           }
 
           if (!ctx.currentAdvanced) {
@@ -346,53 +243,11 @@ export const settingMachine = createMachine(
             return ctx.advancedSettings;
           }
 
-          const { value } = event;
-          const { kind, setting } = value;
-
-          switch (kind) {
-            case "search":
-              return ctx.advancedSettings.map((value) =>
-                value.id === ctx.currentId
-                  ? {
-                      ...advancedSetting,
-                      search: { ...advancedSetting.search, ...setting },
-                    }
-                  : value
-              );
-
-            case "dropdown":
-              return ctx.advancedSettings.map((value) =>
-                value.id === ctx.currentId
-                  ? {
-                      ...advancedSetting,
-                      dropdown: { ...advancedSetting.dropdown, ...setting },
-                    }
-                  : value
-              );
-
-            case "toggle":
-              return ctx.advancedSettings.map((value) =>
-                value.id === ctx.currentId
-                  ? {
-                      ...advancedSetting,
-                      toggle: { ...advancedSetting.toggle, ...setting },
-                    }
-                  : value
-              );
-
-            case "short-text":
-              return ctx.advancedSettings.map((value) =>
-                value.id === ctx.currentId
-                  ? {
-                      ...advancedSetting,
-                      shortText: { ...advancedSetting.shortText, ...setting },
-                    }
-                  : value
-              );
-
-            default:
-              return ctx.advancedSettings;
-          }
+          return ctx.advancedSettings.map((setting) =>
+            setting.id === ctx.currentId
+              ? { ...setting, ...event.setting }
+              : setting
+          );
         },
       }),
 
@@ -498,13 +353,13 @@ export const settingMachine = createMachine(
           const setting = ctx.advancedSettings.find(
             (setting) => setting.id === ctx.currentId
           );
-          return setting ? setting.kind === event.value.kind : false;
+          return setting ? setting.kind === event.value : false;
         }
 
         const setting = ctx.basicSettings.find(
           (setting) => setting.id === ctx.currentId
         );
-        return setting ? setting.kind === event.value.kind : false;
+        return setting ? setting.kind === event.value : false;
       },
 
       equalToCurrentId: (ctx, event) => {

@@ -12,7 +12,6 @@ import {
   ComboboxOptions,
   ComboboxTrigger,
   HelperText,
-  Label,
   ScaleOutIn,
   ScrollArea,
   Tooltip,
@@ -21,7 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui";
 import { HelpCircle, Search, X } from "./icons";
-import { SearchSettings } from "@/machines";
+import { Setting } from "@/machines";
 import { isEmpty, keys } from "@/lib/utils";
 import { useArray, useControllableState } from "@/lib/hooks";
 
@@ -81,12 +80,10 @@ const options: Options = [
   },
 ];
 
-interface SearchFieldPreview extends SearchSettings {}
+interface SearchFieldPreview extends Setting {}
 
 export const SearchFieldPreview = (props: SearchFieldPreview) => {
-  const { setup, source } = props;
-  const { label, hint, placeholder, tooltip } = setup || {};
-  const { metrics = [] } = source || {};
+  const { label, hint, placeholder, tooltip, metrics = [] } = props;
 
   const hasServiceName = metrics.includes("Service Name");
   const hasPersonal = metrics.includes("Personal");

@@ -306,6 +306,7 @@ export function withId<T = unknown>(arr: T[]) {
   return arr.map((value) => ({ value, id: id++ }));
 }
 
+// FIXME: return types
 export function pick<T extends Record<string, any>, K extends keyof T>(
   record?: T,
   ...keys: K[]
@@ -315,11 +316,11 @@ export function pick<T extends Record<string, any>, K extends keyof T>(
   }
 
   let result = {} as {
-    [Property in K]: T[Property];
+    [Property in K]-?: T[Property];
   };
 
   keys.forEach((key) => {
-    if (record[key]) {
+    if (record[key] !== undefined) {
       result = {
         ...result,
         [key]: record[key],

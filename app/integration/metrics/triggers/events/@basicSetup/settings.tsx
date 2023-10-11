@@ -45,7 +45,7 @@ export const Settings = (props: { advanced: boolean }) => {
                     settingId={setting.id}
                     active={active}
                     {...props}
-                    {...setting.search}
+                    {...setting}
                   />
                 )}
                 {setting.kind === "dropdown" && (
@@ -54,7 +54,7 @@ export const Settings = (props: { advanced: boolean }) => {
                     settingId={setting.id}
                     active={active}
                     {...props}
-                    {...setting.dropdown}
+                    {...setting}
                   />
                 )}
                 {setting.kind === "toggle" && (
@@ -63,7 +63,7 @@ export const Settings = (props: { advanced: boolean }) => {
                     settingId={setting.id}
                     active={active}
                     {...props}
-                    {...setting.toggle}
+                    {...setting}
                   />
                 )}
                 {setting.kind === "short-text" && (
@@ -72,7 +72,7 @@ export const Settings = (props: { advanced: boolean }) => {
                     settingId={setting.id}
                     active={active}
                     {...props}
-                    {...setting.shortText}
+                    {...setting}
                   />
                 )}
               </>

@@ -21,6 +21,7 @@ import {
 import { useEnhancedWatch } from "@/lib/hooks";
 import { SettingMachineContext } from "@/machines";
 import { RemainCharacters } from "@/components/remain-characters";
+import { pick } from "@/lib/utils";
 
 const schema = z.object({
   label: z.string().max(30),
@@ -55,26 +56,29 @@ export default function SetupTab() {
   );
 
   const setting = settings.find((setting) => setting.id === currentId);
-  const { search } = setting || {};
-  const { setup: values } = search || {};
+  const values = pick(
+    setting,
+    "label",
+    "singleOrMultiSelect",
+    "optional",
+    "placeholder",
+    "hint",
+    "tooltip",
+    "limitSelections"
+  );
 
-  const { register, handleSubmit, watch, control, getValues } =
-    useForm<FormValues>({
-      resolver: zodResolver(schema),
-      values: values || defaultValues,
-    });
+  const { register, handleSubmit, watch, control } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    values: { ...defaultValues, ...values },
+  });
 
   useEnhancedWatch({
     control,
-    onChange: () =>
+    onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: {
-          kind: "search",
-          setting: {
-            setup: getValues(),
-          },
-        },
+        value: "search",
+        setting: variables,
       }),
   });
 

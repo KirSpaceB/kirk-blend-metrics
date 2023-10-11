@@ -38,7 +38,7 @@ import {
   ScaleOutIn,
   inputVariants,
 } from "@/components/ui";
-import { cn, isNotEmpty } from "@/lib/utils";
+import { cn, isNotEmpty, pick } from "@/lib/utils";
 import { OPTIONS } from "@/lib/constants";
 import { SettingMachineContext } from "@/machines";
 import { useEnhancedWatch } from "@/lib/hooks";
@@ -53,7 +53,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-const defaultValue: FormValues = {
+const defaultValues: FormValues = {
   dataset: "",
   category: "",
   sort: "asc",
@@ -72,27 +72,21 @@ const SourceTab = () => {
   );
 
   const setting = settings.find((setting) => setting.id === currentId);
-  const { dropdown } = setting || {};
-  const { source: values } = dropdown || {};
+  const values = pick(setting, "dataset", "category", "sort", "metrics");
 
-  const { handleSubmit, register, control, setValue, getValues } =
-    useForm<FormValues>({
-      shouldUnregister: true,
-      values: values || defaultValue,
-      resolver: zodResolver(schema),
-    });
+  const { handleSubmit, control, setValue, getValues } = useForm<FormValues>({
+    shouldUnregister: true,
+    values: { ...defaultValues, ...values },
+    resolver: zodResolver(schema),
+  });
 
   const { category, dataset } = useEnhancedWatch({
     control,
     onChange: () =>
       send({
         type: "UPDATE",
-        value: {
-          kind: "dropdown",
-          setting: {
-            source: getValues(),
-          },
-        },
+        value: "dropdown",
+        setting: getValues(),
       }),
   });
 
