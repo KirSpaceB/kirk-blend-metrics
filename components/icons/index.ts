@@ -136,3 +136,4 @@ export * from "./shield-zap";
 export * from "./phone-01";
 export * from "./globe";
 export * from "./avatar-pencil";
+export * from "./image-icon";

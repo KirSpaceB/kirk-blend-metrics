@@ -21,6 +21,7 @@ import {
   ListboxOption,
   ListboxOptions,
 } from "../listbox";
+import AccountInfoSettingsProfile from "./account-info-settings-profile";
 
 const people = [
   { id: 0, name: "Kirk" },
@@ -42,7 +43,7 @@ export default function PersonalInfoInterface() {
   const [langState, setLangState] = React.useState<string>();
 
   return (
-    <div className="pl-[370px] pt-[110px]">
+    <div className="bg-[#F9FAFB] pl-[370px] pt-[110px]">
       <div className="h-[580px] w-[664px]">
         <div className="flex flex-col gap-3">
           <h1 className="font-inter text-base font-semibold capitalize leading-6">
@@ -56,16 +57,8 @@ export default function PersonalInfoInterface() {
 
           <div id="Avatar Parent Div" className="mb-[32px] mt-[24px]">
             <div className="inline-flex items-center gap-x-3">
-              {/* CHange css make it hoverable with the pencil */}
-              <Avatar size="2xl" className="h-[96px] w-[96px]">
-                <AvatarImage alt="Man" src="" />
-                <AvatarFallback>CT</AvatarFallback>
-              </Avatar>
+              <AccountInfoSettingsProfile />
 
-              <AvatarPencil
-                className="h-[30px] w-[30px] cursor-pointer rounded-full border-[1px] border-solid border-[#98A2B3] p-[6px] sm:absolute sm:left-[460px] sm:top-[300px]"
-                onClick={() => alert("test")}
-              />
               <div className="flex flex-col pl-6">
                 <div className="flex flex-row items-center gap-6">
                   <span className="text-2xl font-medium capitalize text-[#475467]">
