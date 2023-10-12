@@ -674,7 +674,7 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
       )}
 
       {args.nav === "Invite Users" && (
-        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white px-[17px] py-[15px]">
+        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white pl-[25px] pr-[17px]">
           <Breadcrumb spacing="0.5rem">
             <BreadcrumbItem>
               <BreadcrumbLink href="/">Settings</BreadcrumbLink>
@@ -709,7 +709,7 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
       )}
 
       {args.nav === "Recent Workflow" && (
-        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white px-[17px]">
+        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white pl-[25px] pr-[17px]">
           <div className="flex items-center gap-x-5">
             <TooltipProvider>
               <Tooltip>
@@ -754,7 +754,7 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
       )}
 
       {args.nav === "Test Workflow" && (
-        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white px-[17px]">
+        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white pl-[25px] pr-[17px]">
           <div className="flex items-center gap-x-5">
             <TooltipProvider>
               <Tooltip>
@@ -820,7 +820,7 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
       )}
 
       {args.nav === "Avatar Group Nav" && (
-        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white px-[17px]">
+        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white pl-[25px] pr-[17px]">
           <div className="flex items-center gap-x-5">
             <TooltipProvider>
               <Tooltip>
@@ -906,7 +906,7 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
       )}
 
       {args.nav === "Add Custom Role" && (
-        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white px-[17px]">
+        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white pl-[25px] pr-[17px]">
           <Breadcrumb spacing="0.5rem">
             <BreadcrumbItem>
               <BreadcrumbLink href="/">Settings</BreadcrumbLink>
@@ -941,7 +941,7 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
       )}
 
       {args.nav === "Change Role Nav" && (
-        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white px-[17px]">
+        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white pl-[25px] pr-[17px]">
           <div className="flex items-center gap-x-5">
             <TooltipProvider>
               <Tooltip>
@@ -998,7 +998,7 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
       )}
 
       {args.nav === "My Integration Nav" && (
-        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white px-[17px]">
+        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white pl-[25px] pr-[17px]">
           <div className="flex items-center gap-x-5">
             <TooltipProvider>
               <Tooltip>
@@ -1053,7 +1053,7 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
       )}
 
       {args.nav === "New Workflow" && (
-        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white px-[17px]">
+        <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white pl-[25px] pr-[17px]">
           <div className="flex items-center gap-x-5">
             <TooltipProvider>
               <Tooltip>
@@ -1099,12 +1099,12 @@ export const Default: StoryObj<{ sidebar: string; nav: string }> = {
 
       <main className="pl-[294px] pt-[70px]">
         <div className="px-8 pt-8">
-          <h1 className="text-base font-semibold text-gray-600">
-            3 Integrations
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">Description text here</p>
+          <h1 className="text-base font-semibold text-gray-600">Page Title</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Page description text here
+          </p>
 
-          <div className="mt-6">Starting point</div>
+          <div className="mt-6">add your page content here</div>
         </div>
       </main>
     </div>
