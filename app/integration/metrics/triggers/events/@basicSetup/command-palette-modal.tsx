@@ -164,6 +164,54 @@ export default function CommandPaletteModal({
           type: "EDIT-WEBSITE",
         });
         break;
+
+      case "address":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "address",
+        });
+        send({
+          ...options,
+          type: "EDIT-ADDRESS",
+        });
+        break;
+
+      case "phone number":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "phone-number",
+        });
+        send({
+          ...options,
+          type: "EDIT-PHONE-NUMBER",
+        });
+        break;
+
+      case "radio group":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "radio-group",
+        });
+        send({
+          ...options,
+          type: "EDIT-RADIO-GROUP",
+        });
+        break;
+
+      case "checkbox":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "checkbox",
+        });
+        send({
+          ...options,
+          type: "EDIT-CHECKBOX",
+        });
+        break;
     }
 
     sendTo("ACTIVATE");

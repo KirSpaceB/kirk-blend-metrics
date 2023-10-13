@@ -25,16 +25,24 @@ import {
   MoreHorizontal,
   Trash,
 } from "./icons";
+import { stopPropagation } from "@/lib/dom";
 
 interface EmailDraggableCardProps extends Setting {
   advanced: boolean;
-  settingId: number;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
 
 export const EmailDraggableCard = (props: EmailDraggableCardProps) => {
-  const { onDrag, advanced, settingId, active, label, hint, tooltip } = props;
+  const {
+    onDrag,
+    advanced,
+    id: settingId,
+    active,
+    label,
+    hint,
+    tooltip,
+  } = props;
 
   const [, send] = SettingMachineContext.useActor();
   const id = React.useId();
@@ -107,10 +115,17 @@ export const EmailDraggableCard = (props: EmailDraggableCardProps) => {
               <MoreHorizontal className="h-5 w-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[182px]">
-              <DropdownMenuItem onSelect={handleDuplicate}>
+              <DropdownMenuItem
+                onSelect={handleDuplicate}
+                onClick={stopPropagation}
+              >
                 <Copy /> Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem visual="destructive" onSelect={handleDelete}>
+              <DropdownMenuItem
+                visual="destructive"
+                onSelect={handleDelete}
+                onClick={stopPropagation}
+              >
                 <Trash /> Delete Field
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -13,6 +13,10 @@ import { PasswordDraggableCard } from "@/components/password-draggable-card";
 import { EmailDraggableCard } from "@/components/email-draggable-card";
 import { NumbersDraggableCard } from "@/components/numbers-draggable-card";
 import { WebsiteDraggableCard } from "@/components/website-draggable-card";
+import { AddressDraggableCard } from "@/components/address-draggable-card";
+import { PhoneNumberDraggableCard } from "@/components/phone-number-draggable-card";
+import { RadioGroupDraggableCard } from "@/components/radio-group-draggable-card";
+import { CheckboxDraggableCard } from "@/components/checkbox-draggable-card";
 
 export const Settings = (props: { advanced: boolean }) => {
   const settings = SettingMachineContext.useSelector((state) =>
@@ -47,7 +51,6 @@ export const Settings = (props: { advanced: boolean }) => {
                 {setting.kind === "search" && (
                   <SearchFieldDraggableCard
                     onDrag={onDrag}
-                    settingId={setting.id}
                     active={active}
                     {...props}
                     {...setting}
@@ -56,7 +59,6 @@ export const Settings = (props: { advanced: boolean }) => {
                 {setting.kind === "dropdown" && (
                   <DropdownDraggableCard
                     onDrag={onDrag}
-                    settingId={setting.id}
                     active={active}
                     {...props}
                     {...setting}
@@ -65,7 +67,6 @@ export const Settings = (props: { advanced: boolean }) => {
                 {setting.kind === "toggle" && (
                   <ToggleDraggableCard
                     onDrag={onDrag}
-                    settingId={setting.id}
                     active={active}
                     {...props}
                     {...setting}
@@ -74,7 +75,6 @@ export const Settings = (props: { advanced: boolean }) => {
                 {setting.kind === "short-text" && (
                   <ShortTextDraggableCard
                     onDrag={onDrag}
-                    settingId={setting.id}
                     active={active}
                     {...props}
                     {...setting}
@@ -83,7 +83,6 @@ export const Settings = (props: { advanced: boolean }) => {
                 {setting.kind === "long-text" && (
                   <LongTextDraggableCard
                     onDrag={onDrag}
-                    settingId={setting.id}
                     active={active}
                     {...props}
                     {...setting}
@@ -92,7 +91,6 @@ export const Settings = (props: { advanced: boolean }) => {
                 {setting.kind === "password" && (
                   <PasswordDraggableCard
                     onDrag={onDrag}
-                    settingId={setting.id}
                     active={active}
                     {...props}
                     {...setting}
@@ -101,7 +99,6 @@ export const Settings = (props: { advanced: boolean }) => {
                 {setting.kind === "email" && (
                   <EmailDraggableCard
                     onDrag={onDrag}
-                    settingId={setting.id}
                     active={active}
                     {...props}
                     {...setting}
@@ -110,7 +107,6 @@ export const Settings = (props: { advanced: boolean }) => {
                 {setting.kind === "numbers" && (
                   <NumbersDraggableCard
                     onDrag={onDrag}
-                    settingId={setting.id}
                     active={active}
                     {...props}
                     {...setting}
@@ -119,7 +115,38 @@ export const Settings = (props: { advanced: boolean }) => {
                 {setting.kind === "website" && (
                   <WebsiteDraggableCard
                     onDrag={onDrag}
-                    settingId={setting.id}
+                    active={active}
+                    {...props}
+                    {...setting}
+                  />
+                )}
+                {setting.kind === "address" && (
+                  <AddressDraggableCard
+                    onDrag={onDrag}
+                    active={active}
+                    {...props}
+                    {...setting}
+                  />
+                )}
+                {setting.kind === "phone-number" && (
+                  <PhoneNumberDraggableCard
+                    onDrag={onDrag}
+                    active={active}
+                    {...props}
+                    {...setting}
+                  />
+                )}
+                {setting.kind === "radio-group" && (
+                  <RadioGroupDraggableCard
+                    onDrag={onDrag}
+                    active={active}
+                    {...props}
+                    {...setting}
+                  />
+                )}
+                {setting.kind === "checkbox" && (
+                  <CheckboxDraggableCard
+                    onDrag={onDrag}
                     active={active}
                     {...props}
                     {...setting}

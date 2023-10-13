@@ -23,18 +23,18 @@ import {
 } from "./ui";
 import { Setting, SettingMachineContext } from "@/machines";
 import { cn, getId } from "@/lib/utils";
+import { stopPropagation } from "@/lib/dom";
 
 interface DropdownDraggableCardProps extends Setting {
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   advanced: boolean;
-  settingId: number;
   active: boolean;
 }
 
 export const DropdownDraggableCard = (props: DropdownDraggableCardProps) => {
   const {
     advanced,
-    settingId,
+    id: settingId,
     onDrag,
     active,
     label,
@@ -109,10 +109,17 @@ export const DropdownDraggableCard = (props: DropdownDraggableCardProps) => {
               <MoreHorizontal className="h-5 w-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[182px]">
-              <DropdownMenuItem onSelect={handleDuplicate}>
+              <DropdownMenuItem
+                onSelect={handleDuplicate}
+                onClick={stopPropagation}
+              >
                 <Copy /> Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem visual="destructive" onSelect={handleDelete}>
+              <DropdownMenuItem
+                visual="destructive"
+                onSelect={handleDelete}
+                onClick={stopPropagation}
+              >
                 <Trash /> Delete Field
               </DropdownMenuItem>
             </DropdownMenuContent>

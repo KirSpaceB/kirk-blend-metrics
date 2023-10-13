@@ -52,3 +52,9 @@ export function addEvent<
     target.removeEventListener(event, listener, options);
   };
 }
+
+export function stopPropagation<T extends { stopPropagation: () => void }>(
+  event: T
+) {
+  event.stopPropagation();
+}

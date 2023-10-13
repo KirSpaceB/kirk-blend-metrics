@@ -85,7 +85,6 @@ const SourceTab = () => {
     onChange: () =>
       send({
         type: "UPDATE",
-        value: "dropdown",
         setting: getValues(),
       }),
   });

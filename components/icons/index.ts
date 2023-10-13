@@ -118,3 +118,4 @@ export * from "./image-outlined";
 export * from "./video-outlined";
 export * from "./check2";
 export * from "./search2";
+export * from "./us";

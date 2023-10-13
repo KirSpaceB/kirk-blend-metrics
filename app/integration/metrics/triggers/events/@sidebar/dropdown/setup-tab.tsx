@@ -5,7 +5,13 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { ChevronUpDown, HelpCircle, Search2, Toggle } from "@/components/icons";
+import {
+  ChevronUpDown,
+  HelpCircle,
+  RadioButton,
+  Search2,
+  Toggle,
+} from "@/components/icons";
 import {
   HelperText,
   Input,
@@ -53,7 +59,7 @@ const defaultValues: FormValues = {
 interface Option {
   icon: React.ReactNode;
   label: string;
-  value: "toggle" | "search" | "dropdown";
+  value: "toggle" | "search" | "dropdown" | "radio-group";
 }
 
 type Options = Option[];
@@ -73,6 +79,11 @@ const options: Options = [
     icon: <Toggle className="h-6 w-6 text-gray-500" />,
     label: "Toggle",
     value: "toggle",
+  },
+  {
+    icon: <RadioButton className="h-6 w-6 text-gray-500" />,
+    label: "Radio Group",
+    value: "radio-group",
   },
 ];
 
@@ -112,7 +123,6 @@ export default function SetupTab() {
     onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: "dropdown",
         setting: variables,
       }),
   });
@@ -136,6 +146,13 @@ export default function SetupTab() {
         send({
           type: "TO-TOGGLE",
           newKind: "toggle",
+        });
+        break;
+
+      case "radio-group":
+        send({
+          type: "TO-RADIO-GROUP",
+          newKind: "radio-group",
         });
         break;
     }

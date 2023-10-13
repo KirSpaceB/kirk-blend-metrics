@@ -24,16 +24,24 @@ import {
   MoreHorizontal,
   Trash,
 } from "./icons";
+import { stopPropagation } from "@/lib/dom";
 
 interface WebsiteDraggableCardProps extends Setting {
   advanced: boolean;
-  settingId: number;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
 
 export const WebsiteDraggableCard = (props: WebsiteDraggableCardProps) => {
-  const { onDrag, advanced, settingId, active, label, hint, tooltip } = props;
+  const {
+    onDrag,
+    advanced,
+    id: settingId,
+    active,
+    label,
+    hint,
+    tooltip,
+  } = props;
 
   const [, send] = SettingMachineContext.useActor();
   const id = React.useId();
@@ -44,7 +52,7 @@ export const WebsiteDraggableCard = (props: WebsiteDraggableCardProps) => {
   };
 
   const handleClick = () => {
-    send({ ...options, type: "EDIT-PASSWORD" });
+    send({ ...options, type: "EDIT-WEBSITE" });
   };
 
   const handleDuplicate = () => {
@@ -106,10 +114,17 @@ export const WebsiteDraggableCard = (props: WebsiteDraggableCardProps) => {
               <MoreHorizontal className="h-5 w-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[182px]">
-              <DropdownMenuItem onSelect={handleDuplicate}>
+              <DropdownMenuItem
+                onSelect={handleDuplicate}
+                onClick={stopPropagation}
+              >
                 <Copy /> Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem visual="destructive" onSelect={handleDelete}>
+              <DropdownMenuItem
+                visual="destructive"
+                onSelect={handleDelete}
+                onClick={stopPropagation}
+              >
                 <Trash /> Delete Field
               </DropdownMenuItem>
             </DropdownMenuContent>
