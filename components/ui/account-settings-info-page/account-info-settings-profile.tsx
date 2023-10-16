@@ -40,9 +40,9 @@ export default function AccountInfoSettingsProfile() {
           {/* We get a children issue */}
           {/* We can use fragments because the dialog trigger looks for a div */}
           {/* <AvatarPencil className="h-[30px] w-[30px] cursor-pointer rounded-full border-[1px] border-solid border-[#98A2B3] p-[6px] sm:absolute sm:left-[460px] sm:top-[300px]" /> */}
-          <Button className="group bg-white text-[36px] font-medium text-[#D0D5DD] transition-all duration-300 ease-in-out hover:bg-gray-200 hover:text-gray-700">
+          <Button className="group bg-gray-100 text-[36px] font-medium text-[#D0D5DD] transition-all duration-300 ease-in-out hover:bg-gray-200 hover:text-gray-400">
             CT
-            <AvatarPencil className="absolute left-[455px] top-[305px] h-[30px] w-[30px] cursor-pointer rounded-full border bg-white p-1 group-hover:border-gray-500 group-hover:text-gray-700" />
+            <AvatarPencil className="absolute left-[455px] top-[305px] h-[30px] w-[30px] cursor-pointer rounded-full border border-gray-300 bg-white p-[6px]  group-hover:text-gray-700" />
           </Button>
         </DialogTrigger>
         <DialogContent>
