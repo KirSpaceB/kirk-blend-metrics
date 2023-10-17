@@ -16,6 +16,7 @@ import {
   PersonalInfo,
   Settings,
   ShieldCharged,
+  SixDots,
   ThreeLayers,
   Trash,
   User,
@@ -66,8 +67,10 @@ import {
 } from "../listbox";
 import { InputLeftAddon } from "../input-addon";
 import { InputGroup } from "../input-group";
-import SettingSecurityInnerSidebar from "./settings-security-inner-sidebar";
-import { AcmeLogo } from "./acme-logo";
+import SettingSecurityInnerSidebar from "../settings-security/settings-security-inner-sidebar";
+import { CheckboxGroup } from "../checkbox-group";
+import { Checkbox } from "../checkbox";
+import { HelperText } from "../helper-text";
 
 const people = [
   { id: 0, name: "Kirk" },
@@ -85,7 +88,7 @@ const languages = [
   { id: 4, langname: "Language5" },
 ];
 
-export default function SettingSecurityMainPage() {
+export default function SettingsMyGoalMainPage() {
   const [selected, setSelected] = React.useState<string>();
   const [langState, setLangState] = React.useState<string>();
   return (
@@ -231,15 +234,13 @@ export default function SettingSecurityMainPage() {
             <BreadcrumbLink href="/">Account</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink href="/">Company Info</BreadcrumbLink>
+            <BreadcrumbLink href="/">My Goal</BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
       </nav>
       <main className="pl-[294px] pt-[70px]">
         <div className="h-[580px] w-[664px] px-8 pt-8">
-          <h1 className="text-base font-semibold text-gray-600">
-            Company Info
-          </h1>
+          <h1 className="text-base font-semibold text-gray-600">My Goal</h1>
           <p className="mt-1 text-sm text-gray-500">
             Euismod amet dolor sem phasellus viverra ac. Et cras enim cursus
             lobortis nec lorem dapibus proin. Lacus diam rhoncus blandit ipsum
@@ -249,7 +250,7 @@ export default function SettingSecurityMainPage() {
             <Dialog>
               <DialogTrigger asChild className="h-full w-full">
                 <div>
-                  <AcmeLogo className="h-[96px] w-[220px] cursor-pointer" />
+                  Logo
                   {/* <AvatarPencil /> */}
                 </div>
               </DialogTrigger>
@@ -290,132 +291,159 @@ export default function SettingSecurityMainPage() {
               </DialogContent>
             </Dialog>
           </div>
-          <div id="Grid Parent" className="mt-8 h-[580px] w-[664px]">
-            <div id="Grid" className="grid grid-cols-2 gap-6">
-              {/* Grid Col 1 */}
-              <div className="space-y-1.5">
-                <Label htmlFor="email" size="sm">
-                  Company Name
-                </Label>
-                <Input
-                  id="email"
-                  placeholder="e.g. Acme Analytics"
-                  type="email"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="email" size="sm">
-                  Company Website
-                </Label>
-                <InputGroup>
-                  <InputLeftAddon>https://</InputLeftAddon>
-                  <Input placeholder="www.yourwebsite.com" type="email" />
-                </InputGroup>
-              </div>
-              {/* Grid col 2 */}
-              <div className="space-y-1.5">
-                <Label htmlFor="email" size="sm">
-                  Industry
-                </Label>
-                <Listbox value={selected} onChange={setSelected}>
-                  <ListboxButton placeholder="Select Type" />
-                  <ListboxOptions className="z-10">
-                    {people.map((person) => (
-                      <ListboxOption key={person.name} value={person.name}>
-                        {person.name}
-                      </ListboxOption>
-                    ))}
-                  </ListboxOptions>
-                </Listbox>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="email" size="sm">
-                  Business Type
-                </Label>
-                <Listbox value={selected} onChange={setSelected}>
-                  <ListboxButton placeholder="Select Business" />
-                  <ListboxOptions className="z-10">
-                    {people.map((person) => (
-                      <ListboxOption key={person.name} value={person.name}>
-                        {person.name}
-                      </ListboxOption>
-                    ))}
-                  </ListboxOptions>
-                </Listbox>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="email" size="sm">
-                  Company Size
-                </Label>
-                <Listbox value={selected} onChange={setSelected}>
-                  <ListboxButton placeholder="1 - 10" />
-                  <ListboxOptions className="z-10">
-                    {people.map((person) => (
-                      <ListboxOption key={person.name} value={person.name}>
-                        {person.name}
-                      </ListboxOption>
-                    ))}
-                  </ListboxOptions>
-                </Listbox>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="email" size="sm">
-                  Annual Revenue
-                </Label>
-                <Listbox value={selected} onChange={setSelected}>
-                  <ListboxButton placeholder="Select revenue" />
-                  <ListboxOptions className="z-10">
-                    {people.map((person) => (
-                      <ListboxOption key={person.name} value={person.name}>
-                        {person.name}
-                      </ListboxOption>
-                    ))}
-                  </ListboxOptions>
-                </Listbox>
-              </div>
-              <div className=" w-auto ">
-                <div className="space-y-1.5">
-                  <Label htmlFor="tel" size="sm">
-                    Phone number
-                  </Label>
-                  <div className="flex items-center">
-                    <Select defaultValue="US">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value="US">US</SelectItem>
-                          <SelectItem value="BE">BE</SelectItem>
-                          <SelectItem value="RS">RS</SelectItem>
-                          <SelectItem value="TR">TR</SelectItem>
-                          <SelectItem value="LV">LV</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      className="rounded-l-none"
-                      id="tel"
-                      placeholder="+1 (555) 000-0000"
-                      type="tel"
-                    />
+          <div
+            id="checkbox-parent-div"
+            className="h-auto w-[664px] rounded-lg border border-gray-200 bg-white"
+          >
+            <div className="flex items-center space-x-4 p-4">
+              {/* SixDots Component */}
+              <SixDots />
+
+              {/* Checkbox and Label */}
+              <div>
+                <div className="flex items-center space-x-3">
+                  <Checkbox id="option-one" size="md" value="Option 1" />
+
+                  <div className="flex flex-col justify-center">
+                    <Label
+                      htmlFor="option-one"
+                      size="sm"
+                      className="text-[#475467]"
+                    >
+                      Automate Business Processes
+                    </Label>
+                    <HelperText size="sm" className="text-gray-500">
+                      Streamline your business processes by automating
+                      repetitive tasks and workflows.
+                    </HelperText>
                   </div>
                 </div>
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="email" size="sm">
-                  Time Zone?
-                </Label>
-                <Listbox value={selected} onChange={setSelected}>
-                  <ListboxButton placeholder="(GMT-05:00) America/New_York" />
-                  <ListboxOptions className="z-10">
-                    {people.map((person) => (
-                      <ListboxOption key={person.name} value={person.name}>
-                        {person.name}
-                      </ListboxOption>
-                    ))}
-                  </ListboxOptions>
-                </Listbox>
+            </div>
+
+            <div className="flex items-center space-x-4 p-4">
+              {/* SixDots Component */}
+              <SixDots />
+
+              {/* Checkbox and Label */}
+              <div>
+                <div className="flex items-center space-x-3">
+                  <Checkbox id="option-one" size="md" value="Option 1" />
+
+                  <div className="flex flex-col justify-center">
+                    <Label
+                      htmlFor="option-one"
+                      size="sm"
+                      className="text-[#475467]"
+                    >
+                      Integrate Systems & Applications
+                    </Label>
+                    <HelperText size="sm" className="text-gray-500">
+                      Connect all your systems and applications in one place for
+                      better efficiency.
+                    </HelperText>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 p-4">
+              {/* SixDots Component */}
+              <SixDots />
+
+              {/* Checkbox and Label */}
+              <div>
+                <div className="flex items-center space-x-3">
+                  <Checkbox id="option-one" size="md" value="Option 1" />
+
+                  <div className="flex flex-col justify-center">
+                    <Label
+                      htmlFor="option-one"
+                      size="sm"
+                      className="text-[#475467]"
+                    >
+                      Improve Data Quality & Accuracy{" "}
+                    </Label>
+                    <HelperText size="sm" className="text-gray-500">
+                      Ensure your data is accurate and consistent across all
+                      your systems and applications.
+                    </HelperText>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 p-4">
+              {/* SixDots Component */}
+              <SixDots />
+
+              {/* Checkbox and Label */}
+              <div>
+                <div className="flex items-center space-x-3">
+                  <Checkbox id="option-one" size="md" value="Option 1" />
+
+                  <div className="flex flex-col justify-center">
+                    <Label
+                      htmlFor="option-one"
+                      size="sm"
+                      className="text-[#475467]"
+                    >
+                      Enhance Collaboration & Communication{" "}
+                    </Label>
+                    <HelperText size="sm" className="text-gray-500">
+                      Improve collaboration and communication between teams by
+                      integrating all your systems and applications.
+                    </HelperText>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 p-4">
+              {/* SixDots Component */}
+              <SixDots />
+
+              {/* Checkbox and Label */}
+              <div>
+                <div className="flex items-center space-x-3">
+                  <Checkbox id="option-one" size="md" value="Option 1" />
+
+                  <div className="flex flex-col justify-center">
+                    <Label
+                      htmlFor="option-one"
+                      size="sm"
+                      className="text-[#475467]"
+                    >
+                      Improve Customer Experience{" "}
+                    </Label>
+                    <HelperText size="sm" className="text-gray-500">
+                      Deliver a better customer experience by integrating all
+                      your customer-facing systems and applications.
+                    </HelperText>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 p-4">
+              {/* SixDots Component */}
+              <SixDots />
+
+              {/* Checkbox and Label */}
+              <div>
+                <div className="flex items-center space-x-3">
+                  <Checkbox id="option-one" size="md" value="Option 1" />
+
+                  <div className="flex flex-col justify-center">
+                    <Label
+                      htmlFor="option-one"
+                      size="sm"
+                      className="text-[#475467]"
+                    >
+                      Increase Agility & Scalability{" "}
+                    </Label>
+                    <HelperText size="sm" className="text-gray-500">
+                      Grow your business faster with the ability to quickly and
+                      easily add new systems and applications.
+                    </HelperText>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
