@@ -5,7 +5,6 @@ import { useDropzone } from "react-dropzone";
 
 import { cn, convertToKbOrMb, isDoc, isImg, isVideo } from "@/lib/utils";
 import { useControllableState, useToggle } from "@/lib/hooks";
-import { ACCEPTED_FILE_TYPES } from "@/lib/constants";
 import { Check, File, Trash, UploadCloud, Video } from "../icons";
 import { CircularProgress, Progress } from "./progress";
 import { IconButton } from "./icon-button";
@@ -13,12 +12,15 @@ import { IconButton } from "./icon-button";
 export type Type = "doc" | "img" | "video" | "other";
 
 export type DropzoneState = {
-  file: File;
+  data: File | File[];
+};
+
+export type State = {
   name: string;
   size: string;
   type: Type;
-  progress: number;
   hasError: boolean;
+  progress: number;
 };
 
 interface DropzoneProps {
@@ -30,28 +32,54 @@ interface DropzoneProps {
   onTryAgain?: () => void;
   icon?: boolean;
   accept?: { [key: string]: string[] };
+  state?: State;
+  onStateChange?: (value: State | undefined) => void;
 }
 
+const defaultAcceptedExtensions = {
+  "image/png": [".png"],
+  "image/jpeg": [".jpeg", ".jpg"],
+  "image/webp": [".webp"],
+  "image/gif": [".gif"],
+  "image/svg+xml": [".svg"],
+  "image/bmp": [".bmp"],
+};
+
 export const Dropzone = ({
-  value,
   onChange,
+  onStateChange,
   className,
-  maxFiles,
+  maxFiles = 0,
   onBlur,
   onTryAgain,
   icon = false,
-  accept = ACCEPTED_FILE_TYPES,
+  accept = defaultAcceptedExtensions,
+  ...props
 }: DropzoneProps) => {
   const [isDragAccept, { off, on }] = useToggle();
-  const [state, setState] = useControllableState<DropzoneState | undefined>({
-    value,
+  const [value, setValue] = useControllableState<DropzoneState | undefined>({
+    value: props.value,
     onChange,
+  });
+  const [state, setState] = useControllableState<State | undefined>({
+    value: props.state,
+    onChange: onStateChange,
   });
 
   const onDropAccepted = React.useCallback(
     (files: File[]) => {
       const [firstFile] = files;
       const { name, size } = firstFile;
+
+      if (maxFiles > 1) {
+        setValue({
+          data: files,
+        });
+      } else {
+        setValue({
+          data: firstFile,
+        });
+      }
 
       const type: Type = isImg(name)
         ? "img"
@@ -65,37 +93,39 @@ export const Dropzone = ({
         type,
         progress: 0,
         hasError: false,
-        file: firstFile,
         size: convertToKbOrMb(size),
       };
 
       on();
       setState(nextState);
     },
-    [on, setState]
+    [on, setValue, setState, maxFiles]
   );
 
   const onDropRejected = React.useCallback(() => {
     off();
+    setValue(undefined);
     setState(undefined);
-  }, [off, setState]);
+  }, [off, setValue, setState]);
 
   const onDelete = () => {
-    setState(undefined);
+    setValue(undefined);
     off();
   };
 
   const onRecover = (onTryAgain?: () => void) => {
     setState((prev) => {
-      const prevState = prev || ({} as DropzoneState);
+      const prevState = prev || ({} as State);
       return { ...prevState, hasError: false };
     });
     onTryAgain?.();
   };
 
+  const multiple = maxFiles > 1;
+
   const { getInputProps, getRootProps, open } = useDropzone({
     noClick: true,
-    multiple: false,
+    multiple,
     accept,
     maxFiles,
     onDropAccepted,
@@ -228,9 +258,26 @@ export const Dropzone = ({
   );
 };
 
-export interface CircularProgressDropzoneState extends DropzoneState {}
+export interface CircularProgressDropzoneState {
+  file: File;
+  name: string;
+  size: string;
+  type: Type;
+  hasError: boolean;
+  progress: number;
+}
 
-interface CircularProgressDropzoneProps extends DropzoneProps {}
+interface CircularProgressDropzoneProps {
+  value?: CircularProgressDropzoneState;
+  className?: string;
+  maxFiles?: number;
+  onChange?: (value: CircularProgressDropzoneState | undefined) => void;
+  onBlur?: () => void;
+  onTryAgain?: () => void;
+  icon?: boolean;
+  accept?: { [key: string]: string[] };
+  multiple?: boolean;
+}
 
 export const CircularProgressDropzone = ({
   value,
@@ -240,10 +287,10 @@ export const CircularProgressDropzone = ({
   onBlur,
   onTryAgain,
   icon = false,
-  accept = ACCEPTED_FILE_TYPES,
+  accept = defaultAcceptedExtensions,
 }: CircularProgressDropzoneProps) => {
   const [isDragAccept, { off, on }] = useToggle();
-  const [state, setState] = useControllableState<
+  const [state, setValue] = useControllableState<
     CircularProgressDropzoneState | undefined
   >({
     value,
@@ -272,23 +319,23 @@ export const CircularProgressDropzone = ({
       };
 
       on();
-      setState(nextState);
+      setValue(nextState);
     },
-    [on, setState]
+    [on, setValue]
   );
 
   const onDropRejected = React.useCallback(() => {
     off();
-    setState(undefined);
-  }, [off, setState]);
+    setValue(undefined);
+  }, [off, setValue]);
 
   const onDelete = () => {
-    setState(undefined);
+    setValue(undefined);
     off();
   };
 
   const onRecover = (onTryAgain?: () => void) => {
-    setState((prev) => {
+    setValue((prev) => {
       const prevState = prev || ({} as CircularProgressDropzoneState);
       return { ...prevState, hasError: false };
     });

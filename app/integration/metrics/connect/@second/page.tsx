@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useForm, SubmitHandler, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { ErrorMessage as HookFormErrorMessage } from "@hookform/error-message";
 
 import {
   Button,
@@ -15,18 +16,39 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  ErrorMessage,
   HelperText,
   IconButton,
   Input,
+  InputGroup,
+  InputRightElement,
   Label,
+  Listbox,
+  ListboxButton,
+  ListboxContent,
+  ListboxLabel,
+  ListboxOption,
+  ListboxOptions,
   RadioGroup,
   RadioGroupItemSelector,
   Textarea,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
   buttonVariants,
-  inputVariants,
 } from "@/components/ui";
-import { ArrowLeft2, Eye, HelpCircle, Plus2, X2 } from "@/components/icons";
-import { isNull, isUndefined } from "@/lib/utils";
+import {
+  AlertCircle,
+  ArrowLeft2,
+  Eye,
+  HelpCircle,
+  Plus2,
+  X2,
+} from "@/components/icons";
+import { hookFormHasError, isNull } from "@/lib/utils";
+import { RemainCharacters } from "@/components/remain-characters";
+import { openTab } from "@/lib/dom";
 
 const schema = z.object({
   value: z.enum([
@@ -40,15 +62,21 @@ const schema = z.object({
 
 type FormState = z.infer<typeof schema>;
 
-const dialogFormSchema = z.object({
-  label: z.string(),
-  key: z.string(),
+const formSchema = z.object({
+  label: z.string().max(50, "Must contain at most 50 character(s)").optional(),
+  key: z
+    .string()
+    .max(50, "Must contain at most 50 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
   required: z.boolean(),
-  type: z.enum(["string", "password"]),
-  helpText: z.string().optional(),
+  type: z.enum(["string", "number"]).optional(),
+  helpText: z
+    .string()
+    .max(200, "Must contain at most 200 character(s)")
+    .optional(),
 });
 
-type DialogFormState = z.infer<typeof dialogFormSchema>;
+type FormValues = z.infer<typeof formSchema>;
 
 export default function SecondTab() {
   const { push } = useRouter();
@@ -56,28 +84,21 @@ export default function SecondTab() {
   const {
     handleSubmit,
     control,
-    formState: { isValid },
+    formState: { isValid, errors },
   } = useForm<FormState>({
     resolver: zodResolver(schema),
+    mode: "onChange",
   });
-  const dialogForm = useForm<DialogFormState>({
-    resolver: zodResolver(dialogFormSchema),
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      required: false,
+    },
+    mode: "onChange",
   });
-  const [fields, setFields] = React.useState<
-    {
-      label: string;
-      key: string;
-      type: string;
-      required: boolean;
-      helpText?: string;
-    }[]
-  >();
+  const [fields, setFields] = React.useState<FormValues[]>();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const value = useWatch({ control, name: "value" });
-
-  const layout = searchParams.get("layout");
-  const previousLayout = layout === "previous" || isNull(layout);
-  const nextLayout = layout === "next";
 
   const openDialog = () => {
     setIsDialogOpen(true);
@@ -91,7 +112,7 @@ export default function SecondTab() {
     push("/integration/metrics/connect?tab=second&layout=next");
   };
 
-  const onFormSubmit: SubmitHandler<DialogFormState> = (variables) => {
+  const onFormSubmit: SubmitHandler<FormValues> = (variables) => {
     setFields((prev) => {
       const prevState = prev || [];
       return [...prevState, variables];
@@ -99,10 +120,14 @@ export default function SecondTab() {
     closeDialog();
   };
 
+  const layout = searchParams.get("layout");
+  const previousLayout = layout === "previous" || isNull(layout);
+  const nextLayout = layout === "next";
+
   return (
     <>
       {previousLayout && (
-        <div className="border border-gray-200 bg-white p-6">
+        <div className="border border-gray-200 bg-white p-6 shadow-xs">
           <h3 className="text-base font-semibold text-gray-900">
             Configure Your Authentication
           </h3>
@@ -210,6 +235,16 @@ export default function SecondTab() {
               )}
             />
 
+            <HookFormErrorMessage
+              errors={errors}
+              name="value"
+              render={({ message }) => (
+                <ErrorMessage className="mt-1.5" size="sm">
+                  {message}
+                </ErrorMessage>
+              )}
+            />
+
             <div className="mt-6 flex justify-end">
               <Button type="submit" disabled={!isValid}>
                 Save & Continue
@@ -218,10 +253,11 @@ export default function SecondTab() {
           </form>
         </div>
       )}
+
       {nextLayout && (
         <>
           {!fields ? (
-            <div className="rounded-lg border border-gray-200 bg-white p-6">
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-xs">
               <h3 className="text-base font-semibold text-gray-900">API Key</h3>
               <p className="mt-1 text-sm text-gray-500">
                 API Key Auth lets you build a form to request an API key, along
@@ -268,12 +304,20 @@ export default function SecondTab() {
           ) : (
             <>
               <div className="flex items-start gap-x-3">
-                <Link
-                  className="focus-visible:outline-none"
-                  href="/integration/metrics/connect?tab=second&layout=previous"
-                >
-                  <ArrowLeft2 className="h-[18px] w-[18px] text-gray-500" />
-                </Link>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        className="focus-visible:outline-none"
+                        href="/integration/metrics/connect?tab=second&layout=previous"
+                      >
+                        <ArrowLeft2 className="h-[18px] w-[18px] text-gray-500" />
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>Back</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
                 <div className="space-y-1">
                   <h2 className="text-base font-semibold text-gray-900">
                     API Key
@@ -287,7 +331,7 @@ export default function SecondTab() {
                 </div>
               </div>
 
-              <div className="mt-6 rounded-lg border border-gray-200 bg-white p-6">
+              <div className="mt-6 rounded-lg border border-gray-200 bg-white p-6 shadow-xs">
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium leading-[16.94px] text-gray-900">
                     Authentication Fields
@@ -305,7 +349,7 @@ export default function SecondTab() {
                 </div>
 
                 <div className="mt-6">
-                  <table className="w-full table-fixed border-separate border-spacing-0 overflow-x-auto">
+                  <table className="w-full table-fixed border-separate border-spacing-0 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-thumb-rounded-lg">
                     <thead>
                       <tr>
                         <th className="border-y border-gray-200 bg-gray-50 px-6 py-3 first:rounded-tl-lg first:border-l last:rounded-tr-lg last:border-r">
@@ -346,16 +390,16 @@ export default function SecondTab() {
                           className="last:[&>td]:last:rounded-br-lg first:[&>td]:last:rounded-bl-lg"
                           key={index}
                         >
-                          <td className="border-b border-gray-200 px-6 py-4 text-sm text-gray-600 first:border-l last:border-r">
+                          <td className="truncate border-b border-gray-200 px-6 py-4 text-sm text-gray-600 first:border-l last:border-r">
                             {label}
                           </td>
-                          <td className="border-b border-gray-200 px-6 py-4 text-sm text-gray-600 first:border-l last:border-r">
+                          <td className="truncate border-b border-gray-200 px-6 py-4 text-sm text-gray-600 first:border-l last:border-r">
                             {key}
                           </td>
-                          <td className="border-b border-gray-200 px-6 py-4 text-sm text-gray-600 first:border-l last:border-r">
+                          <td className="truncate border-b border-gray-200 px-6 py-4 text-sm text-gray-600 first:border-l last:border-r">
                             {type}
                           </td>
-                          <td className="border-b border-gray-200 px-6 py-4 text-sm text-gray-600 first:border-l last:border-r">
+                          <td className="truncate border-b border-gray-200 px-6 py-4 text-sm text-gray-600 first:border-l last:border-r">
                             {required ? "Yes" : "No"}
                           </td>
                         </tr>
@@ -374,18 +418,13 @@ export default function SecondTab() {
                     </Button>
 
                     {value ? (
-                      <Link
-                        className={buttonVariants({ variant: "link" })}
-                        href={{
-                          pathname: "/auth",
-                          query: {
-                            type: value,
-                          },
-                        }}
+                      <Button
+                        variant="link"
+                        onClick={() => openTab(`/auth?type=${value}`)}
                       >
                         <Eye />
                         Preview
-                      </Link>
+                      </Button>
                     ) : (
                       <Button variant="link">
                         <Eye />
@@ -419,66 +458,183 @@ export default function SecondTab() {
                 </DialogClose>
               </DialogHeader>
 
-              <form
-                className="mt-8"
-                onSubmit={dialogForm.handleSubmit(onFormSubmit)}
-              >
+              <form className="mt-8" onSubmit={form.handleSubmit(onFormSubmit)}>
                 <div className="space-y-1.5">
                   <Label className="text-gray-700" size="sm" htmlFor="label">
                     Label <span className="text-gray-500">(optional)</span>
                   </Label>
-                  <HelperText size="sm">
-                    Enter a user friendly name for this field that describes
-                    what to enter.
-                  </HelperText>
-                  <Input {...dialogForm.register("label")} id="label" />
+
+                  <div className="flex items-start justify-between gap-x-3">
+                    <HelperText size="sm">
+                      Enter a user friendly name for this field that describes
+                      what to enter.
+                    </HelperText>
+
+                    <HelperText className="leading-5">
+                      <RemainCharacters
+                        control={form.control}
+                        name="label"
+                        max={50}
+                      />
+                    </HelperText>
+                  </div>
+
+                  <InputGroup>
+                    <Input
+                      {...form.register("label")}
+                      id="label"
+                      isInvalid={hookFormHasError({
+                        errors: form.formState.errors,
+                        name: "label",
+                      })}
+                    />
+                    <InputRightElement>
+                      {hookFormHasError({
+                        errors: form.formState.errors,
+                        name: "label",
+                      }) && <AlertCircle className="text-error-500" />}
+                    </InputRightElement>
+                  </InputGroup>
+
+                  <HookFormErrorMessage
+                    errors={form.formState.errors}
+                    name="label"
+                    render={({ message }) => (
+                      <ErrorMessage size="sm">{message}</ErrorMessage>
+                    )}
+                  />
                 </div>
 
                 <div className="mt-6 space-y-1.5">
                   <Label className="text-gray-700" size="sm" htmlFor="key">
                     Key
                   </Label>
-                  <HelperText size="sm">
-                    Add the field key, for example:{" "}
-                    <span className="font-bold text-gray-500">api_key.</span>
-                  </HelperText>
-                  <Input {...dialogForm.register("key")} id="key" />
-                </div>
 
-                <div className="mt-6 flex gap-x-3">
-                  <Controller
-                    control={dialogForm.control}
-                    name="required"
-                    render={({ field: { onChange, value, ...props } }) => (
-                      <Checkbox
-                        size="md"
-                        id="checkbox"
-                        checked={value}
-                        onCheckedChange={onChange}
-                        {...props}
+                  <div className="flex items-start justify-between">
+                    <HelperText size="sm">
+                      Add the field key, for example:{" "}
+                      <span className="font-bold text-gray-500">api_key.</span>
+                    </HelperText>
+
+                    <HelperText className="leading-5">
+                      <RemainCharacters
+                        control={form.control}
+                        name="key"
+                        max={50}
                       />
+                    </HelperText>
+                  </div>
+
+                  <InputGroup>
+                    <Input
+                      {...form.register("key")}
+                      id="key"
+                      isInvalid={hookFormHasError({
+                        errors: form.formState.errors,
+                        name: "key",
+                      })}
+                    />
+
+                    <InputRightElement>
+                      {hookFormHasError({
+                        errors: form.formState.errors,
+                        name: "key",
+                      }) && <AlertCircle className="text-error-500" />}
+                    </InputRightElement>
+                  </InputGroup>
+
+                  <HookFormErrorMessage
+                    errors={form.formState.errors}
+                    name="key"
+                    render={({ message }) => (
+                      <ErrorMessage size="sm">{message}</ErrorMessage>
                     )}
                   />
-                  <Label className="text-gray-700" htmlFor="checkbox" size="sm">
-                    Is this field required? Check if yes.
-                  </Label>
                 </div>
 
                 <div className="mt-6 space-y-1.5">
-                  <Label className="text-gray-700" size="sm" htmlFor="type">
-                    Type <span className="text-gray-500">(optional)</span>
-                  </Label>
-                  <HelperText size="sm">Select API Endpoint</HelperText>
-                  <select
-                    {...dialogForm.register("type")}
-                    className={inputVariants()}
-                    id="type"
-                  >
-                    <option value="">Choose field type</option>
-                    <option value="string">string</option>
-                    <option value="password">password</option>
-                  </select>
+                  <div className="flex gap-x-3">
+                    <Controller
+                      control={form.control}
+                      name="required"
+                      render={({ field: { onChange, value, ...field } }) => (
+                        <Checkbox
+                          size="md"
+                          id="checkbox"
+                          checked={value}
+                          onCheckedChange={onChange}
+                          {...field}
+                        />
+                      )}
+                    />
+                    <Label
+                      className="text-gray-700"
+                      htmlFor="checkbox"
+                      size="sm"
+                    >
+                      Is this field required? Check if yes.
+                    </Label>
+                  </div>
+
+                  <HookFormErrorMessage
+                    errors={form.formState.errors}
+                    name="required"
+                    render={({ message }) => (
+                      <ErrorMessage size="sm">{message}</ErrorMessage>
+                    )}
+                  />
                 </div>
+
+                <Controller
+                  control={form.control}
+                  name="type"
+                  render={({ field: { onChange, value, ...field } }) => (
+                    <Listbox
+                      className="mt-6 space-y-1.5"
+                      onChange={onChange}
+                      value={value}
+                    >
+                      <ListboxLabel className="text-gray-700" size="sm">
+                        Type <span className="text-gray-500">(optional)</span>
+                      </ListboxLabel>
+
+                      <HelperText size="sm">Select API Endpoint</HelperText>
+
+                      <ListboxContent>
+                        <ListboxButton
+                          placeholder="Choose field type"
+                          isInvalid={hookFormHasError({
+                            errors: form.formState.errors,
+                            name: "type",
+                          })}
+                        />
+
+                        <ListboxOptions>
+                          <ListboxOption
+                            className="px-3.5 text-sm font-medium text-gray-800"
+                            value="string"
+                          >
+                            string
+                          </ListboxOption>
+                          <ListboxOption
+                            className="px-3.5 text-sm font-medium text-gray-800"
+                            value="number"
+                          >
+                            number
+                          </ListboxOption>
+                        </ListboxOptions>
+                      </ListboxContent>
+
+                      <HookFormErrorMessage
+                        errors={form.formState.errors}
+                        name="type"
+                        render={({ message }) => (
+                          <ErrorMessage size="sm">{message}</ErrorMessage>
+                        )}
+                      />
+                    </Listbox>
+                  )}
+                />
 
                 <div className="mt-6 space-y-1.5">
                   <Label
@@ -488,24 +644,46 @@ export default function SecondTab() {
                   >
                     Help text <span className="text-gray-500">(optional)</span>
                   </Label>
-                  <HelperText size="sm">
-                    Explain to users what to include in this field, especially
-                    for API keys and other hard to find info. Include directions
-                    to find the data and links to your app settings or help
-                    docs.
-                  </HelperText>
+
+                  <div className="flex items-start justify-between gap-x-3">
+                    <HelperText size="sm">
+                      Explain to users what to include in this field, especially
+                      for API keys and other hard to find info. Include
+                      directions to find the data and links to your app settings
+                      or help docs.
+                    </HelperText>
+
+                    <HelperText className="leading-5">
+                      <RemainCharacters
+                        control={form.control}
+                        name="helpText"
+                        max={200}
+                      />
+                    </HelperText>
+                  </div>
+
                   <Textarea
                     className="h-[82px]"
-                    {...dialogForm.register("helpText")}
+                    {...form.register("helpText")}
                     id="help-text"
                     placeholder="This will be the help text user see in our marketplace..."
+                    isInvalid={hookFormHasError({
+                      errors: form.formState.errors,
+                      name: "helpText",
+                    })}
+                  />
+
+                  <HookFormErrorMessage
+                    errors={form.formState.errors}
+                    name="helpText"
+                    render={({ message }) => (
+                      <ErrorMessage size="sm">{message}</ErrorMessage>
+                    )}
                   />
                 </div>
 
                 <div className="mt-11 flex justify-end">
-                  <Button disabled={!dialogForm.formState.isValid}>
-                    Add field
-                  </Button>
+                  <Button disabled={!form.formState.isValid}>Add field</Button>
                 </div>
               </form>
             </DialogContent>

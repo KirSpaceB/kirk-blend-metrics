@@ -29,6 +29,11 @@ const meta: Meta = {
 export default meta;
 
 export const Default: StoryObj = {
+  argTypes: {
+    maxFiles: {
+      type: "number",
+    },
+  },
   render: (args) => <Dropzone {...args} />,
 };
 

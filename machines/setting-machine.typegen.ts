@@ -35,6 +35,8 @@ export interface Typegen0 {
       | "EDIT-CHECKBOX"
       | "EDIT-DROPDOWN"
       | "EDIT-EMAIL"
+      | "EDIT-FILE-UPLOAD"
+      | "EDIT-IMAGE-UPLOAD"
       | "EDIT-LONG-TEXT"
       | "EDIT-NUMBERS"
       | "EDIT-PASSWORD"
@@ -43,6 +45,7 @@ export interface Typegen0 {
       | "EDIT-SEARCH"
       | "EDIT-SHORT-TEXT"
       | "EDIT-TOGGLE"
+      | "EDIT-VIDEO"
       | "EDIT-WEBSITE";
     update: "UPDATE";
   };
@@ -68,6 +71,8 @@ export interface Typegen0 {
     | "editing checkbox"
     | "editing dropdown"
     | "editing email"
+    | "editing file upload"
+    | "editing image upload"
     | "editing long text"
     | "editing numbers"
     | "editing password"
@@ -76,6 +81,7 @@ export interface Typegen0 {
     | "editing search"
     | "editing short text"
     | "editing toggle"
+    | "editing video"
     | "editing website"
     | "idle";
   tags: never;

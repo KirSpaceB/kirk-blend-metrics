@@ -1,10 +1,3 @@
-export const ACCEPTED_FILE_TYPES = {
-  "image/svg+xml": [".svg"],
-  "image/png": [".png"],
-  "image/jpeg": [".jpg"],
-  "image/gif": [".gif"],
-};
-
 export const EVENTS_PAGE = "/integration/metrics/triggers/events";
 
 export const INTEGRATION_PAGE = "/integration";
@@ -33,4 +26,25 @@ export const OPTIONS = [
 
 export const EXIT_ANIMATION = {
   opacity: 0,
+};
+
+export const IMAGE_EXTENSIONS: Record<string, Record<string, string[]>> = {
+  png: {
+    "image/png": [".png"],
+  },
+  jpeg: {
+    "image/jpeg": [".jpeg", ".jpg"],
+  },
+  webp: {
+    "image/webp": [".webp"],
+  },
+  gif: {
+    "image/gif": [".gif"],
+  },
+  svg: {
+    "image/svg+xml": [".svg"],
+  },
+  bmp: {
+    "image/bmp": [".bmp"],
+  },
 };

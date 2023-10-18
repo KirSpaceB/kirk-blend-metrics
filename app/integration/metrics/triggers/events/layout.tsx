@@ -42,6 +42,10 @@ export default function Layout({
             Create Event
           </Button>
         </div>
+
+        <div className="mt-6 flex justify-end">
+          <Button disabled>Save & Continue</Button>
+        </div>
       </div>
     );
   }

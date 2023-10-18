@@ -212,6 +212,42 @@ export default function CommandPaletteModal({
           type: "EDIT-CHECKBOX",
         });
         break;
+
+      case "image upload":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "image-upload",
+        });
+        send({
+          ...options,
+          type: "EDIT-IMAGE-UPLOAD",
+        });
+        break;
+
+      case "file upload":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "file-upload",
+        });
+        send({
+          ...options,
+          type: "EDIT-FILE-UPLOAD",
+        });
+        break;
+
+      case "video":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "video",
+        });
+        send({
+          ...options,
+          type: "EDIT-VIDEO",
+        });
+        break;
     }
 
     sendTo("ACTIVATE");
@@ -441,13 +477,13 @@ export default function CommandPaletteModal({
               </CommandPaletteItem>
             </CommandPaletteGroup>
             <CommandPaletteGroup heading="Other">
-              <CommandPaletteItem value="dropdown">
+              <CommandPaletteItem value="file upload">
                 <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg border-[1.5px] border-gray-200">
                   <FileOutlined className="text-primary-500" />
                 </div>
                 <div className="flex flex-grow flex-col">
                   <span className="text-sm font-medium leading-6 text-gray-900">
-                    Dropdown
+                    File Upload
                   </span>
                   <span className="text-xs leading-[14.52px] text-gray-500">
                     Choose this to start your workflow

@@ -17,6 +17,9 @@ import { AddressDraggableCard } from "@/components/address-draggable-card";
 import { PhoneNumberDraggableCard } from "@/components/phone-number-draggable-card";
 import { RadioGroupDraggableCard } from "@/components/radio-group-draggable-card";
 import { CheckboxDraggableCard } from "@/components/checkbox-draggable-card";
+import { VideoDraggableCard } from "@/components/video-draggable-card";
+import { FileUploadDraggableCard } from "@/components/file-upload-draggable-card";
+import { ImageUploadDraggableCard } from "@/components/image-upload-draggable-card";
 
 export const Settings = (props: { advanced: boolean }) => {
   const settings = SettingMachineContext.useSelector((state) =>
@@ -146,6 +149,30 @@ export const Settings = (props: { advanced: boolean }) => {
                 )}
                 {setting.kind === "checkbox" && (
                   <CheckboxDraggableCard
+                    onDrag={onDrag}
+                    active={active}
+                    {...props}
+                    {...setting}
+                  />
+                )}
+                {setting.kind === "video" && (
+                  <VideoDraggableCard
+                    onDrag={onDrag}
+                    active={active}
+                    {...props}
+                    {...setting}
+                  />
+                )}
+                {setting.kind === "file-upload" && (
+                  <FileUploadDraggableCard
+                    onDrag={onDrag}
+                    active={active}
+                    {...props}
+                    {...setting}
+                  />
+                )}
+                {setting.kind === "image-upload" && (
+                  <ImageUploadDraggableCard
                     onDrag={onDrag}
                     active={active}
                     {...props}

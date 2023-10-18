@@ -14,7 +14,10 @@ export type Kind =
   | "address"
   | "phone-number"
   | "radio-group"
-  | "checkbox";
+  | "checkbox"
+  | "image-upload"
+  | "file-upload"
+  | "video";
 
 export interface Setting {
   id: number;
@@ -42,6 +45,12 @@ export interface Setting {
   defaultCountry?: string;
   oneOrTwoColumns?: "one" | "two";
   showSelectAll?: boolean;
+  characterLimit?: number;
+  hasQuantity?: boolean;
+  maxQuantity?: number;
+  allowAllOrCustomImageExtensions?: "all" | "custom";
+  allowAllOrCustomFileExtensions?: "all" | "custom";
+  allowedImageExtensions?: string[];
 }
 
 export type Settings = Setting[];
@@ -163,6 +172,30 @@ export const settingMachine = createMachine(
           },
         },
       },
+      "editing image upload": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing file upload": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing video": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
     },
     on: {
       INSERT: {
@@ -259,6 +292,21 @@ export const settingMachine = createMachine(
       },
       "EDIT-CHECKBOX": {
         target: "editing checkbox",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-IMAGE-UPLOAD": {
+        target: "editing image upload",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-FILE-UPLOAD": {
+        target: "editing file upload",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-VIDEO": {
+        target: "editing video",
         internal: true,
         actions: "setCurrent",
       },
@@ -360,6 +408,10 @@ export const settingMachine = createMachine(
         | { type: "EDIT-PHONE-NUMBER"; advanced: boolean; settingId: number }
         | { type: "EDIT-RADIO-GROUP"; advanced: boolean; settingId: number }
         | { type: "EDIT-CHECKBOX"; advanced: boolean; settingId: number }
+        | { type: "EDIT-CHECKBOX"; advanced: boolean; settingId: number }
+        | { type: "EDIT-IMAGE-UPLOAD"; advanced: boolean; settingId: number }
+        | { type: "EDIT-FILE-UPLOAD"; advanced: boolean; settingId: number }
+        | { type: "EDIT-VIDEO"; advanced: boolean; settingId: number }
         | { type: "TO-TOGGLE"; newKind: "toggle" }
         | { type: "TO-SEARCH"; newKind: "search" }
         | { type: "TO-NUMBERS"; newKind: "numbers" }

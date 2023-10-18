@@ -12,6 +12,9 @@ import { AddressPreview } from "@/components/address-preview";
 import { PhoneNumberPreview } from "@/components/phone-number-preview";
 import { RadioGroupPreview } from "@/components/radio-group-preview";
 import { CheckboxPreview } from "@/components/checkbox-preview";
+import { VideoPreview } from "@/components/video-preview";
+import { FileUploadPreview } from "@/components/file-upload-preview";
+import { ImageUploadPreview } from "@/components/image-upload-preview";
 
 export const SettingsPreview = ({ setting }: { setting: Setting }) => {
   return (
@@ -29,6 +32,10 @@ export const SettingsPreview = ({ setting }: { setting: Setting }) => {
       {setting.kind === "phone-number" && <PhoneNumberPreview {...setting} />}
       {setting.kind === "radio-group" && <RadioGroupPreview {...setting} />}
       {setting.kind === "checkbox" && <CheckboxPreview {...setting} />}
+      {setting.kind === "video" && <VideoPreview {...setting} />}
+      {setting.kind === "video" && <VideoPreview {...setting} />}
+      {setting.kind === "file-upload" && <FileUploadPreview {...setting} />}
+      {setting.kind === "image-upload" && <ImageUploadPreview {...setting} />}
     </>
   );
 };

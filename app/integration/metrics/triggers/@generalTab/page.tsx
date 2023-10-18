@@ -4,32 +4,52 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { ErrorMessage as HookFormErrorMessage } from "@hookform/error-message";
 
-import { Button, HelperText, Input, Label, Textarea } from "@/components/ui";
+import {
+  Button,
+  ErrorMessage,
+  HelperText,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Label,
+  Textarea,
+} from "@/components/ui";
 import { RemainCharacters } from "@/components/remain-characters";
+import { hookFormHasError } from "@/lib/utils";
+import { AlertCircle } from "@/components/icons";
 
-interface FormValues {
-  name: string;
-  longDescription: string;
-  shortDescription: string;
-  hintText: string;
-}
+const schema = z.object({
+  name: z
+    .string()
+    .max(30, "Must contain at most 30 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+  longDescription: z
+    .string()
+    .max(130, "Must contain at most 130 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+  shortDescription: z
+    .string()
+    .max(40, "Must contain at most 40 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+  hintText: z
+    .string()
+    .max(50, "Must contain at most 50 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+});
+
+type FormValues = z.infer<typeof schema>;
 
 export default function GeneralTab() {
   const {
     register,
     handleSubmit,
     control,
-    formState: { isValid },
+    formState: { isValid, errors },
   } = useForm<FormValues>({
-    resolver: zodResolver(
-      z.object({
-        name: z.string().max(30),
-        longDescription: z.string().max(130),
-        shortDescription: z.string().max(40),
-        hintText: z.string().max(50),
-      })
-    ),
+    resolver: zodResolver(schema),
+    mode: "onChange",
   });
   const { push } = useRouter();
 
@@ -55,11 +75,31 @@ export default function GeneralTab() {
             <RemainCharacters control={control} name="name" max={30} />
           </HelperText>
         </div>
-        <Input
-          className="text-sm"
-          id="name"
-          placeholder="e.g. New Order Trigger"
-          {...register("name")}
+
+        <InputGroup>
+          <Input
+            className="text-sm"
+            id="name"
+            placeholder="e.g. New Order Trigger"
+            {...register("name")}
+            isInvalid={hookFormHasError({
+              errors,
+              name: "name",
+            })}
+          />
+          <InputRightElement>
+            {hookFormHasError({ errors, name: "name" }) && (
+              <AlertCircle className="text-error-500" />
+            )}
+          </InputRightElement>
+        </InputGroup>
+
+        <HookFormErrorMessage
+          errors={errors}
+          name="name"
+          render={({ message }) => (
+            <ErrorMessage size="sm">{message}</ErrorMessage>
+          )}
         />
       </div>
 
@@ -84,6 +124,18 @@ export default function GeneralTab() {
           id="long-description"
           placeholder="e.g. Triggers when a new order is created."
           {...register("longDescription")}
+          isInvalid={hookFormHasError({
+            errors,
+            name: "longDescription",
+          })}
+        />
+
+        <HookFormErrorMessage
+          errors={errors}
+          name="longDescription"
+          render={({ message }) => (
+            <ErrorMessage size="sm">{message}</ErrorMessage>
+          )}
         />
       </div>
 
@@ -103,11 +155,31 @@ export default function GeneralTab() {
             />
           </HelperText>
         </div>
-        <Input
-          className="text-sm"
-          id="short-description"
-          placeholder="e.g. Triggers when a new order is created."
-          {...register("shortDescription")}
+
+        <InputGroup>
+          <Input
+            className="text-sm"
+            id="short-description"
+            placeholder="e.g. Triggers when a new order is created."
+            {...register("shortDescription")}
+            isInvalid={hookFormHasError({
+              errors,
+              name: "shortDescription",
+            })}
+          />
+          <InputRightElement>
+            {hookFormHasError({ errors, name: "shortDescription" }) && (
+              <AlertCircle className="text-error-500" />
+            )}
+          </InputRightElement>
+        </InputGroup>
+
+        <HookFormErrorMessage
+          errors={errors}
+          name="shortDescription"
+          render={({ message }) => (
+            <ErrorMessage size="sm">{message}</ErrorMessage>
+          )}
         />
       </div>
 
@@ -115,6 +187,7 @@ export default function GeneralTab() {
         <Label className="text-gray-700" htmlFor="hint-text" size="sm">
           Hint Text <span className="text-gray-400">(optional)</span>
         </Label>
+
         <div className="flex justify-between">
           <HelperText size="sm">
             Provide additional hint text to help guide users through the use of
@@ -124,11 +197,31 @@ export default function GeneralTab() {
             <RemainCharacters control={control} name="hintText" max={50} />
           </HelperText>
         </div>
-        <Input
-          className="text-sm"
-          id="hint-text"
-          placeholder="This hint text will be displayed to users when they are setting up the trigger in the workflow builder."
-          {...register("hintText")}
+
+        <InputGroup>
+          <Input
+            className="text-sm"
+            id="hint-text"
+            placeholder="This hint text will be displayed to users when they are setting up the trigger in the workflow builder."
+            {...register("hintText")}
+            isInvalid={hookFormHasError({
+              errors,
+              name: "hintText",
+            })}
+          />
+          <InputRightElement>
+            {hookFormHasError({ errors, name: "hintText" }) && (
+              <AlertCircle className="text-error-500" />
+            )}
+          </InputRightElement>
+        </InputGroup>
+
+        <HookFormErrorMessage
+          errors={errors}
+          name="hintText"
+          render={({ message }) => (
+            <ErrorMessage size="sm">{message}</ErrorMessage>
+          )}
         />
       </div>
 

@@ -1,5 +1,5 @@
 import { SettingMachineContext } from "@/machines";
-import { SettingsPreview } from "./settings-preview";
+import { SettingsPreview } from "./previews";
 
 export const BasicSettingsPreview = () => {
   const settings = SettingMachineContext.useSelector(

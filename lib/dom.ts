@@ -58,3 +58,17 @@ export function stopPropagation<T extends { stopPropagation: () => void }>(
 ) {
   event.stopPropagation();
 }
+
+export function getBaseUrl() {
+  if (typeof window === "undefined") return "";
+  return window.origin;
+}
+
+export function openTab(
+  pathname: string,
+  features = "width=640,height=549",
+  target = "_blank"
+) {
+  const url = getBaseUrl() + pathname;
+  return window.open(url, target, features);
+}

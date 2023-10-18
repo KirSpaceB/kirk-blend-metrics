@@ -2,7 +2,7 @@ import * as React from "react";
 import { Transition } from "@headlessui/react";
 
 import { PreviewMachineContext, SettingMachineContext } from "@/machines";
-import { SettingsPreview } from "./settings-preview";
+import { SettingsPreview } from "./previews";
 
 export const AdvancedSettingsPreview = () => {
   const [state, send] = PreviewMachineContext.useActor();

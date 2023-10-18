@@ -18,6 +18,9 @@ import AddressSidebar from "./address";
 import PhoneNumberSidebar from "./phone-number";
 import RadioGroupSidebar from "./radio-group";
 import CheckboxSidebar from "./checkbox";
+import ImageUploadSidebar from "./image-upload";
+import FileUploadSidebar from "./file-upload";
+import VideoSidebar from "./video";
 
 const Segment = () => {
   const [state] = SettingMachineContext.useActor();
@@ -35,7 +38,10 @@ const Segment = () => {
     state.matches("editing address") ||
     state.matches("editing phone number") ||
     state.matches("editing radio group") ||
-    state.matches("editing checkbox");
+    state.matches("editing checkbox") ||
+    state.matches("editing video") ||
+    state.matches("editing image upload") ||
+    state.matches("editing file upload");
 
   return (
     <PortalPrimitive.Portal>
@@ -54,6 +60,9 @@ const Segment = () => {
           {state.matches("editing phone number") && <PhoneNumberSidebar />}
           {state.matches("editing radio group") && <RadioGroupSidebar />}
           {state.matches("editing checkbox") && <CheckboxSidebar />}
+          {state.matches("editing image upload") && <ImageUploadSidebar />}
+          {state.matches("editing file upload") && <FileUploadSidebar />}
+          {state.matches("editing video") && <VideoSidebar />}
         </div>
       </TileTransition>
     </PortalPrimitive.Portal>
