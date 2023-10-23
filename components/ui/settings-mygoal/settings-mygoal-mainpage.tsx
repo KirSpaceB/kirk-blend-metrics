@@ -71,6 +71,7 @@ import SettingSecurityInnerSidebar from "../settings-security/settings-security-
 import { CheckboxGroup } from "../checkbox-group";
 import { Checkbox } from "../checkbox";
 import { HelperText } from "../helper-text";
+import { CheckboxSelector } from "../checkbox-selector";
 
 const people = [
   { id: 0, name: "Kirk" },
@@ -241,209 +242,135 @@ export default function SettingsMyGoalMainPage() {
       <main className="pl-[294px] pt-[70px]">
         <div className="h-[580px] w-[664px] px-8 pt-8">
           <h1 className="text-base font-semibold text-gray-600">My Goal</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 w-[664px] text-sm text-gray-500">
             Euismod amet dolor sem phasellus viverra ac. Et cras enim cursus
             lobortis nec lorem dapibus proin. Lacus diam rhoncus blandit ipsum
             nibh morbi at gravida in.
           </p>
-          <div className="mt-6">
-            <Dialog>
-              <DialogTrigger asChild className="h-full w-full">
-                <div>
-                  Logo
-                  {/* <AvatarPencil /> */}
-                </div>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <div className="flex flex-col items-center justify-center gap-5">
-                    <h1 className="text-[18px] font-semibold">
-                      Change Profile Image
-                    </h1>
-                    <Avatar className="h-[160px] w-[160px]">
-                      <AvatarImage alt="Man" />
-                      <AvatarFallback>
-                        <div className="text-[60px] font-medium text-[#D0D5DD] text-opacity-50">
-                          CT
-                        </div>
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                </DialogHeader>
-
-                <DialogFooter className="mt-8">
-                  <DialogClose asChild>
-                    <Button variant="light" visual="error" leftIcon={<Trash />}>
-                      RemovePhoto
-                    </Button>
-                  </DialogClose>
-
-                  <DialogClose asChild>
-                    <Button
-                      variant="outlined"
-                      visual="gray"
-                      leftIcon={<ImageIcon width={17} height={17} />}
-                    >
-                      Change Profile Image
-                    </Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
           <div
             id="checkbox-parent-div"
-            className="h-auto w-[664px] rounded-lg border border-gray-200 bg-white"
+            className="mt-6 h-auto w-[664px] rounded-lg border border-gray-200 bg-white"
           >
-            <div className="flex items-center space-x-4 p-4">
-              {/* SixDots Component */}
-              <SixDots />
-
-              {/* Checkbox and Label */}
-              <div>
-                <div className="flex items-center space-x-3">
-                  <Checkbox id="option-one" size="md" value="Option 1" />
-
-                  <div className="flex flex-col justify-center">
-                    <Label
-                      htmlFor="option-one"
-                      size="sm"
-                      className="text-[#475467]"
-                    >
+            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+              <div className="w-[664px]">
+                <CheckboxGroup className="grid">
+                  <CheckboxSelector
+                    size="md"
+                    left={() => <SixDots />}
+                    // Other styles work except border none
+                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                  >
+                    <Label size="sm" className="cursor-pointer">
                       Automate Business Processes
                     </Label>
-                    <HelperText size="sm" className="text-gray-500">
+                    <HelperText size="sm">
                       Streamline your business processes by automating
                       repetitive tasks and workflows.
                     </HelperText>
-                  </div>
-                </div>
+                  </CheckboxSelector>
+                </CheckboxGroup>
               </div>
             </div>
 
-            <div className="flex items-center space-x-4 p-4">
-              {/* SixDots Component */}
-              <SixDots />
-
-              {/* Checkbox and Label */}
-              <div>
-                <div className="flex items-center space-x-3">
-                  <Checkbox id="option-one" size="md" value="Option 1" />
-
-                  <div className="flex flex-col justify-center">
-                    <Label
-                      htmlFor="option-one"
-                      size="sm"
-                      className="text-[#475467]"
-                    >
-                      Integrate Systems & Applications
+            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+              <div className="w-[664px]">
+                <CheckboxGroup className="grid">
+                  <CheckboxSelector
+                    size="md"
+                    left={() => <SixDots />}
+                    // Other styles work except border none
+                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                  >
+                    <Label size="sm" className="cursor-pointer">
+                      Integrate Systems & Applications{" "}
                     </Label>
-                    <HelperText size="sm" className="text-gray-500">
+                    <HelperText size="sm">
                       Connect all your systems and applications in one place for
                       better efficiency.
                     </HelperText>
-                  </div>
-                </div>
+                  </CheckboxSelector>
+                </CheckboxGroup>
               </div>
             </div>
-            <div className="flex items-center space-x-4 p-4">
-              {/* SixDots Component */}
-              <SixDots />
-
-              {/* Checkbox and Label */}
-              <div>
-                <div className="flex items-center space-x-3">
-                  <Checkbox id="option-one" size="md" value="Option 1" />
-
-                  <div className="flex flex-col justify-center">
-                    <Label
-                      htmlFor="option-one"
-                      size="sm"
-                      className="text-[#475467]"
-                    >
-                      Improve Data Quality & Accuracy{" "}
-                    </Label>
-                    <HelperText size="sm" className="text-gray-500">
-                      Ensure your data is accurate and consistent across all
-                      your systems and applications.
-                    </HelperText>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4 p-4">
-              {/* SixDots Component */}
-              <SixDots />
-
-              {/* Checkbox and Label */}
-              <div>
-                <div className="flex items-center space-x-3">
-                  <Checkbox id="option-one" size="md" value="Option 1" />
-
-                  <div className="flex flex-col justify-center">
-                    <Label
-                      htmlFor="option-one"
-                      size="sm"
-                      className="text-[#475467]"
-                    >
+            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+              <div className="w-[664px]">
+                <CheckboxGroup className="grid">
+                  <CheckboxSelector
+                    size="md"
+                    left={() => <SixDots />}
+                    // Other styles work except border none
+                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                  >
+                    <Label size="sm" className="cursor-pointer">
                       Enhance Collaboration & Communication{" "}
                     </Label>
-                    <HelperText size="sm" className="text-gray-500">
+                    <HelperText size="sm">
                       Improve collaboration and communication between teams by
                       integrating all your systems and applications.
                     </HelperText>
-                  </div>
-                </div>
+                  </CheckboxSelector>
+                </CheckboxGroup>
               </div>
             </div>
-            <div className="flex items-center space-x-4 p-4">
-              {/* SixDots Component */}
-              <SixDots />
 
-              {/* Checkbox and Label */}
-              <div>
-                <div className="flex items-center space-x-3">
-                  <Checkbox id="option-one" size="md" value="Option 1" />
-
-                  <div className="flex flex-col justify-center">
-                    <Label
-                      htmlFor="option-one"
-                      size="sm"
-                      className="text-[#475467]"
-                    >
+            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+              <div className="w-[664px]">
+                <CheckboxGroup className="grid">
+                  <CheckboxSelector
+                    size="md"
+                    left={() => <SixDots />}
+                    // Other styles work except border none
+                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                  >
+                    <Label size="sm" className="cursor-pointer">
+                      Reduce IT costs{" "}
+                    </Label>
+                    <HelperText size="sm">
+                      Save money on IT infrastructure by consolidating all your
+                      systems and applications into one platform.
+                    </HelperText>
+                  </CheckboxSelector>
+                </CheckboxGroup>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+              <div className="w-[664px]">
+                <CheckboxGroup className="grid">
+                  <CheckboxSelector
+                    size="md"
+                    left={() => <SixDots />}
+                    // Other styles work except border none
+                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                  >
+                    <Label size="sm" className="cursor-pointer">
                       Improve Customer Experience{" "}
                     </Label>
-                    <HelperText size="sm" className="text-gray-500">
+                    <HelperText size="sm">
                       Deliver a better customer experience by integrating all
                       your customer-facing systems and applications.
                     </HelperText>
-                  </div>
-                </div>
+                  </CheckboxSelector>
+                </CheckboxGroup>
               </div>
             </div>
-            <div className="flex items-center space-x-4 p-4">
-              {/* SixDots Component */}
-              <SixDots />
-
-              {/* Checkbox and Label */}
-              <div>
-                <div className="flex items-center space-x-3">
-                  <Checkbox id="option-one" size="md" value="Option 1" />
-
-                  <div className="flex flex-col justify-center">
-                    <Label
-                      htmlFor="option-one"
-                      size="sm"
-                      className="text-[#475467]"
-                    >
+            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+              <div className="w-[664px]">
+                <CheckboxGroup className="grid">
+                  <CheckboxSelector
+                    size="md"
+                    left={() => <SixDots />}
+                    // Other styles work except border none
+                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                  >
+                    <Label size="sm" className="cursor-pointer">
                       Increase Agility & Scalability{" "}
                     </Label>
-                    <HelperText size="sm" className="text-gray-500">
+                    <HelperText size="sm">
                       Grow your business faster with the ability to quickly and
                       easily add new systems and applications.
                     </HelperText>
-                  </div>
-                </div>
+                  </CheckboxSelector>
+                </CheckboxGroup>
               </div>
             </div>
           </div>

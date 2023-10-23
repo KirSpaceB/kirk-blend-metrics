@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { VariantProps, cva } from "class-variance-authority";
 
@@ -51,20 +52,42 @@ const iconVariants = cva("", {
 export const CheckboxSelector = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> &
-    VariantProps<typeof checkboxSelectorVariants>
->(({ children, className, size, ...props }, ref) => (
-  <CheckboxPrimitive.Root
-    className={checkboxSelectorVariants({ size, className })}
-    {...props}
-    ref={ref}
-  >
-    <span className={checkboxVariants({ size, className })}>
-      <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
-        <Check className={iconVariants({ size })} />
-      </CheckboxPrimitive.Indicator>
-    </span>
-    <div>{children}</div>
-  </CheckboxPrimitive.Root>
-));
+    VariantProps<typeof checkboxSelectorVariants> & {
+      contentClassName?: string;
+      iconClassName?: string;
+      left?: () => React.ReactNode;
+    }
+>(
+  (
+    {
+      children,
+      className,
+      size,
+      contentClassName,
+      iconClassName,
+      left,
+      ...props
+    },
+    ref
+  ) => (
+    <CheckboxPrimitive.Root
+      className={cn(checkboxSelectorVariants({ size, className }))}
+      {...props}
+      ref={ref}
+    >
+      <div>{left?.()}</div>
+      <span
+        className={cn(checkboxVariants({ size, className: contentClassName }))}
+      >
+        <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
+          <Check
+            className={cn(iconVariants({ size, className: iconClassName }))}
+          />
+        </CheckboxPrimitive.Indicator>
+      </span>
+      <div>{children}</div>
+    </CheckboxPrimitive.Root>
+  )
+);
 
 CheckboxSelector.displayName = "CheckboxSelector";

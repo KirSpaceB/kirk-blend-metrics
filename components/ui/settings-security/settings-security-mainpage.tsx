@@ -249,8 +249,8 @@ export default function SettingSecurityMainPage() {
             <Dialog>
               <DialogTrigger asChild className="h-full w-full">
                 <div>
-                  <AcmeLogo className="h-[96px] w-[220px] cursor-pointer" />
-                  {/* <AvatarPencil /> */}
+                  <AcmeLogo className="h-[96px] w-[220px] cursor-pointer text-[#D0D5DD] transition-all duration-300 hover:text-gray-400" />
+                  <AvatarPencil className="rounded-bl-nonebg-red-500 absolute left-[515px] top-[265px] h-[24px] w-[24px] cursor-pointer rounded-br-md rounded-tl-lg rounded-tr-none bg-white pb-0.5 pl-1 pr-0.5 pt-1" />
                 </div>
               </DialogTrigger>
               <DialogContent>
