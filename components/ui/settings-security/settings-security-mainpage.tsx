@@ -66,7 +66,7 @@ import {
 } from "../listbox";
 import { InputLeftAddon } from "../input-addon";
 import { InputGroup } from "../input-group";
-import SettingSecurityInnerSidebar from "./settings-security-inner-sidebar";
+import SettingsAccountInnerSidebar from "../settings-account-sidebar/settings-account-inner-sidebar";
 import { AcmeLogo } from "./acme-logo";
 
 const people = [
@@ -89,7 +89,10 @@ export default function SettingSecurityMainPage() {
   const [selected, setSelected] = React.useState<string>();
   const [langState, setLangState] = React.useState<string>();
   return (
-    <div className="relative min-h-screen bg-gray-50">
+    <div
+      id="SettingSecurityMainPage"
+      className="relative min-h-screen bg-gray-50"
+    >
       <nav className="absolute inset-y-0 left-0 z-[25] flex w-[70px] flex-col items-center border-r border-gray-200 bg-white">
         <div className="flex h-[70px] flex-none items-center justify-center self-stretch border-b border-gray-200">
           <Link
@@ -220,7 +223,7 @@ export default function SettingSecurityMainPage() {
         </div>
       </nav>
       {/* Setting Security Nav basically a <nav element/> */}
-      <SettingSecurityInnerSidebar />
+      <SettingsAccountInnerSidebar />
 
       <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white pl-[25px] pr-[17px]">
         <Breadcrumb spacing="0.5rem">

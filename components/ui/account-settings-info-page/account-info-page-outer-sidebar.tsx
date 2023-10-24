@@ -28,17 +28,17 @@ import React from "react";
 
 export default function AccountIfoPageOuterSidebar() {
   return (
-    <nav className="fixed inset-y-0 flex h-screen w-[70px] flex-col items-center border-r border-gray-200 bg-white">
-      <div className="flex justify-center self-stretch border-b border-gray-200 py-[22px]">
+    <nav className="absolute inset-y-0 left-0 z-[25] flex w-[70px] flex-col items-center border-r border-gray-200 bg-white">
+      <div className="flex h-[70px] flex-none items-center justify-center self-stretch border-b border-gray-200">
         <Link
-          className="text-primary-500 focus:outline-none"
           aria-label="Logo"
+          className="text-primary-500 focus:outline-none"
           href="/"
         >
           <Logo />
         </Link>
       </div>
-      <div className="flex flex-auto flex-col items-center justify-between self-stretch">
+      <div className="flex flex-auto flex-col items-center justify-between gap-y-5 self-stretch">
         <div className="flex flex-col gap-y-5 pt-5">
           <TooltipProvider>
             <Tooltip>
@@ -81,7 +81,6 @@ export default function AccountIfoPageOuterSidebar() {
             </Tooltip>
           </TooltipProvider>
         </div>
-
         <div className="flex flex-col gap-y-5">
           <TooltipProvider>
             <Tooltip>
@@ -103,19 +102,18 @@ export default function AccountIfoPageOuterSidebar() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar>
-                <AvatarImage src="/man.jpg" alt="Man" />
+                <AvatarImage alt="Man" src="/man.jpg" />
                 <AvatarFallback>M</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="right">
-              <DropdownMenuLabel className="font-normal" size="md">
+              <DropdownMenuLabel className="font-normal">
                 <div className="inline-flex items-center gap-x-3">
                   <Avatar size="md">
-                    <AvatarImage src="/man.jpg" alt="Man" />
+                    <AvatarImage alt="Man" src="/man.jpg" />
                     <AvatarFallback>M</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">

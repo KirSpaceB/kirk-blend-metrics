@@ -14,7 +14,7 @@ import { Label } from "../label";
 
 import React from "react";
 import { Badge } from "../badge";
-import { AvatarPencil } from "@/components/icons";
+import { AvatarPencil, ImageIcon, Trash } from "@/components/icons";
 import {
   Listbox,
   ListboxButton,
@@ -22,6 +22,18 @@ import {
   ListboxOptions,
 } from "../listbox";
 import AccountInfoSettingsProfile from "./account-info-settings-profile";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTrigger,
+} from "../dialog";
+import { AcmeLogo } from "../settings-security/acme-logo";
+import { Button } from "../button";
+import { InputGroup } from "../input-group";
+import { InputLeftAddon } from "../input-addon";
 
 const people = [
   { id: 0, name: "Kirk" },
@@ -43,69 +55,139 @@ export default function PersonalInfoInterface() {
   const [langState, setLangState] = React.useState<string>();
 
   return (
-    <div className="bg-[#F9FAFB] pl-[370px] pt-[110px]">
-      <div className="h-[580px] w-[664px]">
-        <div className="flex flex-col gap-3">
-          <h1 className="font-inter text-base font-semibold capitalize leading-6">
-            Personal Info
-          </h1>
-          <p className="text-sm font-normal text-[#667085]">
-            Euismod amet dolor sem phasellus viverra ac. Et cras enim cursus
-            lobortis nec lorem dapibus proin. Lacus diam rhoncus blandit ipsum
-            nibh morbi at gravida in.
-          </p>
-
-          <div id="Avatar Parent Div" className="mb-[32px] mt-[24px]">
-            <div className="inline-flex items-center gap-x-3">
-              <AccountInfoSettingsProfile />
-
-              <div className="flex flex-col pl-6">
-                <div className="flex flex-row items-center gap-6">
-                  <span className="text-2xl font-medium capitalize text-[#475467]">
-                    Christopher Torres
-                  </span>
-                  <Badge size="sm" visual="primary" variant="rounded">
-                    Admin
-                  </Badge>
+    <main className="pl-[294px] pt-[70px]">
+      <div className="h-[580px] w-[664px] px-8 pt-8">
+        <h1 className="text-base font-semibold text-gray-600">Company Info</h1>
+        <p className="mt-1 text-sm text-gray-500">
+          Euismod amet dolor sem phasellus viverra ac. Et cras enim cursus
+          lobortis nec lorem dapibus proin. Lacus diam rhoncus blandit ipsum
+          nibh morbi at gravida in.
+        </p>
+        <div className="mt-6">
+          <Dialog>
+            <DialogTrigger asChild className="h-full w-full">
+              {/* Investigate the margin top issue with this component specifically. */}
+              {/* This is where profile picture is suppose to be */}
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <div className="flex flex-col items-center justify-center gap-5">
+                  <h1 className="text-[18px] font-semibold">
+                    Change Profile Image
+                  </h1>
+                  <Avatar className="h-[160px] w-[160px]">
+                    <AvatarImage alt="Man" />
+                    <AvatarFallback>
+                      <div className="text-[60px] font-medium text-[#D0D5DD] text-opacity-50">
+                        CT
+                      </div>
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
-                <span className="text-sm font-normal text-[#667085]">
-                  chris@blendmetrics.com
-                </span>
-              </div>
-            </div>
-          </div>
+              </DialogHeader>
+
+              <DialogFooter className="mt-8">
+                <DialogClose asChild>
+                  <Button variant="light" visual="error" leftIcon={<Trash />}>
+                    RemovePhoto
+                  </Button>
+                </DialogClose>
+
+                <DialogClose asChild>
+                  <Button
+                    variant="outlined"
+                    visual="gray"
+                    leftIcon={<ImageIcon width={17} height={17} />}
+                  >
+                    Change Profile Image
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div id="Grid Parent" className="mt-8 h-[580px] w-[664px]">
           <div id="Grid" className="grid grid-cols-2 gap-6">
             {/* Grid Col 1 */}
             <div className="space-y-1.5">
               <Label htmlFor="email" size="sm">
-                First Name
+                Company Name
               </Label>
               <Input
                 id="email"
-                placeholder="olivia@untitledui.com"
+                placeholder="e.g. Acme Analytics"
                 type="email"
               />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="email" size="sm">
-                Last Name
+                Company Website
               </Label>
-              <Input
-                id="email"
-                placeholder="olivia@untitledui.com"
-                type="email"
-              />
+              <InputGroup>
+                <InputLeftAddon>https://</InputLeftAddon>
+                <Input placeholder="www.yourwebsite.com" type="email" />
+              </InputGroup>
             </div>
             {/* Grid col 2 */}
             <div className="space-y-1.5">
               <Label htmlFor="email" size="sm">
-                Email
+                Industry
               </Label>
-              <Input
-                id="email"
-                placeholder="olivia@untitledui.com"
-                type="email"
-              />
+              <Listbox value={selected} onChange={setSelected}>
+                <ListboxButton placeholder="Select Type" />
+                <ListboxOptions className="z-10">
+                  {people.map((person) => (
+                    <ListboxOption key={person.name} value={person.name}>
+                      {person.name}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </Listbox>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" size="sm">
+                Business Type
+              </Label>
+              <Listbox value={selected} onChange={setSelected}>
+                <ListboxButton placeholder="Select Business" />
+                <ListboxOptions className="z-10">
+                  {people.map((person) => (
+                    <ListboxOption key={person.name} value={person.name}>
+                      {person.name}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </Listbox>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" size="sm">
+                Company Size
+              </Label>
+              <Listbox value={selected} onChange={setSelected}>
+                <ListboxButton placeholder="1 - 10" />
+                <ListboxOptions className="z-10">
+                  {people.map((person) => (
+                    <ListboxOption key={person.name} value={person.name}>
+                      {person.name}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </Listbox>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" size="sm">
+                Annual Revenue
+              </Label>
+              <Listbox value={selected} onChange={setSelected}>
+                <ListboxButton placeholder="Select revenue" />
+                <ListboxOptions className="z-10">
+                  {people.map((person) => (
+                    <ListboxOption key={person.name} value={person.name}>
+                      {person.name}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </Listbox>
             </div>
             <div className=" w-auto ">
               <div className="space-y-1.5">
@@ -138,10 +220,10 @@ export default function PersonalInfoInterface() {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="email" size="sm">
-                What team do you work on?
+                Time Zone?
               </Label>
               <Listbox value={selected} onChange={setSelected}>
-                <ListboxButton placeholder="Select Team" />
+                <ListboxButton placeholder="(GMT-05:00) America/New_York" />
                 <ListboxOptions className="z-10">
                   {people.map((person) => (
                     <ListboxOption key={person.name} value={person.name}>
@@ -151,34 +233,9 @@ export default function PersonalInfoInterface() {
                 </ListboxOptions>
               </Listbox>
             </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="email" size="sm">
-                Job Title
-              </Label>
-              <Input id="email" placeholder="President" type="email" />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email" size="sm">
-                Language?
-              </Label>
-              <Listbox value={langState} onChange={setLangState}>
-                <ListboxButton placeholder="English" Fix />
-                <ListboxOptions>
-                  {languages.map((language) => (
-                    <ListboxOption
-                      key={language.langname}
-                      value={language.langname}
-                    >
-                      {language.langname}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </Listbox>
-            </div>
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

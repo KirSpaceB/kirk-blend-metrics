@@ -67,11 +67,12 @@ import {
 } from "../listbox";
 import { InputLeftAddon } from "../input-addon";
 import { InputGroup } from "../input-group";
-import SettingSecurityInnerSidebar from "../settings-security/settings-security-inner-sidebar";
+import SettingsAccountInnerSidebar from "../settings-account-sidebar/settings-account-inner-sidebar";
 import { CheckboxGroup } from "../checkbox-group";
 import { Checkbox } from "../checkbox";
 import { HelperText } from "../helper-text";
 import { CheckboxSelector } from "../checkbox-selector";
+import { ScrollArea, ScrollBar } from "../scroll-area";
 
 const people = [
   { id: 0, name: "Kirk" },
@@ -224,7 +225,7 @@ export default function SettingsMyGoalMainPage() {
         </div>
       </nav>
       {/* Setting Security Nav basically a <nav element/> */}
-      <SettingSecurityInnerSidebar />
+      <SettingsAccountInnerSidebar />
 
       <nav className="absolute left-[70px] right-0 top-0 z-20 flex h-[70px] items-center justify-between border-b border-gray-200 bg-white pl-[25px] pr-[17px]">
         <Breadcrumb spacing="0.5rem">
@@ -247,133 +248,139 @@ export default function SettingsMyGoalMainPage() {
             lobortis nec lorem dapibus proin. Lacus diam rhoncus blandit ipsum
             nibh morbi at gravida in.
           </p>
-          <div
-            id="checkbox-parent-div"
-            className="mt-6 h-auto w-[664px] rounded-lg border border-gray-200 bg-white"
+          <ScrollArea
+            className="mt-6 h-[600px] w-[664px]"
+            scrollBar={<ScrollBar className="w-4 p-1" />}
+            type="scroll"
           >
-            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
-              <div className="w-[664px]">
-                <CheckboxGroup className="grid">
-                  <CheckboxSelector
-                    size="md"
-                    left={() => <SixDots />}
-                    // Other styles work except border none
-                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
-                  >
-                    <Label size="sm" className="cursor-pointer">
-                      Automate Business Processes
-                    </Label>
-                    <HelperText size="sm">
-                      Streamline your business processes by automating
-                      repetitive tasks and workflows.
-                    </HelperText>
-                  </CheckboxSelector>
-                </CheckboxGroup>
+            <div
+              id="checkbox-parent-div"
+              className=" h-[624px] w-[664px] overflow-y-hidden rounded-lg border border-gray-200 bg-white"
+            >
+              <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+                <div className="w-[664px]">
+                  <CheckboxGroup className="grid">
+                    <CheckboxSelector
+                      size="md"
+                      left={() => <SixDots />}
+                      // Other styles work except border none
+                      className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                    >
+                      <Label size="sm" className="cursor-pointer">
+                        Automate Business Processes
+                      </Label>
+                      <HelperText size="sm">
+                        Streamline your business processes by automating
+                        repetitive tasks and workflows.
+                      </HelperText>
+                    </CheckboxSelector>
+                  </CheckboxGroup>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
-              <div className="w-[664px]">
-                <CheckboxGroup className="grid">
-                  <CheckboxSelector
-                    size="md"
-                    left={() => <SixDots />}
-                    // Other styles work except border none
-                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
-                  >
-                    <Label size="sm" className="cursor-pointer">
-                      Integrate Systems & Applications{" "}
-                    </Label>
-                    <HelperText size="sm">
-                      Connect all your systems and applications in one place for
-                      better efficiency.
-                    </HelperText>
-                  </CheckboxSelector>
-                </CheckboxGroup>
+              <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+                <div className="w-[664px]">
+                  <CheckboxGroup className="grid">
+                    <CheckboxSelector
+                      size="md"
+                      left={() => <SixDots />}
+                      // Other styles work except border none
+                      className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                    >
+                      <Label size="sm" className="cursor-pointer">
+                        Integrate Systems & Applications{" "}
+                      </Label>
+                      <HelperText size="sm">
+                        Connect all your systems and applications in one place
+                        for better efficiency.
+                      </HelperText>
+                    </CheckboxSelector>
+                  </CheckboxGroup>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
-              <div className="w-[664px]">
-                <CheckboxGroup className="grid">
-                  <CheckboxSelector
-                    size="md"
-                    left={() => <SixDots />}
-                    // Other styles work except border none
-                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
-                  >
-                    <Label size="sm" className="cursor-pointer">
-                      Enhance Collaboration & Communication{" "}
-                    </Label>
-                    <HelperText size="sm">
-                      Improve collaboration and communication between teams by
-                      integrating all your systems and applications.
-                    </HelperText>
-                  </CheckboxSelector>
-                </CheckboxGroup>
+              <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+                <div className="w-[664px]">
+                  <CheckboxGroup className="grid">
+                    <CheckboxSelector
+                      size="md"
+                      left={() => <SixDots />}
+                      // Other styles work except border none
+                      className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                    >
+                      <Label size="sm" className="cursor-pointer">
+                        Enhance Collaboration & Communication{" "}
+                      </Label>
+                      <HelperText size="sm">
+                        Improve collaboration and communication between teams by
+                        integrating all your systems and applications.
+                      </HelperText>
+                    </CheckboxSelector>
+                  </CheckboxGroup>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
-              <div className="w-[664px]">
-                <CheckboxGroup className="grid">
-                  <CheckboxSelector
-                    size="md"
-                    left={() => <SixDots />}
-                    // Other styles work except border none
-                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
-                  >
-                    <Label size="sm" className="cursor-pointer">
-                      Reduce IT costs{" "}
-                    </Label>
-                    <HelperText size="sm">
-                      Save money on IT infrastructure by consolidating all your
-                      systems and applications into one platform.
-                    </HelperText>
-                  </CheckboxSelector>
-                </CheckboxGroup>
+              <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+                <div className="w-[664px]">
+                  <CheckboxGroup className="grid">
+                    <CheckboxSelector
+                      size="md"
+                      left={() => <SixDots />}
+                      // Other styles work except border none
+                      className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                    >
+                      <Label size="sm" className="cursor-pointer">
+                        Reduce IT costs{" "}
+                      </Label>
+                      <HelperText size="sm">
+                        Save money on IT infrastructure by consolidating all
+                        your systems and applications into one platform.
+                      </HelperText>
+                    </CheckboxSelector>
+                  </CheckboxGroup>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+                <div className="w-[664px]">
+                  <CheckboxGroup className="grid">
+                    <CheckboxSelector
+                      size="md"
+                      left={() => <SixDots />}
+                      // Other styles work except border none
+                      className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                    >
+                      <Label size="sm" className="cursor-pointer">
+                        Improve Customer Experience{" "}
+                      </Label>
+                      <HelperText size="sm">
+                        Deliver a better customer experience by integrating all
+                        your customer-facing systems and applications.
+                      </HelperText>
+                    </CheckboxSelector>
+                  </CheckboxGroup>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
+                <div className="w-[664px]">
+                  <CheckboxGroup className="grid">
+                    <CheckboxSelector
+                      size="md"
+                      left={() => <SixDots />}
+                      // Other styles work except border none
+                      className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
+                    >
+                      <Label size="sm" className="cursor-pointer">
+                        Increase Agility & Scalability{" "}
+                      </Label>
+                      <HelperText size="sm">
+                        Grow your business faster with the ability to quickly
+                        and easily add new systems and applications.
+                      </HelperText>
+                    </CheckboxSelector>
+                  </CheckboxGroup>
+                </div>
               </div>
             </div>
-            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
-              <div className="w-[664px]">
-                <CheckboxGroup className="grid">
-                  <CheckboxSelector
-                    size="md"
-                    left={() => <SixDots />}
-                    // Other styles work except border none
-                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
-                  >
-                    <Label size="sm" className="cursor-pointer">
-                      Improve Customer Experience{" "}
-                    </Label>
-                    <HelperText size="sm">
-                      Deliver a better customer experience by integrating all
-                      your customer-facing systems and applications.
-                    </HelperText>
-                  </CheckboxSelector>
-                </CheckboxGroup>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4 p-4 hover:bg-gray-50">
-              <div className="w-[664px]">
-                <CheckboxGroup className="grid">
-                  <CheckboxSelector
-                    size="md"
-                    left={() => <SixDots />}
-                    // Other styles work except border none
-                    className="gap-x-3 border border-none pl-0 hover:border hover:border-none hover:bg-gray-50 hover:ring-0 focus:ring-0"
-                  >
-                    <Label size="sm" className="cursor-pointer">
-                      Increase Agility & Scalability{" "}
-                    </Label>
-                    <HelperText size="sm">
-                      Grow your business faster with the ability to quickly and
-                      easily add new systems and applications.
-                    </HelperText>
-                  </CheckboxSelector>
-                </CheckboxGroup>
-              </div>
-            </div>
-          </div>
+          </ScrollArea>
         </div>
       </main>
     </div>
