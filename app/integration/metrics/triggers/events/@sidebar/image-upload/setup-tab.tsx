@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -17,8 +18,9 @@ import {
   RadioGroup,
   CheckboxGroup,
   Checkbox,
+  NumberInput,
 } from "@/components/ui";
-import { useEnhancedWatch } from "@/lib/hooks";
+import { useEnhancedWatch, useUpdateEffect } from "@/lib/hooks";
 import { pick } from "@/lib/utils";
 import { SettingMachineContext } from "@/machines";
 
@@ -26,11 +28,11 @@ const schema = z.object({
   label: z.string().max(30, "Must contain at most 30 character(s)"),
   optional: z.boolean(),
   hasQuantity: z.boolean(),
-  maxQuantity: z.number().optional(),
+  maxQuantity: z.number(),
   allowAllOrCustomImageExtensions: z.enum(["all", "custom"]),
   tooltip: z.string().max(30, "Must contain at most 30 character(s)"),
   hint: z.string().max(30, "Must contain at most 30 character(s)"),
-  allowedImageExtensions: z.array(z.string()).optional(),
+  allowedImageExtensions: z.array(z.string()),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -42,6 +44,17 @@ const defaultValues: FormValues = {
   allowAllOrCustomImageExtensions: "all",
   tooltip: "",
   hint: "",
+  allowedImageExtensions: [
+    ".jpeg",
+    ".png",
+    ".webp",
+    ".heic",
+    ".gif",
+    ".svg",
+    ".lottie",
+    ".bmp",
+  ],
+  maxQuantity: 1,
 };
 
 export default function SetupTab() {
@@ -70,17 +83,38 @@ export default function SetupTab() {
   const { control, register, handleSubmit, getValues } = useForm({
     resolver: zodResolver(schema),
     values: { ...defaultValues, ...values },
-    shouldUnregister: true,
   });
 
   const { hasQuantity, allowAllOrCustomImageExtensions } = useEnhancedWatch({
     control,
-    onChange: (variables) =>
+    onChange: () =>
       send({
         type: "UPDATE",
         setting: getValues(),
       }),
   });
+
+  useUpdateEffect(() => {
+    if (allowAllOrCustomImageExtensions === "all") {
+      send({
+        type: "UPDATE",
+        setting: {
+          allowedImageExtensions: defaultValues.allowedImageExtensions,
+        },
+      });
+    }
+  }, [allowAllOrCustomImageExtensions, send]);
+
+  useUpdateEffect(() => {
+    if (!hasQuantity) {
+      send({
+        type: "UPDATE",
+        setting: {
+          maxQuantity: defaultValues.maxQuantity,
+        },
+      });
+    }
+  }, [hasQuantity, send]);
 
   const onSubmit: SubmitHandler<FormValues> = (variables) => {};
 
@@ -167,11 +201,12 @@ export default function SetupTab() {
             <Controller
               control={control}
               name="maxQuantity"
-              render={({ field }) => (
-                <Input
-                  type="number"
+              render={({ field: { value, onChange } }) => (
+                <NumberInput
+                  value={value}
+                  onValueChange={onChange}
+                  min={1}
                   placeholder="Enter Max Images Quantity"
-                  {...field}
                 />
               )}
             />
@@ -215,20 +250,20 @@ export default function SetupTab() {
           <Controller
             control={control}
             name="allowedImageExtensions"
-            render={({ field: { value = [], onChange } }) => (
+            render={({ field: { value, onChange } }) => (
               <CheckboxGroup className="mt-4 space-y-3">
                 <div className="flex items-center gap-x-2">
                   <Checkbox
                     size="lg"
                     id="jpeg"
-                    checked={value.includes("jpeg")}
+                    checked={value.includes(".jpeg")}
                     onCheckedChange={() => {
-                      const hasJpeg = value.includes("jpeg");
+                      const hasJpeg = value.includes(".jpeg");
                       hasJpeg
                         ? onChange(
-                            value.filter((extension) => extension !== "jpeg")
+                            value.filter((extension) => extension !== ".jpeg")
                           )
-                        : onChange([...value, "jpeg"]);
+                        : onChange([...value, ".jpeg"]);
                     }}
                   />
                   <Label className="text-gray-700" size="sm" id="jpeg">
@@ -239,14 +274,14 @@ export default function SetupTab() {
                   <Checkbox
                     size="lg"
                     id="png"
-                    checked={value.includes("png")}
+                    checked={value.includes(".png")}
                     onCheckedChange={() => {
-                      const hasPng = value.includes("png");
+                      const hasPng = value.includes(".png");
                       hasPng
                         ? onChange(
-                            value.filter((extension) => extension !== "png")
+                            value.filter((extension) => extension !== ".png")
                           )
-                        : onChange([...value, "png"]);
+                        : onChange([...value, ".png"]);
                     }}
                   />
                   <Label className="text-gray-700" size="sm" id="png">
@@ -257,14 +292,14 @@ export default function SetupTab() {
                   <Checkbox
                     size="lg"
                     id="webp"
-                    checked={value.includes("webp")}
+                    checked={value.includes(".webp")}
                     onCheckedChange={() => {
-                      const hasWebp = value.includes("webp");
+                      const hasWebp = value.includes(".webp");
                       hasWebp
                         ? onChange(
-                            value.filter((extension) => extension !== "webp")
+                            value.filter((extension) => extension !== ".webp")
                           )
-                        : onChange([...value, "webp"]);
+                        : onChange([...value, ".webp"]);
                     }}
                   />
                   <Label className="text-gray-700" size="sm" id="webp">
@@ -274,15 +309,33 @@ export default function SetupTab() {
                 <div className="flex items-center gap-x-2">
                   <Checkbox
                     size="lg"
-                    id="gif"
-                    checked={value.includes("gif")}
+                    id="heic"
+                    checked={value.includes(".heic")}
                     onCheckedChange={() => {
-                      const hasGif = value.includes("gif");
+                      const hasSvg = value.includes(".heic");
+                      hasSvg
+                        ? onChange(
+                            value.filter((extension) => extension !== ".heic")
+                          )
+                        : onChange([...value, ".heic"]);
+                    }}
+                  />
+                  <Label className="text-gray-700" size="sm" id="heic">
+                    HEIC
+                  </Label>
+                </div>
+                <div className="flex items-center gap-x-2">
+                  <Checkbox
+                    size="lg"
+                    id="gif"
+                    checked={value.includes(".gif")}
+                    onCheckedChange={() => {
+                      const hasGif = value.includes(".gif");
                       hasGif
                         ? onChange(
-                            value.filter((extension) => extension !== "gif")
+                            value.filter((extension) => extension !== ".gif")
                           )
-                        : onChange([...value, "gif"]);
+                        : onChange([...value, ".gif"]);
                     }}
                   />
                   <Label className="text-gray-700" size="sm" id="gif">
@@ -293,32 +346,50 @@ export default function SetupTab() {
                   <Checkbox
                     size="lg"
                     id="svg"
-                    checked={value.includes("svg")}
+                    checked={value.includes(".svg")}
                     onCheckedChange={() => {
-                      const hasSvg = value.includes("svg");
+                      const hasSvg = value.includes(".svg");
                       hasSvg
                         ? onChange(
-                            value.filter((extension) => extension !== "svg")
+                            value.filter((extension) => extension !== ".svg")
                           )
-                        : onChange([...value, "svg"]);
+                        : onChange([...value, ".svg"]);
                     }}
                   />
-                  <Label className="text-gray-700" size="sm" id="gif">
+                  <Label className="text-gray-700" size="sm" id="svg">
                     SVG
                   </Label>
                 </div>
                 <div className="flex items-center gap-x-2">
                   <Checkbox
                     size="lg"
-                    id="bmp"
-                    checked={value.includes("bmp")}
+                    id="lottie"
+                    checked={value.includes(".lottie")}
                     onCheckedChange={() => {
-                      const hasSvg = value.includes("bmp");
+                      const hasSvg = value.includes(".lottie");
                       hasSvg
                         ? onChange(
-                            value.filter((extension) => extension !== "bmp")
+                            value.filter((extension) => extension !== ".lottie")
                           )
-                        : onChange([...value, "bmp"]);
+                        : onChange([...value, ".lottie"]);
+                    }}
+                  />
+                  <Label className="text-gray-700" size="sm" id="lottie">
+                    LOTTIE
+                  </Label>
+                </div>
+                <div className="flex items-center gap-x-2">
+                  <Checkbox
+                    size="lg"
+                    id="bmp"
+                    checked={value.includes(".bmp")}
+                    onCheckedChange={() => {
+                      const hasSvg = value.includes(".bmp");
+                      hasSvg
+                        ? onChange(
+                            value.filter((extension) => extension !== ".bmp")
+                          )
+                        : onChange([...value, ".bmp"]);
                     }}
                   />
                   <Label className="text-gray-700" size="sm" id="bmp">

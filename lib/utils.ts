@@ -200,6 +200,10 @@ export function toPxIfNumber(arg: string | number) {
   return arg;
 }
 
+export function toPercentage(arg: number) {
+  return `${arg}%`;
+}
+
 export function get2DArray<T extends any[]>(arr: T, size = 2): T[] {
   if (isEmpty(arr) || size < 1) {
     return [];
@@ -356,4 +360,10 @@ export function isNaturalNumber(number?: number) {
     return false;
   }
   return number > 0;
+}
+
+export function toString(value?: number): undefined | string {
+  if (!value) return;
+
+  return `${value}`;
 }

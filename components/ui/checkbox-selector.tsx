@@ -2,6 +2,7 @@ import * as React from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { Check } from "lucide-react";
 import { VariantProps, cva } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const checkboxSelectorVariants = cva(
   "group flex items-center gap-x-5 rounded-[7px] border border-gray-200 text-left data-[state=checked]:border-primary-500 data-[state=checked]:ring-1 data-[state=checked]:ring-primary-500 hover:border-gray-300 hover:ring-1 hover:ring-gray-300 data-[state=checked]:hover:border-primary-500 data-[state=checked]:hover:ring-primary-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:border-gray-200 disabled:opacity-50 disabled:data-[state=checked]:border-gray-200 disabled:data-[state=checked]:ring-0 disabled:hover:border-gray-200 disabled:hover:ring-0",
@@ -51,20 +52,42 @@ const iconVariants = cva("", {
 export const CheckboxSelector = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> &
-    VariantProps<typeof checkboxSelectorVariants>
->(({ children, className, size, ...props }, ref) => (
-  <CheckboxPrimitive.Root
-    className={checkboxSelectorVariants({ size, className })}
-    {...props}
-    ref={ref}
-  >
-    <span className={checkboxVariants({ size, className })}>
-      <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
-        <Check className={iconVariants({ size })} />
-      </CheckboxPrimitive.Indicator>
-    </span>
-    <div>{children}</div>
-  </CheckboxPrimitive.Root>
-));
+    VariantProps<typeof checkboxSelectorVariants> & {
+      contentClassName?: string;
+      iconClassName?: string;
+      left?: () => React.ReactNode;
+    }
+>(
+  (
+    {
+      children,
+      className,
+      size,
+      contentClassName,
+      iconClassName,
+      left,
+      ...props
+    },
+    ref
+  ) => (
+    <CheckboxPrimitive.Root
+      className={cn(checkboxSelectorVariants({ size, className }))}
+      {...props}
+      ref={ref}
+    >
+      <div>{left?.()}</div>
+      <span
+        className={cn(checkboxVariants({ size, className: contentClassName }))}
+      >
+        <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
+          <Check
+            className={cn(iconVariants({ size, className: iconClassName }))}
+          />
+        </CheckboxPrimitive.Indicator>
+      </span>
+      <div>{children}</div>
+    </CheckboxPrimitive.Root>
+  )
+);
 
 CheckboxSelector.displayName = "CheckboxSelector";

@@ -1,0 +1,79 @@
+.months {
+  @apply flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0;
+}
+
+.month {
+  @apply space-y-3;
+}
+
+.caption {
+  @apply relative flex h-10 items-center justify-center;
+}
+
+.caption-label {
+  @apply text-base font-semibold text-gray-700;
+}
+
+.nav {
+  @apply flex items-center space-x-1;
+}
+
+.nav-button-previous {
+  @apply absolute left-0;
+}
+
+.nav-button-next {
+  @apply absolute right-0;
+}
+
+.table {
+  @apply w-full border-collapse;
+}
+
+.head-row {
+  @apply flex;
+}
+
+.head-cell {
+  @apply flex h-10 w-10 items-center justify-between rounded-lg text-sm font-medium text-gray-700;
+}
+
+.row {
+  @apply mt-1 flex w-full;
+}
+
+.cell {
+  @apply relative p-0 text-center focus-within:relative focus-within:z-20;
+}
+
+.cell--range {
+  @apply [&:has(>.day-range-end)]:rounded-r-full [&:has(>.day-range-start)]:rounded-l-full first:[&:has([aria-selected])]:rounded-l-full last:[&:has([aria-selected])]:rounded-r-full;
+}
+
+.cell--not-in-range {
+  @apply [&:has([aria-selected])]:rounded-full;
+}
+
+.day-today {
+  @apply bg-gray-100 font-medium text-gray-700;
+}
+
+.day-outside {
+  @apply text-gray-500;
+}
+
+.day-selected {
+  @apply bg-primary-500 font-medium text-white hover:bg-primary-500 hover:text-white focus:bg-primary-500 focus:text-white;
+}
+
+.day-disabled {
+  @apply text-gray-500/100;
+}
+
+.range-middle {
+  @apply aria-selected:bg-primary-50 aria-selected:text-gray-700 hover:aria-selected:bg-primary-50 hover:aria-selected:text-gray-700 focus:aria-selected:bg-primary-50 focus:aria-selected:text-gray-700;
+}
+
+.day-hidden {
+  @apply invisible;
+}

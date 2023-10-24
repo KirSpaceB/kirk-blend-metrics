@@ -48,22 +48,14 @@ const schema = z.object({
     .string()
     .max(10, "Must contain at most 10 character(s)")
     .min(1, "Must contain at least 1 character(s)"),
-  logo: z.object(
-    {
-      data: z.any(),
-    },
-    {
-      required_error: "Must contain at least 1 image(s)",
-    }
-  ),
-  additionalImage: z.object(
-    {
-      data: z.any(),
-    },
-    {
-      required_error: "Must contain at least 1 image(s)",
-    }
-  ),
+  logo: z
+    .array(z.any())
+    .min(1, "Must contain at least 1 image(s)")
+    .max(1, "Must contain at most 1 image(s)"),
+  additionalImage: z
+    .array(z.any())
+    .min(1, "Must contain at least 1 image(s)")
+    .max(10, "Must contain at most 1 image(s)"),
 });
 
 type FormValues = {
@@ -89,8 +81,10 @@ function General() {
   const logo = useWatch({ control, name: "logo" });
 
   React.useEffect(() => {
-    const { data } = logo || {};
-    const cleanup = getPreview(isArray(data) ? undefined : data, setPreview);
+    const [item] = logo || [];
+    const { data } = item || {};
+    const cleanup = getPreview(data, setPreview);
+
     return cleanup;
   }, [logo]);
 
@@ -333,7 +327,12 @@ function General() {
             control={control}
             name="additionalImage"
             render={({ field: { onChange, value, onBlur } }) => (
-              <Dropzone onChange={onChange} value={value} onBlur={onBlur} />
+              <Dropzone
+                onChange={onChange}
+                value={value}
+                onBlur={onBlur}
+                maxFiles={10}
+              />
             )}
           />
           <HookFormErrorMessage

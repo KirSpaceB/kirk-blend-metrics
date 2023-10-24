@@ -39,12 +39,10 @@ const schema = z.discriminatedUnion("value", [
   }),
   z.object({
     value: z.literal("API-FILE"),
-    file: z.object(
-      {
-        data: z.any(),
-      },
-      { required_error: "Must select 1 file(s)" }
-    ),
+    file: z
+      .array(z.any())
+      .min(1, "Must contain at least 1 file(s)")
+      .max(1, "Must contain at most 1 file(s)"),
   }),
 ]);
 

@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 
 import { addEvent } from "./dom";
-import { debounce } from "./utils";
+import { debounce, isEmpty } from "./utils";
 
 export function useDebounce<TValue>(value: TValue, wait?: number) {
   const [state, setState] = React.useState(value);

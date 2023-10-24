@@ -11,7 +11,6 @@ import {
   TooltipTrigger,
 } from "./ui";
 import { HelpCircle } from "./icons";
-import { IMAGE_EXTENSIONS } from "@/lib/constants";
 
 interface ImageUploadPreviewProps extends Setting {}
 
@@ -24,11 +23,6 @@ export const ImageUploadPreview = (props: ImageUploadPreviewProps) => {
     maxQuantity,
     allowedImageExtensions,
   } = props;
-
-  const accept = allowedImageExtensions?.reduce(
-    (preview, current) => ({ ...preview, ...IMAGE_EXTENSIONS[current] }),
-    {} as Record<string, string[]>
-  );
 
   return (
     <div className="space-y-1.5">
@@ -60,7 +54,11 @@ export const ImageUploadPreview = (props: ImageUploadPreviewProps) => {
       {hint && <HelperText size="sm">{hint}</HelperText>}
 
       <div className="mt-3">
-        <Dropzone icon={true} maxFiles={maxQuantity} accept={accept} />
+        <Dropzone
+          icon
+          maxFiles={maxQuantity}
+          accepted={allowedImageExtensions}
+        />
       </div>
     </div>
   );

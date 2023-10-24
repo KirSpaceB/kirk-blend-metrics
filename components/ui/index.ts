@@ -46,3 +46,4 @@ export * from "./command-palette";
 export * from "./dropdown";
 export * from "./listbox";
 export * from "./rearrange";
+export * from "./number-input";

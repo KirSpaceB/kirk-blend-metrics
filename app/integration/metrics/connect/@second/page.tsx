@@ -48,7 +48,7 @@ import {
 } from "@/components/icons";
 import { hookFormHasError, isNull } from "@/lib/utils";
 import { RemainCharacters } from "@/components/remain-characters";
-import { openTab } from "@/lib/dom";
+import { openTab, triggerPopup } from "@/lib/dom";
 
 const schema = z.object({
   value: z.enum([
@@ -420,7 +420,7 @@ export default function SecondTab() {
                     {value ? (
                       <Button
                         variant="link"
-                        onClick={() => openTab(`/auth?type=${value}`)}
+                        onClick={() => triggerPopup(`/auth?type=${value}`)}
                       >
                         <Eye />
                         Preview

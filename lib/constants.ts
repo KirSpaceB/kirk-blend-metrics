@@ -23,28 +23,3 @@ export const OPTIONS = [
   "Last Date & Time",
   "Country Code",
 ];
-
-export const EXIT_ANIMATION = {
-  opacity: 0,
-};
-
-export const IMAGE_EXTENSIONS: Record<string, Record<string, string[]>> = {
-  png: {
-    "image/png": [".png"],
-  },
-  jpeg: {
-    "image/jpeg": [".jpeg", ".jpg"],
-  },
-  webp: {
-    "image/webp": [".webp"],
-  },
-  gif: {
-    "image/gif": [".gif"],
-  },
-  svg: {
-    "image/svg+xml": [".svg"],
-  },
-  bmp: {
-    "image/bmp": [".bmp"],
-  },
-};

@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Setting } from "@/machines";
 import {
-  Dropzone,
+  CircularProgressDropzone,
   HelperText,
   Label,
   Tooltip,
@@ -15,7 +15,8 @@ import { HelpCircle } from "./icons";
 interface FileUploadPreviewProps extends Setting {}
 
 export const FileUploadPreview = (props: FileUploadPreviewProps) => {
-  const { label, hint, tooltip, optional } = props;
+  const { label, hint, tooltip, optional, allowedFileExtensions, maxQuantity } =
+    props;
 
   return (
     <div className="space-y-1.5">
@@ -47,7 +48,11 @@ export const FileUploadPreview = (props: FileUploadPreviewProps) => {
       {hint && <HelperText size="sm">{hint}</HelperText>}
 
       <div className="mt-3">
-        <Dropzone icon={true} />
+        <CircularProgressDropzone
+          icon={true}
+          accepted={allowedFileExtensions}
+          maxFiles={maxQuantity}
+        />
       </div>
     </div>
   );

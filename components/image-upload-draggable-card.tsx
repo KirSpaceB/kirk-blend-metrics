@@ -23,7 +23,6 @@ import {
   Trash,
 } from "./icons";
 import { stopPropagation } from "@/lib/dom";
-import { IMAGE_EXTENSIONS } from "@/lib/constants";
 
 interface ImageUploadDraggableCardProps extends Setting {
   advanced: boolean;
@@ -70,11 +69,6 @@ export const ImageUploadDraggableCard = (
   const handleDelete = () => {
     send({ ...options, type: "DELETE" });
   };
-
-  const accept = allowedImageExtensions?.reduce(
-    (preview, current) => ({ ...preview, ...IMAGE_EXTENSIONS[current] }),
-    {} as Record<string, string[]>
-  );
 
   return (
     <article
@@ -154,7 +148,11 @@ export const ImageUploadDraggableCard = (
         )}
 
         <div className="pointer-events-none mt-3">
-          <Dropzone icon={true} maxFiles={maxQuantity} accept={accept} />
+          <Dropzone
+            icon
+            maxFiles={maxQuantity}
+            accepted={allowedImageExtensions}
+          />
         </div>
       </div>
     </article>

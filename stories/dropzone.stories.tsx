@@ -1,17 +1,16 @@
 import { Meta, StoryObj } from "@storybook/react";
+import React from "react";
 
-import { CircularProgressDropzone, Dropzone } from "@/components/ui";
+import {
+  CircularProgressDropzone,
+  Dropzone,
+  DropzoneState,
+} from "@/components/ui";
+import { useUnmountEffect } from "@/lib/hooks";
+import { debounce } from "@/lib/utils";
 
 const meta: Meta = {
   title: "Dropzone",
-  argTypes: {
-    icon: {
-      type: "boolean",
-    },
-  },
-  args: {
-    icon: false,
-  },
   parameters: {
     design: [
       {
@@ -31,12 +30,139 @@ export default meta;
 export const Default: StoryObj = {
   argTypes: {
     maxFiles: {
-      type: "number",
+      control: { type: "number", min: 0 },
     },
+    icon: {
+      type: "boolean",
+    },
+    accepted: {
+      control: "multi-select",
+      options: [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".svg",
+        ".bmp",
+        ".webp",
+        ".pdf",
+        ".lottie",
+      ],
+    },
+  },
+  args: {
+    icon: true,
   },
   render: (args) => <Dropzone {...args} />,
 };
 
+export const DefaultDestructive = () => {
+  const [data, setState] = React.useState<DropzoneState>();
+  const ref = React.useRef(new Set<() => void>());
+
+  useUnmountEffect(() => {
+    ref.current.forEach((cb) => cb());
+    ref.current.clear();
+  });
+
+  return (
+    <Dropzone
+      value={data}
+      maxFiles={2}
+      onChange={(value) => {
+        setState(value);
+
+        ref.current.forEach((cb) => cb());
+        ref.current.clear();
+
+        ref.current.add(
+          debounce(
+            () =>
+              setState((prev) =>
+                prev?.map((value) => ({ ...value, progress: 50 }))
+              ),
+            1000 * 3
+          ).cancel
+        );
+        ref.current.add(
+          debounce(
+            () =>
+              setState((prev) =>
+                prev?.map((value) => ({ ...value, hasError: true }))
+              ),
+            1000 * 6
+          ).cancel
+        );
+      }}
+    />
+  );
+};
+
 export const CircularProgressVariant: StoryObj = {
+  argTypes: {
+    maxFiles: {
+      control: { type: "number", min: 0 },
+    },
+    icon: {
+      type: "boolean",
+    },
+    accepted: {
+      control: "multi-select",
+      options: [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".svg",
+        ".bmp",
+        ".webp",
+        ".pdf",
+        ".lottie",
+      ],
+    },
+  },
+  args: {
+    icon: true,
+  },
   render: (args) => <CircularProgressDropzone {...args} />,
+};
+
+export const CircularProgressDropzoneDestructive = () => {
+  const [data, setState] = React.useState<DropzoneState>();
+  const ref = React.useRef(new Set<() => void>());
+
+  useUnmountEffect(() => {
+    ref.current.forEach((cb) => cb());
+    ref.current.clear();
+  });
+
+  return (
+    <CircularProgressDropzone
+      value={data}
+      maxFiles={2}
+      onChange={(value) => {
+        setState(value);
+
+        ref.current.forEach((cb) => cb());
+        ref.current.clear();
+
+        ref.current.add(
+          debounce(
+            () =>
+              setState((prev) =>
+                prev?.map((value) => ({ ...value, progress: 50 }))
+              ),
+            1000 * 3
+          ).cancel
+        );
+        ref.current.add(
+          debounce(
+            () =>
+              setState((prev) =>
+                prev?.map((value) => ({ ...value, hasError: true }))
+              ),
+            1000 * 6
+          ).cancel
+        );
+      }}
+    />
+  );
 };

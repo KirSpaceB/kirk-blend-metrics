@@ -7,10 +7,6 @@ import { RemainCharacters } from "@/components/remain-characters";
 import {
   HelperText,
   Label,
-  Listbox,
-  ListboxButton,
-  ListboxOptions,
-  ListboxOption,
   Input,
   Switch,
   TooltipProvider,
@@ -19,8 +15,11 @@ import {
   TooltipContent,
   RadioGroupItemSelector,
   RadioGroup,
+  NumberInput,
+  Checkbox,
+  CheckboxGroup,
 } from "@/components/ui";
-import { useEnhancedWatch } from "@/lib/hooks";
+import { useEnhancedWatch, useUpdateEffect } from "@/lib/hooks";
 import { pick } from "@/lib/utils";
 import { SettingMachineContext } from "@/machines";
 
@@ -28,10 +27,13 @@ const schema = z.object({
   label: z.string().max(30, "Must contain at most 30 character(s)"),
   optional: z.boolean(),
   hasQuantity: z.boolean(),
-  maxQuantity: z.number().optional(),
+  maxQuantity: z.number(),
   allowAllOrCustomFileExtensions: z.enum(["all", "custom"]),
   tooltip: z.string().max(30, "Must contain at most 30 character(s)"),
   hint: z.string().max(50, "Must contain at most 30 character(s)"),
+  allowedFileExtensions: z
+    .array(z.string())
+    .min(1, "Must contain at least 1 extension(s)"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -43,7 +45,36 @@ const defaultValues: FormValues = {
   allowAllOrCustomFileExtensions: "all",
   tooltip: "",
   hint: "",
+  allowedFileExtensions: [
+    ".doc",
+    ".docx",
+    ".docxf",
+    ".docm",
+    ".rtf",
+    ".txt",
+    ".csv",
+    ".xl",
+    ".xls",
+    ".xlsx",
+    ".xlsm",
+    ".def",
+    ".dex",
+    ".pdf",
+  ],
+  maxQuantity: 1,
 };
+
+const docDefaultValue = [".doc", ".docx", ".docxf", ".docm", ".rtf", ".txt"];
+
+const sheetDefaultValue = [
+  ".csv",
+  ".xl",
+  ".xls",
+  ".xlsx",
+  ".xlsm",
+  ".def",
+  ".dex",
+];
 
 export default function SetupTab() {
   const [, send] = SettingMachineContext.useActor();
@@ -64,7 +95,8 @@ export default function SetupTab() {
     "allowAllOrCustomFileExtensions",
     "tooltip",
     "hint",
-    "maxQuantity"
+    "maxQuantity",
+    "allowedFileExtensions"
   );
 
   const { control, register, handleSubmit, getValues } = useForm({
@@ -72,14 +104,36 @@ export default function SetupTab() {
     values: { ...defaultValues, ...values },
   });
 
-  const { hasQuantity } = useEnhancedWatch({
+  const { hasQuantity, allowAllOrCustomFileExtensions } = useEnhancedWatch({
     control,
-    onChange: (variables) =>
+    onChange: () =>
       send({
         type: "UPDATE",
         setting: getValues(),
       }),
   });
+
+  useUpdateEffect(() => {
+    if (allowAllOrCustomFileExtensions === "all") {
+      send({
+        type: "UPDATE",
+        setting: {
+          allowedFileExtensions: defaultValues.allowedFileExtensions,
+        },
+      });
+    }
+  }, [allowAllOrCustomFileExtensions, send]);
+
+  useUpdateEffect(() => {
+    if (!hasQuantity) {
+      send({
+        type: "UPDATE",
+        setting: {
+          maxQuantity: defaultValues.maxQuantity,
+        },
+      });
+    }
+  }, [hasQuantity, send]);
 
   const onSubmit: SubmitHandler<FormValues> = (variables) => {};
 
@@ -166,10 +220,11 @@ export default function SetupTab() {
             <Controller
               control={control}
               name="maxQuantity"
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  type="number"
+              render={({ field: { value, onChange } }) => (
+                <NumberInput
+                  min={1}
+                  value={value}
+                  onValueChange={onChange}
                   placeholder="Enter Max Images Quantity"
                 />
               )}
@@ -209,6 +264,85 @@ export default function SetupTab() {
             </RadioGroup>
           )}
         />
+
+        {allowAllOrCustomFileExtensions === "custom" && (
+          <Controller
+            control={control}
+            name="allowedFileExtensions"
+            render={({ field: { value, onChange } }) => {
+              const isDocEnabled = docDefaultValue.every((item) =>
+                value.includes(item)
+              );
+              const isSheetEnabled = sheetDefaultValue.every((item) =>
+                value.includes(item)
+              );
+
+              const onDocChange = () => {
+                if (isDocEnabled) {
+                  onChange(
+                    value.filter((value) => !docDefaultValue.includes(value))
+                  );
+                } else {
+                  onChange([...value, ...docDefaultValue]);
+                }
+              };
+
+              const onSheetChange = () => {
+                if (isSheetEnabled) {
+                  onChange(
+                    value.filter((value) => !sheetDefaultValue.includes(value))
+                  );
+                } else {
+                  onChange([...value, ...sheetDefaultValue]);
+                }
+              };
+
+              return (
+                <CheckboxGroup className="mt-4 space-y-3">
+                  <div className="flex items-center gap-x-2">
+                    <Checkbox
+                      size="lg"
+                      id="first-checkbox"
+                      checked={isDocEnabled}
+                      onCheckedChange={onDocChange}
+                    />
+                    <Label className="text-gray-700" size="sm" id="jpeg">
+                      Document (doc,docx,docxf,docm,rtf,txt)
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-x-2">
+                    <Checkbox
+                      size="lg"
+                      id="spreadsheet"
+                      checked={isSheetEnabled}
+                      onCheckedChange={onSheetChange}
+                    />
+                    <Label className="text-gray-700" size="sm" id="spreadsheet">
+                      Spreadsheet (csv,xl,xls,xlsx,xlsm,def,dex)
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-x-2">
+                    <Checkbox
+                      size="lg"
+                      id="pdf"
+                      checked={value.includes(".pdf")}
+                      onCheckedChange={() => {
+                        value.includes(".pdf")
+                          ? onChange(
+                              value.filter((extension) => extension !== ".pdf")
+                            )
+                          : onChange([...value, ".pdf"]);
+                      }}
+                    />
+                    <Label className="text-gray-700" size="sm" id="pdf">
+                      PDF (pdf)
+                    </Label>
+                  </div>
+                </CheckboxGroup>
+              );
+            }}
+          />
+        )}
       </div>
 
       <div className="space-y-5 border-t border-gray-200 p-5">

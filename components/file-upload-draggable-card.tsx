@@ -7,7 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Dropzone,
+  CircularProgressDropzone,
   HelperText,
   Label,
   Tooltip,
@@ -42,6 +42,8 @@ export const FileUploadDraggableCard = (
     hint,
     tooltip,
     optional,
+    allowedFileExtensions,
+    maxQuantity,
   } = props;
 
   const [, send] = SettingMachineContext.useActor();
@@ -146,7 +148,11 @@ export const FileUploadDraggableCard = (
         )}
 
         <div className="pointer-events-none mt-3">
-          <Dropzone icon={true} />
+          <CircularProgressDropzone
+            icon={true}
+            accepted={allowedFileExtensions}
+            maxFiles={maxQuantity}
+          />
         </div>
       </div>
     </article>

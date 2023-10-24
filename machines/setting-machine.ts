@@ -51,6 +51,7 @@ export interface Setting {
   allowAllOrCustomImageExtensions?: "all" | "custom";
   allowAllOrCustomFileExtensions?: "all" | "custom";
   allowedImageExtensions?: string[];
+  allowedFileExtensions?: string[];
 }
 
 export type Settings = Setting[];
@@ -472,6 +473,50 @@ export const settingMachine = createMachine(
                 {
                   ...comman,
                   defaultCountry: "US",
+                },
+              ];
+
+            case "image-upload":
+              return [
+                ...ctx.basicSettings,
+                {
+                  ...comman,
+                  allowedImageExtensions: [
+                    ".jpeg",
+                    ".png",
+                    ".webp",
+                    ".heic",
+                    ".gif",
+                    ".svg",
+                    ".lottie",
+                    ".bmp",
+                  ],
+                  maxQuantity: 1,
+                },
+              ];
+
+            case "file-upload":
+              return [
+                ...ctx.basicSettings,
+                {
+                  ...comman,
+                  allowedFileExtensions: [
+                    ".doc",
+                    ".docx",
+                    ".docxf",
+                    ".docm",
+                    ".rtf",
+                    ".txt",
+                    ".csv",
+                    ".xl",
+                    ".xls",
+                    ".xlsx",
+                    ".xlsm",
+                    ".def",
+                    ".dex",
+                    ".pdf",
+                  ],
+                  maxQuantity: 1,
                 },
               ];
 
