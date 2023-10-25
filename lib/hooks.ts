@@ -4,6 +4,7 @@ import {
   DeepPartialSkipArrayKey,
   FieldPath,
   FieldPathValue,
+  UseFormGetValues,
   useWatch,
 } from "react-hook-form";
 
@@ -249,3 +250,23 @@ export const useArray = <T>(defaultState?: T[]) => {
 
   return [state, { remove, prepend, append, patch: setState, clear }] as const;
 };
+
+export function useFormValue<
+  TFieldValues extends Record<string, any> = Record<string, any>,
+  TFieldNames extends readonly FieldPath<TFieldValues>[] = readonly FieldPath<TFieldValues>[]
+>({
+  getValues,
+  ...props
+}: {
+  name: readonly [...TFieldNames];
+  defaultValue?: DeepPartialSkipArrayKey<TFieldValues>;
+  control?: Control<TFieldValues>;
+  disabled?: boolean;
+  exact?: boolean;
+  getValues: UseFormGetValues<TFieldValues>;
+}) {
+  return {
+    ...useWatch(props),
+    ...getValues(),
+  };
+}

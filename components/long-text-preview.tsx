@@ -14,7 +14,7 @@ export const LongTextPreview = (props: LongTextPreviewProps) => {
     <div className="space-y-1.5">
       <div className="flex items-center gap-x-2">
         <Label className="text-gray-700" size="sm" htmlFor={id}>
-          {label ? label : "Short Text"}
+          {label ? label : "Long Text"}
         </Label>
         {optional && <HelpCircle className="flex-none text-gray-400" />}
       </div>

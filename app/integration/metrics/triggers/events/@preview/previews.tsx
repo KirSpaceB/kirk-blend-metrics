@@ -15,6 +15,7 @@ import { CheckboxPreview } from "@/components/checkbox-preview";
 import { VideoPreview } from "@/components/video-preview";
 import { FileUploadPreview } from "@/components/file-upload-preview";
 import { ImageUploadPreview } from "@/components/image-upload-preview";
+import { RichTextPreview } from "@/components/rich-text-preview";
 
 export const SettingsPreview = ({ setting }: { setting: Setting }) => {
   return (
@@ -36,6 +37,7 @@ export const SettingsPreview = ({ setting }: { setting: Setting }) => {
       {setting.kind === "video" && <VideoPreview {...setting} />}
       {setting.kind === "file-upload" && <FileUploadPreview {...setting} />}
       {setting.kind === "image-upload" && <ImageUploadPreview {...setting} />}
+      {setting.kind === "rich-text" && <RichTextPreview {...setting} />}
     </>
   );
 };

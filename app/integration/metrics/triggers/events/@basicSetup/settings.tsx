@@ -20,6 +20,7 @@ import { CheckboxDraggableCard } from "@/components/checkbox-draggable-card";
 import { VideoDraggableCard } from "@/components/video-draggable-card";
 import { FileUploadDraggableCard } from "@/components/file-upload-draggable-card";
 import { ImageUploadDraggableCard } from "@/components/image-upload-draggable-card";
+import { RichTextDraggableCard } from "@/components/rich-text-draggable-card";
 
 export const Settings = (props: { advanced: boolean }) => {
   const settings = SettingMachineContext.useSelector((state) =>
@@ -173,6 +174,14 @@ export const Settings = (props: { advanced: boolean }) => {
                 )}
                 {setting.kind === "image-upload" && (
                   <ImageUploadDraggableCard
+                    onDrag={onDrag}
+                    active={active}
+                    {...props}
+                    {...setting}
+                  />
+                )}
+                {setting.kind === "rich-text" && (
+                  <RichTextDraggableCard
                     onDrag={onDrag}
                     active={active}
                     {...props}

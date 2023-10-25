@@ -248,6 +248,30 @@ export default function CommandPaletteModal({
           type: "EDIT-VIDEO",
         });
         break;
+
+      case "rich text":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "rich-text",
+        });
+        send({
+          ...options,
+          type: "EDIT-RICH-TEXT",
+        });
+        break;
+
+      case "date/time":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "date/time",
+        });
+        send({
+          ...options,
+          type: "EDIT-DATE/TIME",
+        });
+        break;
     }
 
     sendTo("ACTIVATE");

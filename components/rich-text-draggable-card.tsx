@@ -9,7 +9,10 @@ import {
   DropdownMenuTrigger,
   HelperText,
   Label,
-  Textarea,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "./ui";
 import {
   Copy,
@@ -19,23 +22,24 @@ import {
   Trash,
 } from "./icons";
 import { stopPropagation } from "@/lib/dom";
+import { TipTap } from "./tiptap";
 
-interface LongTextDraggableCardProps extends Setting {
+interface RichTextDraggableCardProps extends Setting {
   advanced: boolean;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
 
-export const LongTextDraggableCard = (props: LongTextDraggableCardProps) => {
+export const RichTextDraggableCard = (props: RichTextDraggableCardProps) => {
   const {
     onDrag,
     advanced,
     id: settingId,
     active,
     label,
-    placeholder,
     hint,
     optional,
+    tooltip,
   } = props;
 
   const [, send] = SettingMachineContext.useActor();
@@ -47,7 +51,7 @@ export const LongTextDraggableCard = (props: LongTextDraggableCardProps) => {
   };
 
   const handleClick = () => {
-    send({ ...options, type: "EDIT-LONG-TEXT" });
+    send({ ...options, type: "EDIT-RICH-TEXT" });
   };
 
   const handleDuplicate = () => {
@@ -83,15 +87,33 @@ export const LongTextDraggableCard = (props: LongTextDraggableCardProps) => {
 
       <div className="flex-grow">
         <div className="flex items-center justify-between">
-          <div className="flex flex-grow items-center gap-x-2">
+          <div className="flex items-center">
             <Label
               className="pointer-events-none text-gray-700"
               size="sm"
               htmlFor={id}
             >
-              {label ? label : "Long Text"}
+              {label ? label : "Rich text"}
             </Label>
-            {optional && <HelpCircle className="text-gray-400" />}
+
+            {optional && (
+              <span className="ml-1 text-sm font-medium text-gray-400">
+                (optional)
+              </span>
+            )}
+
+            <div className="ml-2">
+              {tooltip && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <HelpCircle className="text-gray-400" />
+                    </TooltipTrigger>
+                    <TooltipContent>{tooltip}</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
           </div>
 
           <DropdownMenu>
@@ -122,11 +144,9 @@ export const LongTextDraggableCard = (props: LongTextDraggableCardProps) => {
           </HelperText>
         )}
 
-        <Textarea
-          className="pointer-events-none mt-3 h-[92px]"
-          placeholder={placeholder ? placeholder : "Enter text here"}
-          id={id}
-        />
+        <div className="pointer-events-none mt-3">
+          <TipTap />
+        </div>
       </div>
     </article>
   );

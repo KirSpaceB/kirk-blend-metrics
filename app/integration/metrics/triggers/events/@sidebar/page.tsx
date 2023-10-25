@@ -21,6 +21,8 @@ import CheckboxSidebar from "./checkbox";
 import ImageUploadSidebar from "./image-upload";
 import FileUploadSidebar from "./file-upload";
 import VideoSidebar from "./video";
+import DateTimeSidebar from "./date-time";
+import RichTextSidebar from "./rich-text";
 
 const Segment = () => {
   const [state] = SettingMachineContext.useActor();
@@ -41,7 +43,9 @@ const Segment = () => {
     state.matches("editing checkbox") ||
     state.matches("editing video") ||
     state.matches("editing image upload") ||
-    state.matches("editing file upload");
+    state.matches("editing file upload") ||
+    state.matches("editing date/time") ||
+    state.matches("editing rich text");
 
   return (
     <PortalPrimitive.Portal>
@@ -63,6 +67,8 @@ const Segment = () => {
           {state.matches("editing image upload") && <ImageUploadSidebar />}
           {state.matches("editing file upload") && <FileUploadSidebar />}
           {state.matches("editing video") && <VideoSidebar />}
+          {state.matches("editing date/time") && <DateTimeSidebar />}
+          {state.matches("editing rich text") && <RichTextSidebar />}
         </div>
       </TileTransition>
     </PortalPrimitive.Portal>

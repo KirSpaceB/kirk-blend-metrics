@@ -33,6 +33,7 @@ export interface Typegen0 {
     setCurrent:
       | "EDIT-ADDRESS"
       | "EDIT-CHECKBOX"
+      | "EDIT-DATE/TIME"
       | "EDIT-DROPDOWN"
       | "EDIT-EMAIL"
       | "EDIT-FILE-UPLOAD"
@@ -42,6 +43,7 @@ export interface Typegen0 {
       | "EDIT-PASSWORD"
       | "EDIT-PHONE-NUMBER"
       | "EDIT-RADIO-GROUP"
+      | "EDIT-RICH-TEXT"
       | "EDIT-SEARCH"
       | "EDIT-SHORT-TEXT"
       | "EDIT-TOGGLE"
@@ -69,6 +71,7 @@ export interface Typegen0 {
   matchesStates:
     | "editing address"
     | "editing checkbox"
+    | "editing date/time"
     | "editing dropdown"
     | "editing email"
     | "editing file upload"
@@ -78,6 +81,7 @@ export interface Typegen0 {
     | "editing password"
     | "editing phone number"
     | "editing radio group"
+    | "editing rich text"
     | "editing search"
     | "editing short text"
     | "editing toggle"

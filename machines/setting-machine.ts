@@ -1,5 +1,5 @@
 import { createActorContext } from "@xstate/react";
-import { assign, createMachine } from "xstate";
+import { EmittedFrom, assign, createMachine } from "xstate";
 
 export type Kind =
   | "search"
@@ -17,7 +17,9 @@ export type Kind =
   | "checkbox"
   | "image-upload"
   | "file-upload"
-  | "video";
+  | "video"
+  | "date/time"
+  | "rich-text";
 
 export interface Setting {
   id: number;
@@ -52,6 +54,8 @@ export interface Setting {
   allowAllOrCustomFileExtensions?: "all" | "custom";
   allowedImageExtensions?: string[];
   allowedFileExtensions?: string[];
+  mode?: "Date & Time" | "Date & Time Range" | "Date Range" | "Date" | "Time";
+  format?: "12" | "24";
 }
 
 export type Settings = Setting[];
@@ -197,6 +201,22 @@ export const settingMachine = createMachine(
           },
         },
       },
+      "editing date/time": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing rich text": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
     },
     on: {
       INSERT: {
@@ -311,6 +331,16 @@ export const settingMachine = createMachine(
         internal: true,
         actions: "setCurrent",
       },
+      "EDIT-DATE/TIME": {
+        target: "editing date/time",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-RICH-TEXT": {
+        target: "editing rich text",
+        internal: true,
+        actions: "setCurrent",
+      },
       "TO-TOGGLE": {
         target: "editing toggle",
         internal: true,
@@ -413,6 +443,8 @@ export const settingMachine = createMachine(
         | { type: "EDIT-IMAGE-UPLOAD"; advanced: boolean; settingId: number }
         | { type: "EDIT-FILE-UPLOAD"; advanced: boolean; settingId: number }
         | { type: "EDIT-VIDEO"; advanced: boolean; settingId: number }
+        | { type: "EDIT-DATE/TIME"; advanced: boolean; settingId: number }
+        | { type: "EDIT-RICH-TEXT"; advanced: boolean; settingId: number }
         | { type: "TO-TOGGLE"; newKind: "toggle" }
         | { type: "TO-SEARCH"; newKind: "search" }
         | { type: "TO-NUMBERS"; newKind: "numbers" }
@@ -447,7 +479,7 @@ export const settingMachine = createMachine(
             return ctx.basicSettings;
           }
 
-          const comman = {
+          const common = {
             id: settingId,
             kind: kind,
           };
@@ -457,7 +489,7 @@ export const settingMachine = createMachine(
               return [
                 ...ctx.basicSettings,
                 {
-                  ...comman,
+                  ...common,
                   hasStreetAddress: true,
                   hasApartmentOrSuiteEtc: true,
                   hasCity: true,
@@ -471,7 +503,7 @@ export const settingMachine = createMachine(
               return [
                 ...ctx.basicSettings,
                 {
-                  ...comman,
+                  ...common,
                   defaultCountry: "US",
                 },
               ];
@@ -480,7 +512,7 @@ export const settingMachine = createMachine(
               return [
                 ...ctx.basicSettings,
                 {
-                  ...comman,
+                  ...common,
                   allowedImageExtensions: [
                     ".jpeg",
                     ".png",
@@ -499,7 +531,7 @@ export const settingMachine = createMachine(
               return [
                 ...ctx.basicSettings,
                 {
-                  ...comman,
+                  ...common,
                   allowedFileExtensions: [
                     ".doc",
                     ".docx",
@@ -521,7 +553,7 @@ export const settingMachine = createMachine(
               ];
 
             default:
-              return [...ctx.basicSettings, { ...comman }];
+              return [...ctx.basicSettings, { ...common }];
           }
         },
         advancedSettings: (ctx, { advanced, settingId, kind }) => {
@@ -529,7 +561,7 @@ export const settingMachine = createMachine(
             return ctx.advancedSettings;
           }
 
-          const comman = {
+          const common = {
             id: settingId,
             kind: kind,
           };
@@ -539,7 +571,7 @@ export const settingMachine = createMachine(
               return [
                 ...ctx.advancedSettings,
                 {
-                  ...comman,
+                  ...common,
                   hasStreetAddress: true,
                   hasApartmentOrSuiteEtc: true,
                   hasCity: true,
@@ -553,13 +585,57 @@ export const settingMachine = createMachine(
               return [
                 ...ctx.advancedSettings,
                 {
-                  ...comman,
+                  ...common,
                   defaultCountry: "US",
                 },
               ];
 
+            case "image-upload":
+              return [
+                ...ctx.basicSettings,
+                {
+                  ...common,
+                  allowedImageExtensions: [
+                    ".jpeg",
+                    ".png",
+                    ".webp",
+                    ".heic",
+                    ".gif",
+                    ".svg",
+                    ".lottie",
+                    ".bmp",
+                  ],
+                  maxQuantity: 1,
+                },
+              ];
+
+            case "file-upload":
+              return [
+                ...ctx.basicSettings,
+                {
+                  ...common,
+                  allowedFileExtensions: [
+                    ".doc",
+                    ".docx",
+                    ".docxf",
+                    ".docm",
+                    ".rtf",
+                    ".txt",
+                    ".csv",
+                    ".xl",
+                    ".xls",
+                    ".xlsx",
+                    ".xlsm",
+                    ".def",
+                    ".dex",
+                    ".pdf",
+                  ],
+                  maxQuantity: 1,
+                },
+              ];
+
             default:
-              return [...ctx.advancedSettings, { ...comman }];
+              return [...ctx.advancedSettings, { ...common }];
           }
         },
       }),
@@ -751,3 +827,18 @@ export const settingMachine = createMachine(
 );
 
 export const SettingMachineContext = createActorContext(settingMachine);
+
+export const {
+  Provider: SettingProvider,
+  useActor: useSettingActor,
+  useActorRef: useSettingActorRef,
+  useSelector: useSettingSelector,
+} = SettingMachineContext;
+
+export const selectCurrentId = (snapshot: EmittedFrom<typeof settingMachine>) =>
+  snapshot.context.currentId;
+
+export const selectSettings = (snapshot: EmittedFrom<typeof settingMachine>) =>
+  snapshot.context.currentAdvanced
+    ? snapshot.context.advancedSettings
+    : snapshot.context.basicSettings;
