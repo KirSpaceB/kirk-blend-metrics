@@ -22,7 +22,10 @@ import { ScrollArea } from "../scroll-area";
 export default function SettingsAccountInnerSidebar() {
   return (
     <nav className="absolute inset-y-0 left-[70px] top-[70px] z-20 w-[224px] border-r border-gray-200">
-      <ScrollArea className=" h-[calc(100%-69px)] overflow-y-auto px-[15px] pt-[15px] ">
+      <ScrollArea
+        className=" h-[calc(100%-69px)] overflow-y-auto px-[15px] pt-[15px] "
+        type="scroll"
+      >
         <div className="mt-1 space-y-6">
           <div className="space-y-2">
             <span className="text-xs font-medium uppercase leading-5 text-gray-500">

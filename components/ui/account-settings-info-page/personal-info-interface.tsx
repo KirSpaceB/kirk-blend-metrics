@@ -55,7 +55,7 @@ export default function PersonalInfoInterface() {
   const [langState, setLangState] = React.useState<string>();
 
   return (
-    <main className="pl-[294px] pt-[70px]">
+    <main className="pl-[278px] pt-[54px]">
       <div className="h-[580px] w-[664px] px-8 pt-8">
         <h1 className="text-base font-semibold text-gray-600">Company Info</h1>
         <p className="mt-1 text-sm text-gray-500">
@@ -68,6 +68,7 @@ export default function PersonalInfoInterface() {
             <DialogTrigger asChild className="h-full w-full">
               {/* Investigate the margin top issue with this component specifically. */}
               {/* This is where profile picture is suppose to be */}
+              <AccountInfoSettingsProfile />
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -111,83 +112,28 @@ export default function PersonalInfoInterface() {
             {/* Grid Col 1 */}
             <div className="space-y-1.5">
               <Label htmlFor="email" size="sm">
-                Company Name
+                First Name
               </Label>
-              <Input
-                id="email"
-                placeholder="e.g. Acme Analytics"
-                type="email"
-              />
+              <Input id="email" placeholder="Chris Torres" type="email" />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="email" size="sm">
-                Company Website
+                Last Name
               </Label>
-              <InputGroup>
-                <InputLeftAddon>https://</InputLeftAddon>
-                <Input placeholder="www.yourwebsite.com" type="email" />
-              </InputGroup>
+              <Input id="email" placeholder="Torres" type="email" />
             </div>
             {/* Grid col 2 */}
             <div className="space-y-1.5">
-              <Label htmlFor="email" size="sm">
-                Industry
-              </Label>
-              <Listbox value={selected} onChange={setSelected}>
-                <ListboxButton placeholder="Select Type" />
-                <ListboxOptions className="z-10">
-                  {people.map((person) => (
-                    <ListboxOption key={person.name} value={person.name}>
-                      {person.name}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </Listbox>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email" size="sm">
-                Business Type
-              </Label>
-              <Listbox value={selected} onChange={setSelected}>
-                <ListboxButton placeholder="Select Business" />
-                <ListboxOptions className="z-10">
-                  {people.map((person) => (
-                    <ListboxOption key={person.name} value={person.name}>
-                      {person.name}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </Listbox>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email" size="sm">
-                Company Size
-              </Label>
-              <Listbox value={selected} onChange={setSelected}>
-                <ListboxButton placeholder="1 - 10" />
-                <ListboxOptions className="z-10">
-                  {people.map((person) => (
-                    <ListboxOption key={person.name} value={person.name}>
-                      {person.name}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </Listbox>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email" size="sm">
-                Annual Revenue
-              </Label>
-              <Listbox value={selected} onChange={setSelected}>
-                <ListboxButton placeholder="Select revenue" />
-                <ListboxOptions className="z-10">
-                  {people.map((person) => (
-                    <ListboxOption key={person.name} value={person.name}>
-                      {person.name}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </Listbox>
+              <div className="space-y-1.5">
+                <Label htmlFor="email" size="sm">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  placeholder="chris@marketeqdigital.com"
+                  type="email"
+                />
+              </div>
             </div>
             <div className=" w-auto ">
               <div className="space-y-1.5">
@@ -220,10 +166,31 @@ export default function PersonalInfoInterface() {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="email" size="sm">
-                Time Zone?
+                What team do you work on?
               </Label>
               <Listbox value={selected} onChange={setSelected}>
-                <ListboxButton placeholder="(GMT-05:00) America/New_York" />
+                <ListboxButton placeholder="Select Team" />
+                <ListboxOptions className="z-10">
+                  {people.map((person) => (
+                    <ListboxOption key={person.name} value={person.name}>
+                      {person.name}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </Listbox>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" size="sm">
+                Job Title
+              </Label>
+              <Input id="email" placeholder="President" type="email" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" size="sm">
+                Language
+              </Label>
+              <Listbox value={selected} onChange={setSelected}>
+                <ListboxButton placeholder="English" />
                 <ListboxOptions className="z-10">
                   {people.map((person) => (
                     <ListboxOption key={person.name} value={person.name}>

@@ -1,30 +1,29 @@
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import React from "react";
-import { Button } from "./button";
-import Link from "next/link";
-//icons
 import {
   Billing,
+  CompanyInfo,
   Globe,
   Lock01,
+  LoginAndPassword,
+  MyGoals,
   NotificationsIcon,
+  PersonalInfo,
   Phone01,
+  Privacy,
   Refresh,
+  ShieldCharged,
   Trash,
   User01,
-  LoginAndPassword,
-  ShieldCharged,
-} from "../icons";
-import { PersonalInfo } from "../icons";
-import { CompanyInfo } from "../icons";
-import { MyGoals } from "../icons";
-import { Privacy } from "../icons";
-
-export default function PersonalInfoPageInnerSideBar() {
+} from "@/components/icons";
+import Link from "next/link";
+import React from "react";
+import { ScrollArea } from "./scroll-area";
+export default function PersonalInfoPageInnerSidebar() {
   return (
-    // Changes here
     <nav className="absolute inset-y-0 left-[70px] top-[70px] z-20 w-[224px] border-r border-gray-200">
-      <ScrollArea className=" h-[calc(100%-69px)] overflow-y-auto px-[15px] pt-[15px] ">
+      <ScrollArea
+        className=" h-[calc(100%-69px)] overflow-y-auto px-[15px] pt-[15px] "
+        type="scroll"
+      >
         <div className="mt-1 space-y-6">
           <div className="space-y-2">
             <span className="text-xs font-medium uppercase leading-5 text-gray-500">
