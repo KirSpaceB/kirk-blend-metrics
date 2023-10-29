@@ -1,24 +1,22 @@
 import React from "react";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-  DialogDescription,
   DialogFooter,
   DialogClose,
 } from "../../dialog";
 import { ImageIcon } from "@/components/icons";
 import { Button } from "../../button";
 import { Avatar, AvatarFallback, AvatarImage } from "../../avatar";
-import { SettingsAccountPersonalInfoCameraIcon } from "@/components/icons";
+import { Dropzone } from "../../dropzone";
+
 interface IDialogArgs {
   isOpen: boolean;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function RemovePhotoDialogSection({
+export default function ChangeProfileImageDialog({
   isOpen,
   onClose,
 }: IDialogArgs) {
@@ -26,21 +24,22 @@ export default function RemovePhotoDialogSection({
     <Dialog open={isOpen}>
       <DialogContent>
         <DialogHeader>
-          <div className="flex flex-col items-center justify-center gap-5">
+          <div className="flex flex-col items-center justify-center gap-8">
             <h1 className="text-[18px] font-semibold">Change Profile Image</h1>
             <Avatar className="h-[160px] w-[160px]">
-              <AvatarImage id="Avatar Image" alt="Man" />
-              {/* Bg red is not being applied because there is an already exsisting primary color  */}
-              {/* Can't change the backgroundcolor because its hard set on primary-25 */}
-              <AvatarFallback
-                id="AvatarFallBack"
-                className=" rounded-full bg-red-500 "
-              >
-                <div className="flex h-[100px] w-[100px] items-center justify-center rounded-full bg-gray-200">
-                  <SettingsAccountPersonalInfoCameraIcon className="h-[50px] w-[50px]" />
+              {/* <AvatarImage alt="Man" /> We dont need this for now */}
+              <AvatarFallback>
+                <div className="text-[60px] font-medium text-[#D0D5DD] text-opacity-50">
+                  CT
                 </div>
               </AvatarFallback>
             </Avatar>
+          </div>
+          <Dropzone className="" />
+          <div className="flex items-center justify-center gap-[9px]">
+            <div className="h-[1px] w-[193.5px] bg-[#E1E6EA] "></div>
+            <div className="text-[12px] font-medium text-[#939DA7]">Or</div>
+            <div className="h-[1px] w-[193.5px]  bg-[#E1E6EA] "></div>
           </div>
         </DialogHeader>
 
@@ -50,9 +49,9 @@ export default function RemovePhotoDialogSection({
               variant="outlined"
               visual="gray"
               leftIcon={<ImageIcon />}
-              // className="h-[36px] w-[171px] pb-2 pl-[14px] pr-[14px] pt-2"
+              className="w-[419px]"
             >
-              Change Profile Image
+              Import From Media Library
             </Button>
           </DialogClose>
         </DialogFooter>

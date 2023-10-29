@@ -139,3 +139,4 @@ export * from "./avatar-pencil";
 export * from "./image-icon";
 export * from "./login-and-password";
 export * from "./six-dots";
+export * from "./setting-account-personaInfo-camera";

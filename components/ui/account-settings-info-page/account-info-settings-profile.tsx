@@ -18,6 +18,8 @@ import RemovePhotoDialogSection from "./accountinfosettingsprofileui/remove-phot
 import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
 import { Trash } from "@/components/icons";
 import { ImageIcon } from "@/components/icons";
+import ChangeProfileImageDialog from "./accountinfosettingsprofileui/change-profile-image-diaglog";
+import AvatarEditorDialog from "./accountinfosettingsprofileui/avatar-editor-dialog";
 
 export default function AccountInfoSettingsProfile() {
   const [isDialog1Open, setDialog1Open] = useState(false);
@@ -26,11 +28,25 @@ export default function AccountInfoSettingsProfile() {
   return (
     <>
       {isDialog1Open && (
-        <RemovePhotoDialogSection
+        <ChangeProfileImageDialog
           isOpen={isDialog1Open}
           onClose={() => setDialog1Open(false)}
         />
       )}
+
+      {/* {isDialog1Open && (
+        <RemovePhotoDialogSection
+          isOpen={isDialog1Open}
+          onClose={() => setDialog1Open(false)}
+        />
+      )} */}
+
+      {/* {isDialog1Open && (
+        <AvatarEditorDialog
+          isOpen={isDialog1Open}
+          onClose={() => setDialog1Open(false)}
+        />
+      )} */}
 
       <Dialog>
         <DialogTrigger
