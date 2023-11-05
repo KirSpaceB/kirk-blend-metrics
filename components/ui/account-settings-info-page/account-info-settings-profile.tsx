@@ -27,12 +27,12 @@ export default function AccountInfoSettingsProfile() {
 
   return (
     <>
-      {isDialog1Open && (
+      {/* {isDialog1Open && (
         <ChangeProfileImageDialog
           isOpen={isDialog1Open}
           onClose={() => setDialog1Open(false)}
         />
-      )}
+      )} */}
 
       {/* {isDialog1Open && (
         <RemovePhotoDialogSection
@@ -41,12 +41,12 @@ export default function AccountInfoSettingsProfile() {
         />
       )} */}
 
-      {/* {isDialog1Open && (
+      {isDialog1Open && (
         <AvatarEditorDialog
           isOpen={isDialog1Open}
           onClose={() => setDialog1Open(false)}
         />
-      )} */}
+      )}
 
       <Dialog>
         <DialogTrigger
