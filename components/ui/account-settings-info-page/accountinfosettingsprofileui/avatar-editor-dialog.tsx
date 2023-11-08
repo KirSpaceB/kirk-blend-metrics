@@ -51,46 +51,53 @@ export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
     setAvatarScale((prevScale) => Math.max(prevScale - 0.1, 0)); // Min scale = 0.5 as an example
   };
 
-  // Made Zoomin Zoomout margins pixel perfect
-  // Removed focus on the Slider Thumb
+  // Update design system to use new button variant
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="max-w-[486px]">
-        <DialogHeader className="max-w-[446px]">
-          <div className="flex items-center justify-between">
-            <Button leftIcon={<ArrowLeft />} variant="link">
+      <DialogContent className="min-h-[505px] max-w-[486px] gap-8 pb-[24px] pl-[24px] pr-[24px] pt-[24px]">
+        <DialogHeader className="flex h-[38px] w-[446px] flex-row items-center justify-between">
+          <div className="ml-1 flex h-[38px] w-[38px] items-center justify-center gap-2 p-[10px]">
+            <Button
+              leftIcon={<ArrowLeft className="h-[16px] w-[16px]" />}
+              variant="link"
+              className="gap-1"
+            >
               Back
             </Button>
-            <h2 className="mr-[30px] text-lg font-semibold">
-              Edit Profile Image
-            </h2>
+          </div>
+          <h2 className="text-[18px] font-semibold leading-7">
+            Edit Profile Image
+          </h2>
+          <div className="flex h-[38px] w-[38px] items-center justify-center gap-4 ">
             <Button variant="link">
-              <DialogClose>
+              <DialogClose className="transition-all delay-100 hover:bg-gray-200 hover:shadow-md">
                 <X2 className="text-[#667085]" />
               </DialogClose>
             </Button>
           </div>
         </DialogHeader>
 
-        <div className="mt-[15px]  flex items-center justify-center">
-          <AvatarEditor
-            image={profile.src}
-            width={300}
-            height={300}
-            border={50}
-            color={[55, 55, 55, 0.2]} // Grayscale RGBA
-            scale={avatarScale}
-            rotate={rotateControlState}
-            borderRadius={9999}
-          />
+        <div className="mt-[15px] flex h-full w-full items-center justify-center">
+          <div className="">
+            <AvatarEditor
+              image={profile.src}
+              width={250}
+              height={250}
+              border={0} // Border applied around the image
+              borderRadius={9999} // The border-radius to make the crop area a circle
+              color={[55, 55, 55, 0.2]} // Grayscale RGBA
+              scale={avatarScale}
+              rotate={rotateControlState}
+            />
+          </div>
         </div>
 
         <div
           id="Slider"
-          className="mb-[32px] ml-[12px] mr-[12px] mt-[32px] flex items-center justify-between"
+          className="mb-[32px] mt-[32px] flex items-center justify-between"
         >
           <ZoomOut
-            className="h-[24px] w-[24px] text-[#667085] opacity-90"
+            className="h-[24px] w-[24px] cursor-pointer text-[#667085] opacity-80 delay-300 hover:opacity-100"
             onClick={handleZoomOut}
           />
           <AvatarEditorSlider
@@ -98,7 +105,7 @@ export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
             setScale={setAvatarScale}
           />
           <ZoomIn
-            className="h-[24px] w-[24px] text-[#667085] opacity-90"
+            className="h-[24px] w-[24px] cursor-pointer text-[#667085] opacity-80 delay-300 hover:opacity-100"
             onClick={handleZoomIn}
           />
         </div>

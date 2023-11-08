@@ -23,7 +23,7 @@ const AvatarEditorSlider = ({ avatarScale, setScale }: IAvatarEditorSlider) => {
     <div>
       <form className="flex items-center justify-center">
         <Slider.Root
-          className="relative flex h-5 w-[347px] select-none items-center"
+          className="relative flex h-5 w-[366px] select-none items-center"
           value={[sliderValue]}
           onValueChange={handleSliderChange}
           min={0}
