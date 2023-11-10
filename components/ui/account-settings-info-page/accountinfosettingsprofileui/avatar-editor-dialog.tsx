@@ -9,6 +9,7 @@ import {
 import { ArrowLeft, Refresh } from "@/components/icons";
 import { Button } from "../../button";
 import AvatarEditor from "react-avatar-editor";
+import AvatarEditorCustom from "./avatar-editor/avatar-editor";
 import sac from "./sacramento_california.jpeg";
 import profile from "./profile_pic.png";
 
@@ -71,7 +72,9 @@ export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
           <div className="flex h-[38px] w-[38px] items-center justify-center gap-4 ">
             <Button variant="link">
               <DialogClose className="transition-all delay-100 hover:bg-gray-200 hover:shadow-md">
-                <X2 className="text-[#667085]" />
+                <Button variant="ghost" className="py-[14px]">
+                  <X2 className="h-[20px] w-[20px] text-[#667085] opacity-50" />
+                </Button>
               </DialogClose>
             </Button>
           </div>
@@ -79,16 +82,7 @@ export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
 
         <div className="mt-[15px] flex h-full w-full items-center justify-center">
           <div className="">
-            <AvatarEditor
-              image={profile.src}
-              width={250}
-              height={250}
-              border={0} // Border applied around the image
-              borderRadius={9999} // The border-radius to make the crop area a circle
-              color={[55, 55, 55, 0.2]} // Grayscale RGBA
-              scale={avatarScale}
-              rotate={rotateControlState}
-            />
+            <AvatarEditorCustom />
           </div>
         </div>
 
