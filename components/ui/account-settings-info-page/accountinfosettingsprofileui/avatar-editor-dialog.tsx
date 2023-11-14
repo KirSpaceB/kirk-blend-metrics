@@ -8,10 +8,7 @@ import {
 } from "../../dialog";
 import { ArrowLeft, Refresh } from "@/components/icons";
 import { Button } from "../../button";
-import AvatarEditor from "react-avatar-editor";
-import AvatarEditorCustom from "./avatar-editor/avatar-editor";
-import sac from "./sacramento_california.jpeg";
-import profile from "./profile_pic.png";
+import CustomAvatarEditor from "./avatar-editor/avatar-editor";
 
 import { CheckIcon } from "lucide-react";
 import AvatarEditorSlider from "./avatar-editor-slider";
@@ -25,14 +22,10 @@ interface IDialogArgs {
 }
 
 export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
-  let rotateControl = 0;
-  let [rotateControlState, setRotateControlState] = useState(0);
+  const [rotateControlState, setRotateControlState] = useState(0);
+  const [avatarScale, setAvatarScale] = useState(1.0);
+
   const handleRotate = () => {
-    // rotateControlState += 90;
-    // if (rotateControlState === 450) {
-    //   setRotateControlState(0);
-    // }
-    // console.log(rotateControlState);
     let newRotateControlState = rotateControlState + 90;
     if (newRotateControlState >= 360) {
       newRotateControlState = 0;
@@ -41,15 +34,11 @@ export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
     console.log(newRotateControlState);
   };
 
-  // New state for scale
-  const [avatarScale, setAvatarScale] = useState(1.0);
-
-  // Increase and decrease handlers for the AvatarEditor scale
   const handleZoomIn = () => {
-    setAvatarScale((prevScale) => Math.min(prevScale + 0.1, 2.0)); // Max scale = 3.0 as an example
+    setAvatarScale((prevScale) => Math.min(prevScale + 0.1, 2.0)); // Adjust max scale as needed
   };
   const handleZoomOut = () => {
-    setAvatarScale((prevScale) => Math.max(prevScale - 0.1, 0)); // Min scale = 0.5 as an example
+    setAvatarScale((prevScale) => Math.max(prevScale - 0.1, 0.0)); // Adjust min scale as needed
   };
 
   // Update design system to use new button variant
@@ -82,7 +71,11 @@ export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
 
         <div className="mt-[15px] flex h-full w-full items-center justify-center">
           <div className="">
-            <AvatarEditorCustom />
+            <CustomAvatarEditor
+              rotate={rotateControlState}
+              scaleValue={avatarScale}
+              renderedImage={"/profile_pic.png"} // Pass the image file here if needed
+            />
           </div>
         </div>
 
