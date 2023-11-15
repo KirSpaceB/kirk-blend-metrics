@@ -74,7 +74,7 @@ export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
             <CustomAvatarEditor
               rotate={rotateControlState}
               scaleValue={avatarScale}
-              renderedImage={"/profile_pic.png"} // Pass the image file here if needed
+              renderedImage={"/defaultavatarprofile.webp"} // Pass the image file here if needed
             />
           </div>
         </div>
