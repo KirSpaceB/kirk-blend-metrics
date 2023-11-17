@@ -6,6 +6,10 @@ interface IAvatarEditor {
   renderedImage: string;
 }
 
+// Update code to current repo
+// Add close and open hover effects/fix the x buton and add a hover effect to the close buton
+// Add overlay 80% saturation gray 100
+
 const CustomAvatarEditor = ({
   rotate,
   scaleValue,
