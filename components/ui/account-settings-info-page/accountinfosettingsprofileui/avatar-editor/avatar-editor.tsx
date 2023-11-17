@@ -49,7 +49,6 @@ const CustomAvatarEditor = ({
   // Update the image position and circle radius on scale change
   useEffect(() => {
     // Removing setRadius was able to fix the issue somewhat
-    setRadius(initialRadius * scaleValue);
     console.log(scaleValue);
     centerImageInCircle();
   }, [scaleValue, circlePos, image]);
@@ -58,7 +57,7 @@ const CustomAvatarEditor = ({
   // Update drawCircle to use scaleValue
   const drawCircle = (ctx: CanvasRenderingContext2D) => {
     ctx.strokeStyle = "#FFF";
-    ctx.lineWidth = 5 * scaleValue; // Use scaleValue here
+    ctx.lineWidth = 5; // The line width should be constant, not based on scaleValue
     ctx.beginPath();
     ctx.arc(circlePos.x, circlePos.y, radius, 0, Math.PI * 2);
     ctx.stroke();
@@ -77,13 +76,13 @@ const CustomAvatarEditor = ({
         // Draw the original image with transformations
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.save();
-        const centerX = imagePos.x + (image.width * scaleValue) / 2;
-        const centerY = imagePos.y + (image.height * scaleValue) / 2;
-        ctx.translate(centerX, centerY);
+
+        // The image scaling should be independent of the circle
+        // Apply the scale transformation to the image only
+        ctx.translate(imagePos.x, imagePos.y);
         ctx.rotate((rotate * Math.PI) / 180);
-        ctx.translate(-centerX, -centerY);
         ctx.scale(scaleValue, scaleValue);
-        ctx.drawImage(image, imagePos.x / scaleValue, imagePos.y / scaleValue);
+        ctx.drawImage(image, 0, 0);
         ctx.restore();
 
         // Draw the original image onto the off-screen canvas
@@ -91,10 +90,14 @@ const CustomAvatarEditor = ({
         offCtx.globalCompositeOperation = "saturation";
 
         // Apply a red tint over the off-screen canvas
-        offCtx.fillStyle = "hsl(0,0%,0%)";
-        offCtx.globalAlpha = 0.8;
+        offCtx.fillStyle = "hsl(0, 0%, 50%)"; // This is black in HSL
         offCtx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
         offCtx.globalCompositeOperation = "source-over";
+
+        // Set the globalAlpha for the opacity
+        offCtx.globalAlpha = 0.8; // Adjust the opacity to your preference
+        offCtx.globalCompositeOperation = "destination-in";
+        offCtx.drawImage(canvas, 0, 0); // Apply the opacity
 
         // Create the circle mask on the main canvas
         ctx.globalCompositeOperation = "destination-in";
@@ -102,7 +105,6 @@ const CustomAvatarEditor = ({
         ctx.arc(circlePos.x, circlePos.y, radius, 0, Math.PI * 2);
         ctx.fill();
 
-        // Draw the red-tinted image, excluding the circle area
         ctx.globalCompositeOperation = "destination-over";
         ctx.drawImage(offscreenCanvas, 0, 0);
 
