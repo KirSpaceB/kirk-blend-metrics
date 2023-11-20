@@ -6,6 +6,7 @@ import Image from "next/image";
 import { z } from "zod";
 import { useForm, SubmitHandler, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ErrorMessage as HookFormErrorMessage } from "@hookform/error-message";
 
 import { AlertCircle, Check } from "@/components/icons";
 import {
@@ -18,35 +19,43 @@ import {
   CloseButton,
   Dropzone,
   DropzoneState,
+  ErrorMessage,
   HelperText,
   Input,
+  InputGroup,
+  InputRightElement,
   Label,
   Textarea,
 } from "@/components/ui";
 import { getPreview } from "@/lib/dom";
 import { RemainCharacters } from "@/components/remain-characters";
+import { hookFormHasError, isArray } from "@/lib/utils";
 
 const schema = z.object({
-  name: z.string().max(50),
-  description: z.string().max(200),
-  categories: z.string().max(10),
-  tags: z.string().max(10),
-  logo: z.object({
-    file: z.any(),
-    name: z.string(),
-    size: z.string(),
-    progress: z.number(),
-    hasError: z.boolean(),
-    type: z.enum(["img", "doc", "video", "other"]),
-  }),
-  additionalImage: z.object({
-    file: z.any(),
-    name: z.string(),
-    size: z.string(),
-    progress: z.number(),
-    hasError: z.boolean(),
-    type: z.enum(["img", "doc", "video", "other"]),
-  }),
+  name: z
+    .string()
+    .max(50, "Must contain at most 50 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+  description: z
+    .string()
+    .max(200, "Must contain at most 200 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+  categories: z
+    .string()
+    .max(10, "Must contain at most 10 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+  tags: z
+    .string()
+    .max(10, "Must contain at most 10 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+  logo: z
+    .array(z.any())
+    .min(1, "Must contain at least 1 image(s)")
+    .max(1, "Must contain at most 1 image(s)"),
+  additionalImage: z
+    .array(z.any())
+    .min(1, "Must contain at least 1 image(s)")
+    .max(10, "Must contain at most 1 image(s)"),
 });
 
 type FormValues = {
@@ -63,15 +72,19 @@ function General() {
     control,
     register,
     handleSubmit,
-    formState: { isValid },
+    formState: { isValid, errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
+    mode: "onChange",
   });
   const [preview, setPreview] = React.useState<string>();
   const logo = useWatch({ control, name: "logo" });
 
   React.useEffect(() => {
-    const cleanup = getPreview(logo?.file, setPreview);
+    const [item] = logo || [];
+    const { data } = item || {};
+    const cleanup = getPreview(data, setPreview);
+
     return cleanup;
   }, [logo]);
 
@@ -102,8 +115,8 @@ function General() {
       </Alert>
 
       <form
-        className="mt-6 space-y-6 rounded-lg border border-gray-200 bg-white p-6"
-        onSubmit={handleSubmit(onSubmit)}
+        className="mt-6 space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-xs"
+        onSubmit={handleSubmit(onSubmit, (errors) => console.log(errors))}
       >
         <div className="space-y-1.5">
           <Label className="text-gray-700" htmlFor="name" size="sm">
@@ -117,7 +130,25 @@ function General() {
               <RemainCharacters control={control} name="name" max={50} />
             </HelperText>
           </div>
-          <Input {...register("name")} id="name" />
+          <InputGroup>
+            <Input
+              {...register("name")}
+              id="name"
+              isInvalid={hookFormHasError({ errors, name: "name" })}
+            />
+            {hookFormHasError({ errors, name: "name" }) && (
+              <InputRightElement>
+                <AlertCircle className="text-error-500" />
+              </InputRightElement>
+            )}
+          </InputGroup>
+          <HookFormErrorMessage
+            errors={errors}
+            name="name"
+            render={({ message }) => (
+              <ErrorMessage size="sm">{message}</ErrorMessage>
+            )}
+          />
         </div>
 
         <div className="space-y-1.5">
@@ -142,6 +173,14 @@ function General() {
             className="h-[102px]"
             id="desc"
             placeholder="This will be the description user see in our marketplace..."
+            isInvalid={hookFormHasError({ errors, name: "description" })}
+          />
+          <HookFormErrorMessage
+            errors={errors}
+            name="description"
+            render={({ message }) => (
+              <ErrorMessage size="sm">{message}</ErrorMessage>
+            )}
           />
         </div>
 
@@ -157,10 +196,59 @@ function General() {
               <RemainCharacters control={control} name="categories" max={10} />
             </HelperText>
           </div>
-          <Input
-            {...register("categories")}
-            id="categories"
-            placeholder="Add categories"
+          <InputGroup>
+            <Input
+              {...register("categories")}
+              id="categories"
+              placeholder="Add categories"
+              isInvalid={hookFormHasError({ errors, name: "categories" })}
+            />
+            <InputRightElement>
+              {hookFormHasError({ errors, name: "categories" }) && (
+                <AlertCircle className="text-error-500" />
+              )}
+            </InputRightElement>
+          </InputGroup>
+          <HookFormErrorMessage
+            errors={errors}
+            name="categories"
+            render={({ message }) => (
+              <ErrorMessage size="sm">{message}</ErrorMessage>
+            )}
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-gray-700" htmlFor="tags" size="sm">
+            Tags
+          </Label>
+          <div className="flex justify-between">
+            <HelperText size="sm">
+              Provide tags that describe this integration.
+            </HelperText>
+            <HelperText className="leading-5">
+              <RemainCharacters control={control} name="tags" max={10} />
+            </HelperText>
+          </div>
+          <InputGroup>
+            <Input
+              {...register("tags")}
+              id="tags"
+              placeholder="Add tags"
+              isInvalid={hookFormHasError({ errors, name: "tags" })}
+            />
+            <InputRightElement>
+              {hookFormHasError({ errors, name: "tags" }) && (
+                <AlertCircle className="text-error-500" />
+              )}
+            </InputRightElement>
+          </InputGroup>
+          <HookFormErrorMessage
+            errors={errors}
+            name="tags"
+            render={({ message }) => (
+              <ErrorMessage size="sm">{message}</ErrorMessage>
+            )}
           />
         </div>
 
@@ -209,6 +297,13 @@ function General() {
               )}
             />
           </div>
+          <HookFormErrorMessage
+            errors={errors}
+            name="logo"
+            render={({ message }) => (
+              <ErrorMessage size="sm">{message}</ErrorMessage>
+            )}
+          />
         </div>
 
         <div className="space-y-2.5">
@@ -232,7 +327,19 @@ function General() {
             control={control}
             name="additionalImage"
             render={({ field: { onChange, value, onBlur } }) => (
-              <Dropzone onChange={onChange} value={value} onBlur={onBlur} />
+              <Dropzone
+                onChange={onChange}
+                value={value}
+                onBlur={onBlur}
+                maxFiles={10}
+              />
+            )}
+          />
+          <HookFormErrorMessage
+            errors={errors}
+            name="additionalImage"
+            render={({ message }) => (
+              <ErrorMessage size="sm">{message}</ErrorMessage>
             )}
           />
         </div>

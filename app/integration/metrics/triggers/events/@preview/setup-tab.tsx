@@ -14,7 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui";
-import { SettingsPreview } from "./settings-preview";
+import { BasicSettingsPreview } from "./basic-settings-preview";
 import { AdvancedSettingsPreview } from "./advanced-settings-preview";
 
 export default function SetupTab() {
@@ -60,7 +60,7 @@ export default function SetupTab() {
       </RadioGroup>
 
       <div className="mt-6 space-y-6">
-        <SettingsPreview />
+        <BasicSettingsPreview />
         <AdvancedSettingsPreview />
       </div>
 

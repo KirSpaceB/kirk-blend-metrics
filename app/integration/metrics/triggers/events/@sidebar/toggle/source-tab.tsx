@@ -53,7 +53,6 @@ export default function SourceTab() {
     onChange: () =>
       send({
         type: "UPDATE",
-        value: "toggle",
         setting: getValues(),
       }),
   });

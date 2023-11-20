@@ -27,9 +27,9 @@ import {
   TooltipTrigger,
 } from "./ui";
 import { cn, getId } from "@/lib/utils";
+import { stopPropagation } from "@/lib/dom";
 
 interface SearchFieldDraggableCardProps extends Setting {
-  settingId: number;
   advanced: boolean;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
@@ -42,9 +42,9 @@ export const SearchFieldDraggableCard = (
     label,
     tooltip,
     placeholder,
+    id: settingId,
     hint,
     advanced,
-    settingId,
     onDrag,
     active,
   } = props;
@@ -58,10 +58,11 @@ export const SearchFieldDraggableCard = (
   };
 
   const handleClick = () => {
+    console.log("SearchFieldDraggableCard has been clicked!");
     send({ ...options, type: "EDIT-SEARCH" });
   };
 
-  const handleDuplicate = () => {
+  const handleDuplicate = (e: Event) => {
     send({
       ...options,
       type: "DUPLICATE",
@@ -120,10 +121,17 @@ export const SearchFieldDraggableCard = (
               <MoreHorizontal className="h-5 w-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[182px]">
-              <DropdownMenuItem onSelect={handleDuplicate}>
+              <DropdownMenuItem
+                onSelect={handleDuplicate}
+                onClick={stopPropagation}
+              >
                 <Copy /> Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem visual="destructive" onSelect={handleDelete}>
+              <DropdownMenuItem
+                visual="destructive"
+                onSelect={handleDelete}
+                onClick={stopPropagation}
+              >
                 <Trash /> Delete Field
               </DropdownMenuItem>
             </DropdownMenuContent>

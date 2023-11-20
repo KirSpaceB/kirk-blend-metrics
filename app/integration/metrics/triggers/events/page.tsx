@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { ErrorMessage as HookFormErrorMessage } from "@hookform/error-message";
 
 import { AlertCircle, ArrowLeft2, Check } from "@/components/icons";
 import {
@@ -14,9 +15,18 @@ import {
   AlertTitle,
   Button,
   CloseButton,
+  ErrorMessage,
   HelperText,
   Input,
+  InputGroup,
+  InputRightElement,
   Label,
+  Listbox,
+  ListboxButton,
+  ListboxContent,
+  ListboxLabel,
+  ListboxOption,
+  ListboxOptions,
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -25,31 +35,33 @@ import {
 } from "@/components/ui";
 import { RemainCharacters } from "@/components/remain-characters";
 import { ToggleMachineContext } from "@/machines";
+import { hookFormHasError } from "@/lib/utils";
 
-interface FormValues {
-  name: string;
-  shortDescription: string;
-  eventCategory: string;
-  eventSource: string;
-  specificEvent: string;
-}
+const schema = z.object({
+  name: z
+    .string()
+    .max(40, "Must contain at most 40 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+  shortDescription: z
+    .string()
+    .max(100, "Must contain at most 100 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+  eventCategory: z.string().min(1, "Must contain at least 1 character(s)"),
+  eventSource: z.string().min(1, "Must contain at least 1 character(s)"),
+  specificEvent: z.string().min(1, "Must contain at least 1 character(s)"),
+});
+
+type FormValues = z.infer<typeof schema>;
 
 export default function Events() {
   const {
     register,
     control,
     handleSubmit,
-    formState: { isValid },
+    formState: { isValid, errors },
   } = useForm<FormValues>({
-    resolver: zodResolver(
-      z.object({
-        name: z.string().max(40),
-        shortDescription: z.string().max(100),
-        eventCategory: z.string(),
-        eventSource: z.string(),
-        specificEvent: z.string(),
-      })
-    ),
+    resolver: zodResolver(schema),
+    mode: "onChange",
   });
 
   const [, send] = ToggleMachineContext.useActor();
@@ -117,11 +129,31 @@ export default function Events() {
                 <RemainCharacters control={control} name="name" max={40} />
               </HelperText>
             </div>
-            <Input
-              className="text-sm"
-              id="name"
-              placeholder="e.g. Name of Event"
-              {...register("name")}
+
+            <InputGroup>
+              <Input
+                className="text-sm"
+                id="name"
+                placeholder="e.g. Name of Event"
+                {...register("name")}
+                isInvalid={hookFormHasError({
+                  errors,
+                  name: "name",
+                })}
+              />
+              <InputRightElement>
+                {hookFormHasError({ errors, name: "name" }) && (
+                  <AlertCircle className="text-error-500" />
+                )}
+              </InputRightElement>
+            </InputGroup>
+
+            <HookFormErrorMessage
+              errors={errors}
+              name="name"
+              render={({ message }) => (
+                <ErrorMessage size="sm">{message}</ErrorMessage>
+              )}
             />
           </div>
 
@@ -146,67 +178,160 @@ export default function Events() {
                 />
               </HelperText>
             </div>
-            <Input
-              className="text-sm"
-              id="short-description"
-              placeholder="This will be the description user see"
-              {...register("shortDescription")}
+
+            <InputGroup>
+              <Input
+                className="text-sm"
+                id="short-description"
+                placeholder="This will be the description user see"
+                {...register("shortDescription")}
+                isInvalid={hookFormHasError({
+                  errors,
+                  name: "shortDescription",
+                })}
+              />
+              <InputRightElement>
+                {hookFormHasError({ errors, name: "shortDescription" }) && (
+                  <AlertCircle className="text-error-500" />
+                )}
+              </InputRightElement>
+            </InputGroup>
+
+            <HookFormErrorMessage
+              errors={errors}
+              name="shortDescription"
+              render={({ message }) => (
+                <ErrorMessage size="sm">{message}</ErrorMessage>
+              )}
             />
           </div>
 
-          <div className="space-y-1.5">
-            <Label className="text-gray-700" htmlFor="event-category" size="sm">
-              Event Category
-            </Label>
-            <HelperText size="sm">
-              Select which category you want to use.
-            </HelperText>
-            <select
-              className={inputVariants({ className: "text-sm" })}
-              id="event-category"
-              {...register("eventCategory")}
-            >
-              <option value="">Select Event Categoty</option>
-            </select>
-          </div>
+          <Controller
+            control={control}
+            name="eventCategory"
+            render={({ field: { value, onChange, ...field } }) => (
+              <Listbox
+                className="space-y-1.5"
+                value={value}
+                onChange={onChange}
+              >
+                <ListboxLabel className="text-gray-700" size="sm">
+                  Event Category
+                </ListboxLabel>
+                <HelperText size="sm">
+                  Select which category you want to use.
+                </HelperText>
 
-          <div className="space-y-1.5">
-            <Label className="text-gray-700" htmlFor="event-source" size="sm">
-              Event Source
-            </Label>
-            <div className="flex items-start justify-between">
-              <HelperText size="sm">Select API Endoint.</HelperText>
-              <HelperText className="leading-5" size="sm">
-                Can’t find your event?{" "}
-                <Link className="font-semibold text-primary-500" href="#">
-                  Change data set
-                </Link>
-              </HelperText>
-            </div>
-            <select
-              className={inputVariants({ className: "text-sm" })}
-              id="event-source"
-              {...register("eventSource")}
-            >
-              <option value="">Select Event Source</option>
-            </select>
-          </div>
+                <ListboxContent>
+                  <ListboxButton
+                    placeholder="Select Event Category"
+                    isInvalid={hookFormHasError({
+                      errors,
+                      name: "eventCategory",
+                    })}
+                  />
+                  <ListboxOptions>
+                    <ListboxOption value="Optional 1">Option 1</ListboxOption>
+                  </ListboxOptions>
+                </ListboxContent>
 
-          <div className="space-y-1.5">
-            <Label className="text-gray-700" htmlFor="specific-event" size="sm">
-              Specific Event
-            </Label>
-            <HelperText size="sm">
-              A specific event from your event source.
-            </HelperText>
-            <select
-              className={inputVariants({ className: "text-sm" })}
-              id="specific-event"
-              {...register("specificEvent")}
-            >
-              <option value="">Select Specific Event</option>
-            </select>
-          </div>
+                <HookFormErrorMessage
+                  errors={errors}
+                  name="eventCategory"
+                  render={({ message }) => (
+                    <ErrorMessage size="sm">{message}</ErrorMessage>
+                  )}
+                />
+              </Listbox>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="eventSource"
+            render={({ field: { value, onChange, ...field } }) => (
+              <Listbox
+                className="space-y-1.5"
+                value={value}
+                onChange={onChange}
+              >
+                <ListboxLabel className="text-gray-700" size="sm">
+                  Event Source
+                </ListboxLabel>
+
+                <div className="flex items-start justify-between">
+                  <HelperText size="sm">Select API Endoint.</HelperText>
+                  <HelperText className="leading-5" size="sm">
+                    Can’t find your event?{" "}
+                    <Link className="font-semibold text-primary-500" href="#">
+                      Change data set
+                    </Link>
+                  </HelperText>
+                </div>
+
+                <ListboxContent>
+                  <ListboxButton
+                    placeholder="Select Event Source"
+                    isInvalid={hookFormHasError({
+                      errors,
+                      name: "eventSource",
+                    })}
+                  />
+                  <ListboxOptions>
+                    <ListboxOption value="Optional 1">Option 1</ListboxOption>
+                  </ListboxOptions>
+                </ListboxContent>
+
+                <HookFormErrorMessage
+                  errors={errors}
+                  name="eventSource"
+                  render={({ message }) => (
+                    <ErrorMessage size="sm">{message}</ErrorMessage>
+                  )}
+                />
+              </Listbox>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="specificEvent"
+            render={({ field: { value, onChange, ...field } }) => (
+              <Listbox
+                className="space-y-1.5"
+                value={value}
+                onChange={onChange}
+              >
+                <ListboxLabel className="text-gray-700" size="sm">
+                  Specific Event
+                </ListboxLabel>
+                <HelperText size="sm">
+                  A specific event from your event source.
+                </HelperText>
+
+                <ListboxContent>
+                  <ListboxButton
+                    placeholder="Select Specific Event"
+                    isInvalid={hookFormHasError({
+                      errors,
+                      name: "specificEvent",
+                    })}
+                  />
+                  <ListboxOptions>
+                    <ListboxOption value="Optional 1">Option 1</ListboxOption>
+                  </ListboxOptions>
+                </ListboxContent>
+
+                <HookFormErrorMessage
+                  errors={errors}
+                  name="specificEvent"
+                  render={({ message }) => (
+                    <ErrorMessage size="sm">{message}</ErrorMessage>
+                  )}
+                />
+              </Listbox>
+            )}
+          />
         </div>
       </form>
     </>

@@ -123,11 +123,25 @@ export const isImg = (name: string) => {
     ".webp",
     ".gif",
     ".svg",
+    ".bmp",
+    ".ico",
+    ".tif",
+    ".tiff",
+    ".avif",
   ]);
 };
 
 export const isVideo = (name: string) => {
-  return verifyFileType(name, [".mp4"]);
+  return verifyFileType(name, [
+    ".mp4",
+    ".mpeg",
+    ".ogv",
+    ".ts",
+    ".webm",
+    ".3gp",
+    ".3g2",
+    ".avi",
+  ]);
 };
 
 export const isDoc = (name: string) => {
@@ -184,6 +198,10 @@ export function toPxIfNumber(arg: string | number) {
   }
 
   return arg;
+}
+
+export function toPercentage(arg: number) {
+  return `${arg}%`;
 }
 
 export function get2DArray<T extends any[]>(arr: T, size = 2): T[] {
@@ -329,4 +347,23 @@ export function pick<T extends Record<string, any>, K extends keyof T>(
   });
 
   return result;
+}
+
+export function values<T extends Record<string, any> = Record<string, any>>(
+  record: T
+): T[keyof T][] {
+  return Object.values(record);
+}
+
+export function isNaturalNumber(number?: number) {
+  if (isUndefined(number)) {
+    return false;
+  }
+  return number > 0;
+}
+
+export function toString(value?: number): undefined | string {
+  if (!value) return;
+
+  return `${value}`;
 }

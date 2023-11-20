@@ -7,6 +7,7 @@ import {
   HelpCircle,
   Number,
   Password,
+  Phone,
   ShortText,
   Website,
 } from "@/components/icons";
@@ -27,7 +28,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui";
-import { useEnhancedWatch } from "@/lib/hooks";
+import { useControllableState, useEnhancedWatch } from "@/lib/hooks";
 import { pick } from "@/lib/utils";
 import { SettingMachineContext } from "@/machines";
 
@@ -52,7 +53,13 @@ const defaultValues: FormValues = {
 interface Option {
   icon: React.ReactNode;
   label: string;
-  value: "short-text" | "numbers" | "email" | "password" | "website";
+  value:
+    | "short-text"
+    | "numbers"
+    | "email"
+    | "password"
+    | "website"
+    | "phone-number";
 }
 
 type Options = Option[];
@@ -64,14 +71,14 @@ const options: Options = [
     value: "password",
   },
   {
-    icon: <ShortText className="h-6 w-6 text-gray-500" />,
-    label: "Short Text",
-    value: "short-text",
-  },
-  {
     icon: <Number className="h-6 w-6 text-gray-500" />,
     label: "Numbers",
     value: "numbers",
+  },
+  {
+    icon: <ShortText className="h-6 w-6 text-gray-500" />,
+    label: "Short Text",
+    value: "short-text",
   },
   {
     icon: <Email className="h-6 w-6 text-gray-500" />,
@@ -82,6 +89,11 @@ const options: Options = [
     icon: <Website className="h-6 w-6 text-gray-500" />,
     label: "Website",
     value: "website",
+  },
+  {
+    icon: <Phone className="h-6 w-6 text-gray-500" />,
+    label: "Phone Number",
+    value: "phone-number",
   },
 ];
 
@@ -117,7 +129,6 @@ export default function SetupTab() {
     onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: "password",
         setting: variables,
       }),
   });
@@ -149,6 +160,12 @@ export default function SetupTab() {
         send({
           type: "TO-WEBSITE",
           newKind: "website",
+        });
+
+      case "phone-number":
+        send({
+          type: "TO-PHONE-NUMBER",
+          newKind: "phone-number",
         });
         break;
     }

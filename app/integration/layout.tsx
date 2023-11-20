@@ -46,31 +46,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui";
-import { cn } from "@/lib/utils";
 import { INTEGRATION_PAGE } from "@/lib/constants";
-
-const ActiveLink = ({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) => {
-  const pathname = usePathname();
-  const isActive = pathname === href;
-
-  return (
-    <Link
-      className={cn(
-        "flex h-10 items-center gap-x-2 rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-500",
-        isActive && "bg-primary-50 text-primary-500"
-      )}
-      href={href}
-    >
-      {children}
-    </Link>
-  );
-};
+import { ActiveLink } from "@/components/active-link";
 
 export default function IntegrationLayout({
   children,
@@ -268,7 +245,7 @@ export default function IntegrationLayout({
                 <Button className="p-2.5" variant="outlined" visual="gray">
                   <Settings />
                 </Button>
-                <Button>Submit for Review</Button>
+                <Button disabled>Submit for Review</Button>
               </div>
             </div>
           </nav>
@@ -293,7 +270,10 @@ export default function IntegrationLayout({
                     <Lamp />
                     Data
                   </ActiveLink>
-                  <ActiveLink href="/integration/metrics/triggers">
+                  <ActiveLink
+                    href="/integration/metrics/triggers"
+                    startsWith={true}
+                  >
                     <Zap className="h-[18px] w-[18px]" />
                     Triggers
                   </ActiveLink>

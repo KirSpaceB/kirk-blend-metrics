@@ -71,11 +71,17 @@ const CustomAvatarEditor = ({
     if (canvas && image.complete) {
       const ctx = canvas.getContext("2d");
       const offscreenCanvas = document.createElement("canvas");
-      const offCtx = offscreenCanvas.getContext("2d");
+      const overlayCanvas = document.createElement("canvas");
 
-      if (ctx && offCtx) {
+      const offCtx = offscreenCanvas.getContext("2d");
+      const overlayCtx = overlayCanvas.getContext("2d");
+
+      if (ctx && offCtx && overlayCtx) {
         offscreenCanvas.width = canvas.width;
         offscreenCanvas.height = canvas.height;
+
+        overlayCanvas.width = canvas.width;
+        overlayCanvas.height = canvas.height;
 
         // Draw the original image with transformations
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -94,12 +100,16 @@ const CustomAvatarEditor = ({
         offCtx.globalCompositeOperation = "saturation";
 
         // Apply a red tint over the off-screen canvas
-        offCtx.fillStyle = "hsl(0, 0%, 50%)"; // This is black in HSL
+        offCtx.fillStyle = "hsl(0, 0%, 60%)"; // This is black in HSL
         offCtx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
         offCtx.globalCompositeOperation = "source-over";
 
+        // Set up the gray overlay using RGBA
+        overlayCtx.fillStyle = "rgba(128, 128, 128, 0.8)"; // Gray color with 80% opacity
+        overlayCtx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
         // Set the globalAlpha for the opacity
-        offCtx.globalAlpha = 0.8; // Adjust the opacity to your preference
+        offCtx.globalAlpha = 0.4; // Adjust the opacity to your preference
         offCtx.globalCompositeOperation = "destination-in";
         offCtx.drawImage(canvas, 0, 0); // Apply the opacity
 

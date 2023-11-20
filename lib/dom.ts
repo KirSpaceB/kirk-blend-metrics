@@ -1,4 +1,4 @@
-import { isUndefined } from "./utils";
+import { isUndefined, keys } from "./utils";
 
 export function getPreview<T extends File>(
   file: T | undefined,
@@ -51,4 +51,47 @@ export function addEvent<
   return () => {
     target.removeEventListener(event, listener, options);
   };
+}
+
+export function stopPropagation<T extends { stopPropagation: () => void }>(
+  event: T
+) {
+  event.stopPropagation();
+}
+
+export function getBaseUrl() {
+  if (typeof window === "undefined") return "";
+  return window.origin;
+}
+
+export function openTab(
+  pathname: string,
+  features = "width=640,height=549",
+  target = "_blank"
+) {
+  const url = getBaseUrl() + pathname;
+  return window.open(url, target, features);
+}
+
+export function triggerPopup(
+  pathname: string,
+  features: {
+    width?: number;
+    height?: number;
+    left?: number;
+    top?: number;
+  } = {
+    width: 640,
+    height: 569,
+    left: 320,
+  },
+  target: "_self" | "_blank" | "_parent" | "_top" = "_blank"
+) {
+  const widFeatures = keys(features)
+    .map((key) => (features[key] ? `${key}=${features[key]}` : undefined))
+    .filter(Boolean)
+    .join(",");
+  const url = getBaseUrl() + pathname;
+
+  return window.open(url, target, widFeatures);
 }

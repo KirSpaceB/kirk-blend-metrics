@@ -55,7 +55,6 @@ export default function SetupTab() {
     onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: "toggle",
         setting: variables,
       }),
   });

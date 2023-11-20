@@ -24,16 +24,24 @@ import {
   TooltipTrigger,
 } from "./ui";
 import { cn, getId } from "@/lib/utils";
+import { stopPropagation } from "@/lib/dom";
 
 interface ToggleDraggableCardProps extends Setting {
   advanced: boolean;
-  settingId: number;
   onDrag?: (event: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
 
 export const ToggleDraggableCard = (props: ToggleDraggableCardProps) => {
-  const { label, hint, tooltip, advanced, settingId, onDrag, active } = props;
+  const {
+    label,
+    hint,
+    tooltip,
+    advanced,
+    id: settingId,
+    onDrag,
+    active,
+  } = props;
 
   const [, send] = SettingMachineContext.useActor();
   const id = React.useId();
@@ -104,10 +112,17 @@ export const ToggleDraggableCard = (props: ToggleDraggableCardProps) => {
               <MoreHorizontal className="h-5 w-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[182px]">
-              <DropdownMenuItem onSelect={handleDuplicate}>
+              <DropdownMenuItem
+                onSelect={handleDuplicate}
+                onClick={stopPropagation}
+              >
                 <Copy /> Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem visual="destructive" onSelect={handleDelete}>
+              <DropdownMenuItem
+                visual="destructive"
+                onSelect={handleDelete}
+                onClick={stopPropagation}
+              >
                 <Trash /> Delete Field
               </DropdownMenuItem>
             </DropdownMenuContent>

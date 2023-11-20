@@ -4,11 +4,12 @@ import {
   DeepPartialSkipArrayKey,
   FieldPath,
   FieldPathValue,
+  UseFormGetValues,
   useWatch,
 } from "react-hook-form";
 
 import { addEvent } from "./dom";
-import { debounce } from "./utils";
+import { debounce, isEmpty } from "./utils";
 
 export function useDebounce<TValue>(value: TValue, wait?: number) {
   const [state, setState] = React.useState(value);
@@ -249,3 +250,23 @@ export const useArray = <T>(defaultState?: T[]) => {
 
   return [state, { remove, prepend, append, patch: setState, clear }] as const;
 };
+
+export function useFormValue<
+  TFieldValues extends Record<string, any> = Record<string, any>,
+  TFieldNames extends readonly FieldPath<TFieldValues>[] = readonly FieldPath<TFieldValues>[]
+>({
+  getValues,
+  ...props
+}: {
+  name: readonly [...TFieldNames];
+  defaultValue?: DeepPartialSkipArrayKey<TFieldValues>;
+  control?: Control<TFieldValues>;
+  disabled?: boolean;
+  exact?: boolean;
+  getValues: UseFormGetValues<TFieldValues>;
+}) {
+  return {
+    ...useWatch(props),
+    ...getValues(),
+  };
+}

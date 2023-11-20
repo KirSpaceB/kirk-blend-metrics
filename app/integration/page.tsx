@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,30 +8,15 @@ import { ErrorMessage as HookFormErrorMessage } from "@hookform/error-message";
 
 import {
   AlertCircle,
-  BarChartSquare,
-  Belling,
   ChevronDown,
   Clock,
-  HelpCircle,
-  Home,
-  LifeBouy,
-  LogOut,
-  Logo,
   MoreHorizontal,
   Plus2,
   Search,
-  Settings,
   ShieldCharged,
-  ThreeLayers,
-  User,
-  UserPlus,
-  Users,
   X2,
 } from "@/components/icons";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
   Badge,
   Breadcrumb,
   BreadcrumbItem,
@@ -44,12 +28,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
   HelperText,
   Input,
   Label,
@@ -68,16 +46,20 @@ import {
 } from "@/components/ui";
 import { RemainCharacters } from "@/components/remain-characters";
 import { hookFormHasError } from "@/lib/utils";
+import { ActiveLink } from "@/components/active-link";
 
 const schema = z.object({
-  name: z.string().max(30, "Must contain at most 30 character(s)"),
-  description: z.string().max(200, "Must contain at most 200 character(s)"),
+  name: z
+    .string()
+    .max(30, "Must contain at most 30 character(s)")
+    .min(1, "Must contain at least 1 character(s)"),
+  description: z
+    .string()
+    .max(200, "Must contain at most 200 character(s)")
+    .optional(),
 });
 
-interface FormValues {
-  name: string;
-  description: string;
-}
+type FormValues = z.infer<typeof schema>;
 
 function Overview() {
   const {
@@ -235,22 +217,16 @@ function Overview() {
       <nav className="fixed bottom-0 left-[70px] top-[70px] z-20 w-[224px] overflow-y-auto border-r border-gray-200 bg-gray-50 p-[15px] pb-0 scrollbar-thin scrollbar-thumb-rounded-lg">
         <ul className="grid gap-2">
           <li>
-            <Link
-              className="flex h-10 cursor-pointer items-center gap-x-3 rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-500 focus-visible:outline-none"
-              href="/dashboard"
-            >
+            <ActiveLink href="/integration/getting-started">
               <ShieldCharged />
               Dashboard
-            </Link>
+            </ActiveLink>
           </li>
           <li>
-            <Link
-              className="flex h-10 cursor-pointer items-center gap-x-3 rounded-md bg-primary-50 px-3 py-2 text-sm font-semibold leading-6 text-primary-500 focus-visible:outline-none"
-              href="/integration"
-            >
+            <ActiveLink href="/integration">
               <ShieldCharged />
               My Integrations
-            </Link>
+            </ActiveLink>
           </li>
         </ul>
       </nav>
@@ -274,19 +250,22 @@ function Overview() {
           </div>
 
           <div className="mt-6">
-            <table className="w-full table-fixed border-separate border-spacing-y-2.5">
+            <table className="w-full table-fixed border-separate border-spacing-y-2.5 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-thumb-rounded-lg">
               <caption className="sr-only">Integration</caption>
               <tbody>
-                <tr className="h-20 rounded-lg bg-white shadow-xs">
-                  <td className="border-y border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
-                    <div className="relative h-10 w-10 overflow-hidden rounded-[4px] border border-gray-200 bg-white">
-                      <Image src="/image.png" sizes="50vw" alt="Image" fill />
+                <tr className="rounded-lg bg-white shadow-xs">
+                  <td className="h-20 border-y border-gray-200 px-3 text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                    <div className="flex h-full items-center gap-x-3">
+                      <div className="relative h-10 w-10 flex-none overflow-hidden rounded-[4px] border border-gray-200 bg-white">
+                        <Image src="/image.png" sizes="50vw" alt="Image" fill />
+                      </div>
+                      <span className="truncate">
+                        MyIntegration1 Lorem ipsum dolor, sit amet consectetur
+                        adipisicing elit. Assumenda, veniam!
+                      </span>
                     </div>
                   </td>
-                  <td className="border-y border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
-                    MyIntegration1
-                  </td>
-                  <td className="border-y border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                  <td className="h-20 whitespace-nowrap border-y  border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
                     Version 1.0.0
                   </td>
                   <td className="border-y border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
@@ -295,10 +274,10 @@ function Overview() {
                       In Review
                     </Badge>
                   </td>
-                  <td className="border-y border-gray-200 px-3 align-middle text-sm text-gray-500 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                  <td className="h-20 whitespace-nowrap border-y border-gray-200 px-3 align-middle text-sm text-gray-500 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
                     16 hours ago
                   </td>
-                  <td className="border-y border-gray-200 px-3 align-middle text-sm text-gray-500 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                  <td className="h-20 border-y border-gray-200 px-3 align-middle text-sm text-gray-500 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -318,16 +297,19 @@ function Overview() {
                   </td>
                 </tr>
 
-                <tr className="h-20 rounded-lg bg-white shadow-xs">
-                  <td className="border-y border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
-                    <div className="relative h-10 w-10 overflow-hidden rounded-[4px] border border-gray-200 bg-white">
-                      <Image src="/image.png" sizes="50vw" alt="Image" fill />
+                <tr className="rounded-lg bg-white shadow-xs">
+                  <td className="h-20 border-y border-gray-200 px-3 text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                    <div className="flex h-full items-center gap-x-3">
+                      <div className="relative h-10 w-10 flex-none overflow-hidden rounded-[4px] border border-gray-200 bg-white">
+                        <Image src="/image.png" sizes="50vw" alt="Image" fill />
+                      </div>
+                      <span className="truncate">
+                        MyIntegration1 Lorem ipsum dolor, sit amet consectetur
+                        adipisicing elit. Assumenda, veniam!
+                      </span>
                     </div>
                   </td>
-                  <td className="border-y border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
-                    MyIntegration1
-                  </td>
-                  <td className="border-y border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                  <td className="h-20 whitespace-nowrap border-y  border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
                     Version 1.0.0
                   </td>
                   <td className="border-y border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
@@ -336,10 +318,54 @@ function Overview() {
                       In Review
                     </Badge>
                   </td>
-                  <td className="border-y border-gray-200 px-3 align-middle text-sm text-gray-500 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                  <td className="h-20 whitespace-nowrap border-y border-gray-200 px-3 align-middle text-sm text-gray-500 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
                     16 hours ago
                   </td>
-                  <td className="border-y border-gray-200 px-3 align-middle text-sm text-gray-500 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                  <td className="h-20 border-y border-gray-200 px-3 align-middle text-sm text-gray-500 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <IconButton
+                            className="h-8 w-8 text-gray-500"
+                            variant="ghost"
+                            visual="gray"
+                          >
+                            <MoreHorizontal />
+                          </IconButton>
+                        </TooltipTrigger>
+                        <TooltipContent className="font-semibold">
+                          Options
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </td>
+                </tr>
+
+                <tr className="rounded-lg bg-white shadow-xs">
+                  <td className="h-20 border-y border-gray-200 px-3 text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                    <div className="flex h-full items-center gap-x-3">
+                      <div className="relative h-10 w-10 flex-none overflow-hidden rounded-[4px] border border-gray-200 bg-white">
+                        <Image src="/image.png" sizes="50vw" alt="Image" fill />
+                      </div>
+                      <span className="truncate">
+                        MyIntegration1 Lorem ipsum dolor, sit amet consectetur
+                        adipisicing elit. Assumenda, veniam!
+                      </span>
+                    </div>
+                  </td>
+                  <td className="h-20 whitespace-nowrap border-y  border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                    Version 1.0.0
+                  </td>
+                  <td className="border-y border-gray-200 px-3 align-middle text-sm font-medium text-gray-900 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                    <Badge visual="warning">
+                      <Clock className="h-3 w-3" />
+                      In Review
+                    </Badge>
+                  </td>
+                  <td className="h-20 whitespace-nowrap border-y border-gray-200 px-3 align-middle text-sm text-gray-500 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
+                    16 hours ago
+                  </td>
+                  <td className="h-20 border-y border-gray-200 px-3 align-middle text-sm text-gray-500 first:rounded-l-lg first:border-l first:pl-6 last:rounded-r-lg last:border-r last:pr-6 last:text-right">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>

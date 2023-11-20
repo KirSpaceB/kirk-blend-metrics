@@ -80,6 +80,7 @@ interface ListboxButtonProps<T = any>
   }) => React.ReactNode;
   iconClassName?: string;
   placeholder?: string;
+  isInvalid?: boolean;
 }
 
 export const ListboxButton = ({
@@ -87,12 +88,17 @@ export const ListboxButton = ({
   placeholder,
   iconClassName,
   children,
+  isInvalid,
   ...props
 }: ListboxButtonProps) => {
   return (
     <ListboxPrimitive.Button
       className={cn(
         "flex h-11 w-full items-center gap-x-2 rounded-[5px] border border-gray-300 bg-white px-3.5 py-2.5 text-base text-gray-black shadow-xs focus:border-primary-500 focus:ring-4 focus:ring-primary-50 focus-visible:outline-none",
+        {
+          "border-error-300 focus:border-error-300 focus:ring-error-100":
+            isInvalid,
+        },
         className
       )}
       {...props}

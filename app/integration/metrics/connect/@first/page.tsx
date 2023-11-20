@@ -1,85 +1,79 @@
 "use client";
 
-import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { ErrorMessage as HookFromErrorMessage } from "@hookform/error-message";
 
 import {
   Button,
   Dropzone,
   DropzoneState,
+  ErrorMessage,
   HelperText,
   Input,
+  InputGroup,
+  InputRightElement,
   Label,
+  Listbox,
+  ListboxButton,
+  ListboxContent,
+  ListboxLabel,
+  ListboxOption,
+  ListboxOptions,
   RadioGroup,
   RadioGroupItemSelector,
-  inputVariants,
 } from "@/components/ui";
-import { isUndefined } from "@/lib/utils";
+import { hookFormHasError } from "@/lib/utils";
+import { AlertCircle } from "@/components/icons";
 
-const schema = z
-  .object({
-    value: z.enum(["API-URL", "DATASETS", "API-FILE"]),
-    url: z.string().url().optional(),
-    selected: z.string().optional(),
+const schema = z.discriminatedUnion("value", [
+  z.object({
+    value: z.literal("API-URL"),
+    url: z.string().url(),
+  }),
+  z.object({
+    value: z.literal("DATASETS"),
+    selected: z.string().min(1, "Must select 1 option(s)"),
+  }),
+  z.object({
+    value: z.literal("API-FILE"),
     file: z
-      .object({
-        file: z.any(),
-        name: z.string(),
-        size: z.string(),
-        progress: z.number(),
-        hasError: z.boolean(),
-        type: z.enum(["img", "doc", "video", "other"]),
-      })
-      .optional(),
-  })
-  .superRefine(({ value, file, url, selected }, ctx) => {
-    if (value === "API-URL" && isUndefined(url)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Must provide an API url",
-        path: ["url"],
-      });
-    } else if (value === "DATASETS" && isUndefined(selected)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Must select one option",
-        path: ["selected"],
-      });
-    } else if (value === "API-FILE" && isUndefined(file)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Must select a file",
-        path: ["files"],
-      });
-    }
-  });
+      .array(z.any())
+      .min(1, "Must contain at least 1 file(s)")
+      .max(1, "Must contain at most 1 file(s)"),
+  }),
+]);
 
-type FormState = Omit<z.infer<typeof schema>, "file"> & {
+interface FormValues {
+  value: "API-URL" | "DATASETS" | "API-FILE";
+  url: string;
+  selected: string;
   file: DropzoneState;
-};
+}
 
 export default function FirstTab() {
   const {
     control,
     handleSubmit,
     register,
-    formState: { isValid },
+    formState: { isValid, errors },
     watch,
-  } = useForm<FormState>({
+  } = useForm<FormValues>({
     resolver: zodResolver(schema),
+    mode: "onChange",
   });
   const { push } = useRouter();
   const value = watch("value");
 
-  const onSubmit: SubmitHandler<FormState> = (variables) => {
+  const onSubmit: SubmitHandler<FormValues> = (variables) => {
     push("/integration/metrics/connect?tab=second");
   };
 
   return (
     <form
-      className="border border-gray-200 p-6"
+      className="border border-gray-200 bg-white p-6 shadow-xs"
       onSubmit={handleSubmit(onSubmit)}
     >
       <h3 className="text-base font-semibold text-gray-900">Connect Data</h3>
@@ -121,6 +115,16 @@ export default function FirstTab() {
             </RadioGroup>
           )}
         />
+
+        <HookFromErrorMessage
+          errors={errors}
+          name="value"
+          render={({ message }) => (
+            <ErrorMessage className="mt-1.5" size="sm">
+              {message}
+            </ErrorMessage>
+          )}
+        />
       </div>
 
       {value === "API-URL" && (
@@ -128,28 +132,76 @@ export default function FirstTab() {
           <Label className="uppercase" size="sm" htmlFor="url">
             API url
           </Label>
-          <Input
-            {...register("url")}
-            id="url"
-            placeholder="e.g. https://example.com"
+
+          <InputGroup>
+            <Input
+              {...register("url")}
+              id="url"
+              placeholder="e.g. https://example.com"
+              isInvalid={hookFormHasError({ errors, name: "url" })}
+            />
+            <InputRightElement>
+              {hookFormHasError({ errors, name: "url" }) && (
+                <AlertCircle className="text-error-500" />
+              )}
+            </InputRightElement>
+          </InputGroup>
+
+          <HookFromErrorMessage
+            errors={errors}
+            name="url"
+            render={({ message }) => (
+              <ErrorMessage size="sm">{message}</ErrorMessage>
+            )}
           />
         </div>
       )}
 
       {value === "DATASETS" && (
-        <div className="mt-6 space-y-1.5">
-          <Label size="sm" htmlFor="selected">
-            My datasets
-          </Label>
-          <HelperText size="sm">Select API Endpoint</HelperText>
-          <select
-            className={inputVariants()}
-            {...register("selected")}
-            id="selected"
-          >
-            <option value="">Choose Metric</option>
-          </select>
-        </div>
+        <Controller
+          control={control}
+          name="selected"
+          render={({ field: { value, onChange, ...field } }) => (
+            <Listbox
+              className="mt-6 space-y-1.5"
+              value={value}
+              onChange={onChange}
+            >
+              <ListboxLabel size="sm">My datasets</ListboxLabel>
+
+              <HelperText size="sm">Select API Endpoint</HelperText>
+
+              <ListboxContent>
+                <ListboxButton
+                  placeholder="Choose Metric"
+                  isInvalid={hookFormHasError({ errors, name: "selected" })}
+                />
+                <ListboxOptions>
+                  <ListboxOption value="https://api.example.com/v1">
+                    https://api.example.com/v1
+                  </ListboxOption>
+                  <ListboxOption value="https://api.example.com/v2">
+                    https://api.example.com/v2
+                  </ListboxOption>
+                  <ListboxOption value="https://api.example.com/v3">
+                    https://api.example.com/v3
+                  </ListboxOption>
+                  <ListboxOption value="https://api.example.com/v4">
+                    https://api.example.com/v4
+                  </ListboxOption>
+                </ListboxOptions>
+              </ListboxContent>
+
+              <HookFromErrorMessage
+                errors={errors}
+                name="selected"
+                render={({ message }) => (
+                  <ErrorMessage size="sm">{message}</ErrorMessage>
+                )}
+              />
+            </Listbox>
+          )}
+        />
       )}
 
       {value === "API-FILE" && (
@@ -161,7 +213,16 @@ export default function FirstTab() {
               <Label size="sm" htmlFor="file">
                 API File
               </Label>
+
               <Dropzone onBlur={onBlur} value={value} onChange={onChange} />
+
+              <HookFromErrorMessage
+                errors={errors}
+                name="file"
+                render={({ message }) => (
+                  <ErrorMessage size="sm">{message}</ErrorMessage>
+                )}
+              />
             </div>
           )}
         />

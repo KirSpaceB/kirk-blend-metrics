@@ -7,6 +7,7 @@ import {
   HelpCircle,
   Number,
   Password,
+  Phone,
   ShortText,
   Website,
 } from "@/components/icons";
@@ -52,7 +53,13 @@ const defaultValues: FormValues = {
 interface Option {
   icon: React.ReactNode;
   label: string;
-  value: "short-text" | "numbers" | "email" | "password" | "website";
+  value:
+    | "short-text"
+    | "numbers"
+    | "email"
+    | "password"
+    | "website"
+    | "phone-number";
 }
 
 type Options = Option[];
@@ -82,6 +89,11 @@ const options: Options = [
     icon: <Website className="h-6 w-6 text-gray-500" />,
     label: "Website",
     value: "website",
+  },
+  {
+    icon: <Phone className="h-6 w-6 text-gray-500" />,
+    label: "Phone Number",
+    value: "phone-number",
   },
 ];
 
@@ -117,7 +129,6 @@ export default function SetupTab() {
     onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: "numbers",
         setting: variables,
       }),
   });
@@ -149,6 +160,13 @@ export default function SetupTab() {
         send({
           type: "TO-WEBSITE",
           newKind: "website",
+        });
+        break;
+
+      case "phone-number":
+        send({
+          type: "TO-PHONE-NUMBER",
+          newKind: "phone-number",
         });
         break;
     }

@@ -18,10 +18,10 @@ import {
   MoreHorizontal,
   Trash,
 } from "./icons";
+import { stopPropagation } from "@/lib/dom";
 
 interface LongTextDraggableCardProps extends Setting {
   advanced: boolean;
-  settingId: number;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
@@ -30,7 +30,7 @@ export const LongTextDraggableCard = (props: LongTextDraggableCardProps) => {
   const {
     onDrag,
     advanced,
-    settingId,
+    id: settingId,
     active,
     label,
     placeholder,
@@ -99,10 +99,17 @@ export const LongTextDraggableCard = (props: LongTextDraggableCardProps) => {
               <MoreHorizontal className="h-5 w-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[182px]">
-              <DropdownMenuItem onSelect={handleDuplicate}>
+              <DropdownMenuItem
+                onSelect={handleDuplicate}
+                onClick={stopPropagation}
+              >
                 <Copy /> Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem visual="destructive" onSelect={handleDelete}>
+              <DropdownMenuItem
+                visual="destructive"
+                onSelect={handleDelete}
+                onClick={stopPropagation}
+              >
                 <Trash /> Delete Field
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -116,7 +123,7 @@ export const LongTextDraggableCard = (props: LongTextDraggableCardProps) => {
         )}
 
         <Textarea
-          className="mt-3 h-[92px]"
+          className="pointer-events-none mt-3 h-[92px]"
           placeholder={placeholder ? placeholder : "Enter text here"}
           id={id}
         />

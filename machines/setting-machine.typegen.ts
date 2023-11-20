@@ -17,9 +17,13 @@ export interface Typegen0 {
     duplicate: "DUPLICATE";
     insert: "INSERT";
     patch:
+      | "TO-CHECKBOX"
+      | "TO-DROPDOWN"
       | "TO-EMAIL"
       | "TO-NUMBERS"
       | "TO-PASSWORD"
+      | "TO-PHONE-NUMBER"
+      | "TO-RADIO-GROUP"
       | "TO-SEARCH"
       | "TO-SHORT-TEXT"
       | "TO-TOGGLE"
@@ -27,34 +31,37 @@ export interface Typegen0 {
     reorder: "REORDER";
     resetCurrent: "DELETE" | "TOGGLE";
     setCurrent:
+      | "EDIT-ADDRESS"
+      | "EDIT-CHECKBOX"
+      | "EDIT-DATE/TIME"
       | "EDIT-DROPDOWN"
       | "EDIT-EMAIL"
+      | "EDIT-FILE-UPLOAD"
+      | "EDIT-IMAGE-UPLOAD"
       | "EDIT-LONG-TEXT"
       | "EDIT-NUMBERS"
       | "EDIT-PASSWORD"
+      | "EDIT-PHONE-NUMBER"
+      | "EDIT-RADIO-GROUP"
+      | "EDIT-RICH-TEXT"
       | "EDIT-SEARCH"
       | "EDIT-SHORT-TEXT"
       | "EDIT-TOGGLE"
+      | "EDIT-VIDEO"
       | "EDIT-WEBSITE";
     update: "UPDATE";
   };
   eventsCausingDelays: {};
   eventsCausingGuards: {
     equalToCurrentId: "DELETE";
-    isDropdown: "EDIT-DROPDOWN";
-    isEmail: "EDIT-EMAIL";
-    isLongText: "EDIT-LONG-TEXT";
-    isMatching: "UPDATE";
-    isNumbers: "EDIT-NUMBERS";
-    isPassword: "EDIT-PASSWORD";
-    isSearch: "EDIT-SEARCH";
-    isShortText: "EDIT-SHORT-TEXT";
-    isToggle: "EDIT-TOGGLE";
-    isWebsite: "EDIT-WEBSITE";
     notEqualToPreviousKind:
+      | "TO-CHECKBOX"
+      | "TO-DROPDOWN"
       | "TO-EMAIL"
       | "TO-NUMBERS"
       | "TO-PASSWORD"
+      | "TO-PHONE-NUMBER"
+      | "TO-RADIO-GROUP"
       | "TO-SEARCH"
       | "TO-SHORT-TEXT"
       | "TO-TOGGLE"
@@ -62,14 +69,23 @@ export interface Typegen0 {
   };
   eventsCausingServices: {};
   matchesStates:
+    | "editing address"
+    | "editing checkbox"
+    | "editing date/time"
     | "editing dropdown"
     | "editing email"
+    | "editing file upload"
+    | "editing image upload"
     | "editing long text"
     | "editing numbers"
     | "editing password"
+    | "editing phone number"
+    | "editing radio group"
+    | "editing rich text"
     | "editing search"
     | "editing short text"
     | "editing toggle"
+    | "editing video"
     | "editing website"
     | "idle";
   tags: never;

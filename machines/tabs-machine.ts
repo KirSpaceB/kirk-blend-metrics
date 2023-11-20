@@ -24,6 +24,7 @@ export const tabsMachine = createMachine(
         internal: true,
       },
     },
+    tsTypes: {} as import("./tabs-machine.typegen").Typegen0,
     schema: {
       events: {} as { type: "SETUP" } | { type: "TEST" } | { type: "SOURCE" },
     },

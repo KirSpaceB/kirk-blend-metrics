@@ -804,7 +804,7 @@ export const TeamMembers = () => {
                       variant="ghost"
                       visual="gray"
                       size="sm"
-                      {...mergeProps(api.getPageTriggerProps(page), {
+                      {...mergeProps(api.getItemProps(page), {
                         onClick: () => table.setPageIndex(page.value - 1),
                       })}
                     >

@@ -77,7 +77,6 @@ export default function SetupTab() {
     onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: "search",
         setting: variables,
       }),
   });

@@ -9,6 +9,8 @@ import {
   Email,
   Password,
   Website,
+  Phone,
+  PlayCircle,
 } from "@/components/icons";
 import { RemainCharacters } from "@/components/remain-characters";
 import {
@@ -37,6 +39,7 @@ const schema = z.object({
   optional: z.boolean(),
   placeholder: z.string().max(30),
   hint: z.string().max(30),
+  characterLimit: z.number().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -52,7 +55,13 @@ const defaultValues: FormValues = {
 interface Option {
   icon: React.ReactNode;
   label: string;
-  value: "short-text" | "numbers" | "email" | "password" | "website";
+  value:
+    | "short-text"
+    | "numbers"
+    | "email"
+    | "password"
+    | "website"
+    | "phone-number";
 }
 
 type Options = Option[];
@@ -83,6 +92,11 @@ const options: Options = [
     label: "Website",
     value: "website",
   },
+  {
+    icon: <Phone className="h-6 w-6 text-gray-500" />,
+    label: "Phone Number",
+    value: "phone-number",
+  },
 ];
 
 const [defaultValue] = options;
@@ -104,21 +118,21 @@ export default function SetupTab() {
     "hasCharacterLimit",
     "optional",
     "placeholder",
-    "hint"
+    "hint",
+    "characterLimit"
   );
 
-  const { control, register, handleSubmit } = useForm({
+  const { control, register, handleSubmit, getValues } = useForm({
     resolver: zodResolver(schema),
     values: { ...defaultValues, ...values },
   });
 
-  useEnhancedWatch({
+  const { hasCharacterLimit } = useEnhancedWatch({
     control,
     onChange: (variables) =>
       send({
         type: "UPDATE",
-        value: "short-text",
-        setting: variables,
+        setting: getValues(),
       }),
   });
 
@@ -149,6 +163,13 @@ export default function SetupTab() {
         send({
           type: "TO-WEBSITE",
           newKind: "website",
+        });
+        break;
+
+      case "phone-number":
+        send({
+          type: "TO-PHONE-NUMBER",
+          newKind: "phone-number",
         });
         break;
     }
@@ -213,32 +234,54 @@ export default function SetupTab() {
           <Input {...register("label")} id="field-label" />
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-x-2">
-            <Label className="text-gray-700" size="sm" htmlFor="set-char-limit">
-              Set Character Limit
-            </Label>
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-x-2">
+              <Label
+                className="text-gray-700"
+                size="sm"
+                htmlFor="set-char-limit"
+              >
+                Set Character Limit
+              </Label>
 
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <HelpCircle className="text-gray-400" />
-                </TooltipTrigger>
-                <TooltipContent>Make optional field</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HelpCircle className="text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>Make optional field</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <Controller
+              control={control}
+              name="hasCharacterLimit"
+              render={({ field: { value, onChange, ...field } }) => (
+                <Switch
+                  checked={value}
+                  onCheckedChange={onChange}
+                  id="set-char-limit"
+                />
+              )}
+            />
           </div>
-          <Controller
-            control={control}
-            name="hasCharacterLimit"
-            render={({ field: { value, onChange, ...field } }) => (
-              <Switch
-                checked={value}
-                onCheckedChange={onChange}
-                id="set-char-limit"
+
+          {hasCharacterLimit && (
+            <>
+              <Label className="text-gray-500" size="sm">
+                Limit should be the same as source field.
+              </Label>
+              <Input
+                {...register("characterLimit", { valueAsNumber: true })}
+                placeholder="Enter Max Characters Limit"
+                type="number"
               />
-            )}
-          />
+              <span className="flex items-center gap-x-2 text-sm font-semibold text-primary-500">
+                <PlayCircle className="h-[15px] w-[15px]" /> Show me how
+              </span>
+            </>
+          )}
         </div>
 
         <div className="flex items-center justify-between">

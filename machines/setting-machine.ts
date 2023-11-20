@@ -1,5 +1,5 @@
 import { createActorContext } from "@xstate/react";
-import { assign, createMachine } from "xstate";
+import { EmittedFrom, assign, createMachine } from "xstate";
 
 export type Kind =
   | "search"
@@ -10,7 +10,16 @@ export type Kind =
   | "password"
   | "email"
   | "numbers"
-  | "website";
+  | "website"
+  | "address"
+  | "phone-number"
+  | "radio-group"
+  | "checkbox"
+  | "image-upload"
+  | "file-upload"
+  | "video"
+  | "date/time"
+  | "rich-text";
 
 export interface Setting {
   id: number;
@@ -29,6 +38,24 @@ export interface Setting {
   limitSelections?: boolean;
   placeholderOrDefaultValue?: "placeholder" | "defaultValue";
   hasCharacterLimit?: boolean;
+  hasStreetAddress?: boolean;
+  hasApartmentOrSuiteEtc?: boolean;
+  hasCity?: boolean;
+  hasStateOrRegionOrProvince?: boolean;
+  hasCountry?: boolean;
+  hasPostalOrZipCode?: boolean;
+  defaultCountry?: string;
+  oneOrTwoColumns?: "one" | "two";
+  showSelectAll?: boolean;
+  characterLimit?: number;
+  hasQuantity?: boolean;
+  maxQuantity?: number;
+  allowAllOrCustomImageExtensions?: "all" | "custom";
+  allowAllOrCustomFileExtensions?: "all" | "custom";
+  allowedImageExtensions?: string[];
+  allowedFileExtensions?: string[];
+  mode?: "Date & Time" | "Date & Time Range" | "Date Range" | "Date" | "Time";
+  format?: "12" | "24";
 }
 
 export type Settings = Setting[];
@@ -118,6 +145,78 @@ export const settingMachine = createMachine(
           },
         },
       },
+      "editing address": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing phone number": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing radio group": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing checkbox": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing image upload": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing file upload": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing video": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing date/time": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
+      "editing rich text": {
+        on: {
+          TOGGLE: {
+            target: "idle",
+            actions: "resetCurrent",
+          },
+        },
+      },
     },
     on: {
       INSERT: {
@@ -126,7 +225,6 @@ export const settingMachine = createMachine(
         internal: true,
       },
       UPDATE: {
-        cond: "isMatching",
         actions: "update",
         description: "In order to update the settings of a field",
         internal: true,
@@ -156,55 +254,91 @@ export const settingMachine = createMachine(
       "EDIT-SEARCH": {
         target: "editing search",
         internal: true,
-        cond: "isSearch",
         actions: "setCurrent",
       },
       "EDIT-DROPDOWN": {
         target: "editing dropdown",
         internal: true,
-        cond: "isDropdown",
         actions: "setCurrent",
       },
       "EDIT-TOGGLE": {
         target: "editing toggle",
         internal: true,
-        cond: "isToggle",
         actions: "setCurrent",
       },
       "EDIT-SHORT-TEXT": {
         target: "editing short text",
         internal: true,
-        cond: "isShortText",
         actions: "setCurrent",
       },
       "EDIT-LONG-TEXT": {
         target: "editing long text",
         internal: true,
-        cond: "isLongText",
         actions: "setCurrent",
       },
       "EDIT-PASSWORD": {
         target: "editing password",
         internal: true,
-        cond: "isPassword",
         actions: "setCurrent",
       },
       "EDIT-EMAIL": {
         target: "editing email",
         internal: true,
-        cond: "isEmail",
         actions: "setCurrent",
       },
       "EDIT-NUMBERS": {
         target: "editing numbers",
         internal: true,
-        cond: "isNumbers",
         actions: "setCurrent",
       },
       "EDIT-WEBSITE": {
         target: "editing website",
         internal: true,
-        cond: "isWebsite",
+        actions: "setCurrent",
+      },
+      "EDIT-ADDRESS": {
+        target: "editing address",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-PHONE-NUMBER": {
+        target: "editing phone number",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-RADIO-GROUP": {
+        target: "editing radio group",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-CHECKBOX": {
+        target: "editing checkbox",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-IMAGE-UPLOAD": {
+        target: "editing image upload",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-FILE-UPLOAD": {
+        target: "editing file upload",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-VIDEO": {
+        target: "editing video",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-DATE/TIME": {
+        target: "editing date/time",
+        internal: true,
+        actions: "setCurrent",
+      },
+      "EDIT-RICH-TEXT": {
+        target: "editing rich text",
+        internal: true,
         actions: "setCurrent",
       },
       "TO-TOGGLE": {
@@ -249,6 +383,30 @@ export const settingMachine = createMachine(
         cond: "notEqualToPreviousKind",
         actions: ["patch"],
       },
+      "TO-PHONE-NUMBER": {
+        target: "editing phone number",
+        internal: true,
+        cond: "notEqualToPreviousKind",
+        actions: ["patch"],
+      },
+      "TO-DROPDOWN": {
+        target: "editing dropdown",
+        internal: true,
+        cond: "notEqualToPreviousKind",
+        actions: ["patch"],
+      },
+      "TO-RADIO-GROUP": {
+        target: "editing radio group",
+        internal: true,
+        cond: "notEqualToPreviousKind",
+        actions: ["patch"],
+      },
+      "TO-CHECKBOX": {
+        target: "editing checkbox",
+        internal: true,
+        cond: "notEqualToPreviousKind",
+        actions: ["patch"],
+      },
     },
     tsTypes: {} as import("./setting-machine.typegen").Typegen0,
     schema: {
@@ -259,7 +417,6 @@ export const settingMachine = createMachine(
         | { type: "TOGGLE" }
         | {
             type: "UPDATE";
-            value: Kind;
             setting: Omit<Omit<Setting, "kind">, "id">;
           }
         | { type: "REORDER"; advanced: boolean; settings: Settings }
@@ -278,13 +435,27 @@ export const settingMachine = createMachine(
         | { type: "EDIT-EMAIL"; advanced: boolean; settingId: number }
         | { type: "EDIT-NUMBERS"; advanced: boolean; settingId: number }
         | { type: "EDIT-WEBSITE"; advanced: boolean; settingId: number }
+        | { type: "EDIT-ADDRESS"; advanced: boolean; settingId: number }
+        | { type: "EDIT-PHONE-NUMBER"; advanced: boolean; settingId: number }
+        | { type: "EDIT-RADIO-GROUP"; advanced: boolean; settingId: number }
+        | { type: "EDIT-CHECKBOX"; advanced: boolean; settingId: number }
+        | { type: "EDIT-CHECKBOX"; advanced: boolean; settingId: number }
+        | { type: "EDIT-IMAGE-UPLOAD"; advanced: boolean; settingId: number }
+        | { type: "EDIT-FILE-UPLOAD"; advanced: boolean; settingId: number }
+        | { type: "EDIT-VIDEO"; advanced: boolean; settingId: number }
+        | { type: "EDIT-DATE/TIME"; advanced: boolean; settingId: number }
+        | { type: "EDIT-RICH-TEXT"; advanced: boolean; settingId: number }
         | { type: "TO-TOGGLE"; newKind: "toggle" }
         | { type: "TO-SEARCH"; newKind: "search" }
         | { type: "TO-NUMBERS"; newKind: "numbers" }
         | { type: "TO-EMAIL"; newKind: "email" }
         | { type: "TO-PASSWORD"; newKind: "password" }
         | { type: "TO-WEBSITE"; newKind: "website" }
-        | { type: "TO-SHORT-TEXT"; newKind: "short-text" },
+        | { type: "TO-SHORT-TEXT"; newKind: "short-text" }
+        | { type: "TO-PHONE-NUMBER"; newKind: "phone-number" }
+        | { type: "TO-DROPDOWN"; newKind: "dropdown" }
+        | { type: "TO-RADIO-GROUP"; newKind: "radio-group" }
+        | { type: "TO-CHECKBOX"; newKind: "checkbox" },
       context: {} as {
         currentId: number | undefined;
         currentAdvanced: boolean | undefined;
@@ -303,17 +474,170 @@ export const settingMachine = createMachine(
       }),
 
       insert: assign({
-        basicSettings: (ctx, event) =>
-          event.advanced
-            ? ctx.basicSettings
-            : [...ctx.basicSettings, { id: event.settingId, kind: event.kind }],
-        advancedSettings: (ctx, event) =>
-          event.advanced
-            ? [
+        basicSettings: (ctx, { advanced, kind, settingId }) => {
+          if (advanced) {
+            return ctx.basicSettings;
+          }
+
+          const common = {
+            id: settingId,
+            kind: kind,
+          };
+
+          switch (kind) {
+            case "address":
+              return [
+                ...ctx.basicSettings,
+                {
+                  ...common,
+                  hasStreetAddress: true,
+                  hasApartmentOrSuiteEtc: true,
+                  hasCity: true,
+                  hasStateOrRegionOrProvince: true,
+                  hasCountry: true,
+                  hasPostalOrZipCode: true,
+                },
+              ];
+
+            case "phone-number":
+              return [
+                ...ctx.basicSettings,
+                {
+                  ...common,
+                  defaultCountry: "US",
+                },
+              ];
+
+            case "image-upload":
+              return [
+                ...ctx.basicSettings,
+                {
+                  ...common,
+                  allowedImageExtensions: [
+                    ".jpeg",
+                    ".png",
+                    ".webp",
+                    ".heic",
+                    ".gif",
+                    ".svg",
+                    ".lottie",
+                    ".bmp",
+                  ],
+                  maxQuantity: 1,
+                },
+              ];
+
+            case "file-upload":
+              return [
+                ...ctx.basicSettings,
+                {
+                  ...common,
+                  allowedFileExtensions: [
+                    ".doc",
+                    ".docx",
+                    ".docxf",
+                    ".docm",
+                    ".rtf",
+                    ".txt",
+                    ".csv",
+                    ".xl",
+                    ".xls",
+                    ".xlsx",
+                    ".xlsm",
+                    ".def",
+                    ".dex",
+                    ".pdf",
+                  ],
+                  maxQuantity: 1,
+                },
+              ];
+
+            default:
+              return [...ctx.basicSettings, { ...common }];
+          }
+        },
+        advancedSettings: (ctx, { advanced, settingId, kind }) => {
+          if (!advanced) {
+            return ctx.advancedSettings;
+          }
+
+          const common = {
+            id: settingId,
+            kind: kind,
+          };
+
+          switch (kind) {
+            case "address":
+              return [
                 ...ctx.advancedSettings,
-                { id: event.settingId, kind: event.kind },
-              ]
-            : ctx.advancedSettings,
+                {
+                  ...common,
+                  hasStreetAddress: true,
+                  hasApartmentOrSuiteEtc: true,
+                  hasCity: true,
+                  hasStateOrRegionOrProvince: true,
+                  hasCountry: true,
+                  hasPostalOrZipCode: true,
+                },
+              ];
+
+            case "phone-number":
+              return [
+                ...ctx.advancedSettings,
+                {
+                  ...common,
+                  defaultCountry: "US",
+                },
+              ];
+
+            case "image-upload":
+              return [
+                ...ctx.basicSettings,
+                {
+                  ...common,
+                  allowedImageExtensions: [
+                    ".jpeg",
+                    ".png",
+                    ".webp",
+                    ".heic",
+                    ".gif",
+                    ".svg",
+                    ".lottie",
+                    ".bmp",
+                  ],
+                  maxQuantity: 1,
+                },
+              ];
+
+            case "file-upload":
+              return [
+                ...ctx.basicSettings,
+                {
+                  ...common,
+                  allowedFileExtensions: [
+                    ".doc",
+                    ".docx",
+                    ".docxf",
+                    ".docm",
+                    ".rtf",
+                    ".txt",
+                    ".csv",
+                    ".xl",
+                    ".xls",
+                    ".xlsx",
+                    ".xlsm",
+                    ".def",
+                    ".dex",
+                    ".pdf",
+                  ],
+                  maxQuantity: 1,
+                },
+              ];
+
+            default:
+              return [...ctx.advancedSettings, { ...common }];
+          }
+        },
       }),
 
       update: assign({
@@ -463,24 +787,6 @@ export const settingMachine = createMachine(
     },
     services: {},
     guards: {
-      isMatching: (ctx, event) => {
-        if (ctx.currentAdvanced === undefined || ctx.currentId === undefined) {
-          return false;
-        }
-
-        if (ctx.currentAdvanced) {
-          const setting = ctx.advancedSettings.find(
-            (setting) => setting.id === ctx.currentId
-          );
-          return setting ? setting.kind === event.value : false;
-        }
-
-        const setting = ctx.basicSettings.find(
-          (setting) => setting.id === ctx.currentId
-        );
-        return setting ? setting.kind === event.value : false;
-      },
-
       equalToCurrentId: (ctx, event) => {
         if (event.advanced) {
           const setting = ctx.advancedSettings.find(
@@ -515,117 +821,24 @@ export const settingMachine = createMachine(
         );
         return setting ? setting.kind !== event.newKind : false;
       },
-      isDropdown: (ctx, event) => {
-        if (event.advanced) {
-          const setting = ctx.advancedSettings.find(
-            (setting) => setting.id === event.settingId
-          );
-          return setting ? setting.kind === "dropdown" : false;
-        }
-        const setting = ctx.basicSettings.find(
-          (setting) => setting.id === event.settingId
-        );
-        return setting ? setting.kind === "dropdown" : false;
-      },
-      isToggle: (ctx, event) => {
-        if (event.advanced) {
-          const setting = ctx.advancedSettings.find(
-            (setting) => setting.id === event.settingId
-          );
-          return setting ? setting.kind === "toggle" : false;
-        }
-        const setting = ctx.basicSettings.find(
-          (setting) => setting.id === event.settingId
-        );
-        return setting ? setting.kind === "toggle" : false;
-      },
-      isSearch: (ctx, event) => {
-        if (event.advanced) {
-          const setting = ctx.advancedSettings.find(
-            (setting) => setting.id === event.settingId
-          );
-          return setting ? setting.kind === "search" : false;
-        }
-        const setting = ctx.basicSettings.find(
-          (setting) => setting.id === event.settingId
-        );
-        return setting ? setting.kind === "search" : false;
-      },
-      isShortText: (ctx, event) => {
-        if (event.advanced) {
-          const setting = ctx.advancedSettings.find(
-            (setting) => setting.id === event.settingId
-          );
-          return setting ? setting.kind === "short-text" : false;
-        }
-        const setting = ctx.basicSettings.find(
-          (setting) => setting.id === event.settingId
-        );
-        return setting ? setting.kind === "short-text" : false;
-      },
-      isLongText: (ctx, event) => {
-        if (event.advanced) {
-          const setting = ctx.advancedSettings.find(
-            (setting) => setting.id === event.settingId
-          );
-          return setting ? setting.kind === "long-text" : false;
-        }
-        const setting = ctx.basicSettings.find(
-          (setting) => setting.id === event.settingId
-        );
-        return setting ? setting.kind === "long-text" : false;
-      },
-      isPassword: (ctx, event) => {
-        if (event.advanced) {
-          const setting = ctx.advancedSettings.find(
-            (setting) => setting.id === event.settingId
-          );
-          return setting ? setting.kind === "password" : false;
-        }
-        const setting = ctx.basicSettings.find(
-          (setting) => setting.id === event.settingId
-        );
-        return setting ? setting.kind === "password" : false;
-      },
-      isEmail: (ctx, event) => {
-        if (event.advanced) {
-          const setting = ctx.advancedSettings.find(
-            (setting) => setting.id === event.settingId
-          );
-          return setting ? setting.kind === "email" : false;
-        }
-        const setting = ctx.basicSettings.find(
-          (setting) => setting.id === event.settingId
-        );
-        return setting ? setting.kind === "email" : false;
-      },
-      isNumbers: (ctx, event) => {
-        if (event.advanced) {
-          const setting = ctx.advancedSettings.find(
-            (setting) => setting.id === event.settingId
-          );
-          return setting ? setting.kind === "numbers" : false;
-        }
-        const setting = ctx.basicSettings.find(
-          (setting) => setting.id === event.settingId
-        );
-        return setting ? setting.kind === "numbers" : false;
-      },
-      isWebsite: (ctx, event) => {
-        if (event.advanced) {
-          const setting = ctx.advancedSettings.find(
-            (setting) => setting.id === event.settingId
-          );
-          return setting ? setting.kind === "website" : false;
-        }
-        const setting = ctx.basicSettings.find(
-          (setting) => setting.id === event.settingId
-        );
-        return setting ? setting.kind === "website" : false;
-      },
     },
     delays: {},
   }
 );
 
 export const SettingMachineContext = createActorContext(settingMachine);
+
+export const {
+  Provider: SettingProvider,
+  useActor: useSettingActor,
+  useActorRef: useSettingActorRef,
+  useSelector: useSettingSelector,
+} = SettingMachineContext;
+
+export const selectCurrentId = (snapshot: EmittedFrom<typeof settingMachine>) =>
+  snapshot.context.currentId;
+
+export const selectSettings = (snapshot: EmittedFrom<typeof settingMachine>) =>
+  snapshot.context.currentAdvanced
+    ? snapshot.context.advancedSettings
+    : snapshot.context.basicSettings;

@@ -164,6 +164,114 @@ export default function CommandPaletteModal({
           type: "EDIT-WEBSITE",
         });
         break;
+
+      case "address":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "address",
+        });
+        send({
+          ...options,
+          type: "EDIT-ADDRESS",
+        });
+        break;
+
+      case "phone number":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "phone-number",
+        });
+        send({
+          ...options,
+          type: "EDIT-PHONE-NUMBER",
+        });
+        break;
+
+      case "radio group":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "radio-group",
+        });
+        send({
+          ...options,
+          type: "EDIT-RADIO-GROUP",
+        });
+        break;
+
+      case "checkbox":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "checkbox",
+        });
+        send({
+          ...options,
+          type: "EDIT-CHECKBOX",
+        });
+        break;
+
+      case "image upload":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "image-upload",
+        });
+        send({
+          ...options,
+          type: "EDIT-IMAGE-UPLOAD",
+        });
+        break;
+
+      case "file upload":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "file-upload",
+        });
+        send({
+          ...options,
+          type: "EDIT-FILE-UPLOAD",
+        });
+        break;
+
+      case "video":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "video",
+        });
+        send({
+          ...options,
+          type: "EDIT-VIDEO",
+        });
+        break;
+
+      case "rich text":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "rich-text",
+        });
+        send({
+          ...options,
+          type: "EDIT-RICH-TEXT",
+        });
+        break;
+
+      case "date/time":
+        send({
+          ...options,
+          type: "INSERT",
+          kind: "date/time",
+        });
+        send({
+          ...options,
+          type: "EDIT-DATE/TIME",
+        });
+        break;
     }
 
     sendTo("ACTIVATE");
@@ -393,13 +501,13 @@ export default function CommandPaletteModal({
               </CommandPaletteItem>
             </CommandPaletteGroup>
             <CommandPaletteGroup heading="Other">
-              <CommandPaletteItem value="dropdown">
+              <CommandPaletteItem value="file upload">
                 <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg border-[1.5px] border-gray-200">
                   <FileOutlined className="text-primary-500" />
                 </div>
                 <div className="flex flex-grow flex-col">
                   <span className="text-sm font-medium leading-6 text-gray-900">
-                    Dropdown
+                    File Upload
                   </span>
                   <span className="text-xs leading-[14.52px] text-gray-500">
                     Choose this to start your workflow

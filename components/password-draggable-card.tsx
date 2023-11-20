@@ -23,10 +23,10 @@ import {
   Trash,
 } from "./icons";
 import { useToggle } from "@/lib/hooks";
+import { stopPropagation } from "@/lib/dom";
 
 interface PasswordDraggableCardProps extends Setting {
   advanced: boolean;
-  settingId: number;
   onDrag?: (e: React.PointerEvent<HTMLButtonElement>) => void;
   active: boolean;
 }
@@ -35,7 +35,7 @@ export const PasswordDraggableCard = (props: PasswordDraggableCardProps) => {
   const {
     onDrag,
     advanced,
-    settingId,
+    id: settingId,
     active,
     label,
     placeholder,
@@ -105,10 +105,17 @@ export const PasswordDraggableCard = (props: PasswordDraggableCardProps) => {
               <MoreHorizontal className="h-5 w-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[182px]">
-              <DropdownMenuItem onSelect={handleDuplicate}>
+              <DropdownMenuItem
+                onSelect={handleDuplicate}
+                onClick={stopPropagation}
+              >
                 <Copy /> Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem visual="destructive" onSelect={handleDelete}>
+              <DropdownMenuItem
+                visual="destructive"
+                onSelect={handleDelete}
+                onClick={stopPropagation}
+              >
                 <Trash /> Delete Field
               </DropdownMenuItem>
             </DropdownMenuContent>

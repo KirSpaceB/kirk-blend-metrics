@@ -1,7 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { addDays, format, isValid, parse } from "date-fns";
+import {
+  addDays,
+  addMonths,
+  addWeeks,
+  format,
+  isValid,
+  parse,
+  subMonths,
+  subWeeks,
+} from "date-fns";
 import { Caption, SelectSingleEventHandler } from "react-day-picker";
 
 import { Calendar as CalendarIcon } from "@/components/icons";
@@ -28,18 +37,28 @@ export function DatePicker({
   placeholder,
   onApply,
   onCancel,
+  month,
+  onMonthChange,
 }: {
   selected?: Date;
   onSelected?: (value?: Date) => void;
   placeholder?: string;
   onApply?: () => void;
   onCancel?: () => void;
+  onMonthChange?: (value?: Date) => void;
+  month?: Date;
 }) {
   const [internalSelected, setInternalSelected] = useControllableState<
     Date | undefined
   >({
     value: selected,
     onChange: onSelected,
+  });
+  const [internalMonth, setInternalMonth] = useControllableState<
+    Date | undefined
+  >({
+    value: month,
+    onChange: onMonthChange,
   });
   const [inputValue, setInputValue] = React.useState("");
   const [selectValue, setSelectValue] = React.useState<string>();
@@ -58,10 +77,37 @@ export function DatePicker({
 
   const onValueChange = (value: string) => {
     setSelectValue(value);
-    const newDate = addDays(new Date(), parseInt(value));
 
-    setInternalSelected(newDate);
-    setInputValue(format(newDate, "PP"));
+    switch (value) {
+      case "this week":
+        const week = addWeeks(new Date(), 0);
+        setInternalSelected(week);
+        setInputValue(format(week, "PP"));
+        break;
+
+      case "last week":
+        const lastWeek = subWeeks(new Date(), 1);
+        setInternalSelected(lastWeek);
+        setInputValue(format(lastWeek, "PP"));
+        break;
+
+      case "this month":
+        const month = addMonths(new Date(), 0);
+        setInternalMonth(month);
+        setInputValue(format(month, "PP"));
+        break;
+
+      case "last month":
+        const lastMonth = subMonths(new Date(), 1);
+        setInternalMonth(lastMonth);
+        setInputValue(format(lastMonth, "PP"));
+        break;
+
+      default:
+        const newDate = addDays(new Date(), parseInt(value));
+        setInternalSelected(newDate);
+        setInputValue(format(newDate, "PP"));
+    }
   };
 
   const onInternalSelected: SelectSingleEventHandler = (date) => {
@@ -84,12 +130,14 @@ export function DatePicker({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className="rounded-lg bg-white shadow-lg">
         <Calendar
           mode="single"
           selected={internalSelected}
           onSelect={onInternalSelected}
-          initialFocus
+          month={internalMonth}
+          fromDate={new Date(2020, 1, 1)}
+          onMonthChange={setInternalMonth}
           components={{
             Caption: (props) => (
               <>
@@ -113,22 +161,40 @@ export function DatePicker({
                     </Trigger>
                     <SelectContent>
                       <SelectItem
-                        className="pl-4 text-sm font-semibold"
+                        className="pl-4 text-sm font-medium"
                         value="0"
                       >
                         Today
                       </SelectItem>
                       <SelectItem
-                        className="pl-4 text-sm font-semibold"
-                        value="1"
+                        className="pl-4 text-sm font-medium"
+                        value="-1"
                       >
-                        Tomorrow
+                        Yesterday
                       </SelectItem>
                       <SelectItem
-                        className="pl-4 text-sm font-semibold"
-                        value="7"
+                        className="pl-4 text-sm font-medium"
+                        value="this week"
                       >
-                        Week
+                        This week
+                      </SelectItem>
+                      <SelectItem
+                        className="pl-4 text-sm font-medium"
+                        value="last week"
+                      >
+                        Last week
+                      </SelectItem>
+                      <SelectItem
+                        className="pl-4 text-sm font-medium"
+                        value="this month"
+                      >
+                        This month
+                      </SelectItem>
+                      <SelectItem
+                        className="pl-4 text-sm font-medium"
+                        value="last month"
+                      >
+                        Last month
                       </SelectItem>
                     </SelectContent>
                   </Select>
