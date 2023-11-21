@@ -4,16 +4,17 @@ interface IAvatarEditor {
   rotate: number;
   scaleValue: number;
   renderedImage: string;
+  shape: "circle" | "rectangle";
 }
 
-// Update code to current repo
-// Add close and open hover effects/fix the x buton and add a hover effect to the close buton
-// Add overlay 80% saturation gray 100
+// We have to fix the rotation it no longer centers it. We can look at our previous working code on github to fix it.
+// I think the problem with the rotation is that it does not account for offscreenCanvas
 
 const CustomAvatarEditor = ({
   rotate,
   scaleValue,
   renderedImage,
+  shape,
 }: IAvatarEditor) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -26,6 +27,8 @@ const CustomAvatarEditor = ({
   const [circlePos, setCirclePos] = useState(initialCirclePos);
   const [radius, setRadius] = useState(initialRadius);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const rectWidth = radius * 3; // e.g., twice the radius
+  const rectHeight = radius * 1.2; // e.g., 1.5 times the radius
 
   // Load the image and set initial position and scale
   useEffect(() => {
@@ -58,14 +61,24 @@ const CustomAvatarEditor = ({
   }, [scaleValue, circlePos, image]);
   // Modify the draw function to apply scaleValue
 
-  // Update drawCircle to use scaleValue
-  const drawCircle = (ctx: CanvasRenderingContext2D) => {
+  const drawShape = (ctx: CanvasRenderingContext2D) => {
     ctx.strokeStyle = "#FFF";
-    ctx.lineWidth = 5; // The line width should be constant, not based on scaleValue
-    ctx.beginPath();
-    ctx.arc(circlePos.x, circlePos.y, radius, 0, Math.PI * 2);
-    ctx.stroke();
+    ctx.lineWidth = 5;
+
+    if (shape === "circle") {
+      ctx.beginPath();
+      ctx.arc(circlePos.x, circlePos.y, radius, 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (shape === "rectangle") {
+      ctx.strokeRect(
+        circlePos.x - rectWidth / 2,
+        circlePos.y - rectHeight / 2,
+        rectWidth,
+        rectHeight
+      );
+    }
   };
+
   const draw = () => {
     const canvas = canvasRef.current;
     if (canvas && image.complete) {
@@ -109,15 +122,25 @@ const CustomAvatarEditor = ({
         overlayCtx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
         // Set the globalAlpha for the opacity
-        offCtx.globalAlpha = 0.4; // Adjust the opacity to your preference
+        offCtx.globalAlpha = 0.2; // Adjust the opacity to your preference
         offCtx.globalCompositeOperation = "destination-in";
         offCtx.drawImage(canvas, 0, 0); // Apply the opacity
 
-        // Create the circle mask on the main canvas
         ctx.globalCompositeOperation = "destination-in";
-        ctx.beginPath();
-        ctx.arc(circlePos.x, circlePos.y, radius, 0, Math.PI * 2);
-        ctx.fill();
+        if (shape === "circle") {
+          ctx.beginPath();
+          ctx.arc(circlePos.x, circlePos.y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (shape === "rectangle") {
+          ctx.beginPath();
+          ctx.rect(
+            circlePos.x - rectWidth / 2,
+            circlePos.y - rectHeight / 2,
+            rectWidth,
+            rectHeight
+          );
+          ctx.fill();
+        }
 
         ctx.globalCompositeOperation = "destination-over";
         ctx.drawImage(offscreenCanvas, 0, 0);
@@ -125,7 +148,7 @@ const CustomAvatarEditor = ({
         // Reset the composite operation
         ctx.globalCompositeOperation = "source-over";
         // Optionally, redraw the circle border if needed
-        drawCircle(ctx);
+        drawShape(ctx);
       }
     }
   };
@@ -140,11 +163,6 @@ const CustomAvatarEditor = ({
     const rect = canvasRef.current.getBoundingClientRect();
     let newX = clientX - rect.left - dragStart.x * scaleValue; // this doesn't effect boundries
     let newY = clientY - rect.top - dragStart.y * scaleValue;
-    console.log("clientX in the codebase", clientX);
-    console.log("clientX in the codebase", clientY);
-    console.log("clientX in the codebase", dragStart.x);
-    console.log("clientX in the codebase", dragStart.y);
-    console.log(scaleValue);
 
     setImagePos({ x: newX, y: newY });
   };
@@ -162,9 +180,6 @@ const CustomAvatarEditor = ({
 
   const handleMouseEvents = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (isDragging) {
-      console.log("clientX", event.clientX);
-      console.log("clientY", event.clientX);
-
       handleDragging(event.clientX, event.clientY);
     }
   };

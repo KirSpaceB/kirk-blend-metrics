@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,16 +6,15 @@ import {
   DialogFooter,
   DialogClose,
 } from "../../dialog";
-import { ArrowLeft, Refresh } from "@/components/icons";
+import { ArrowLeft } from "@/components/icons";
 import { Button } from "../../button";
 import CustomAvatarEditor from "./avatar-editor/avatar-editor";
-
 import { CheckIcon } from "lucide-react";
 import AvatarEditorSlider from "./avatar-editor-slider";
-import { ZoomIn } from "@blend-metrics/icons";
+import { X1, ZoomIn } from "@blend-metrics/icons";
 import { ZoomOut } from "@blend-metrics/icons";
-import { X2 } from "@/components/icons";
 import { RotateCw } from "@blend-metrics/icons";
+import { IconButton } from "../../icon-button";
 interface IDialogArgs {
   isOpen: boolean;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -60,10 +59,14 @@ export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
           </h2>
           <div className="flex h-[38px] w-[38px] items-center justify-center gap-4 ">
             <Button variant="link">
-              <DialogClose className="transition-all delay-100 hover:bg-gray-200 hover:shadow-md">
-                <Button variant="ghost" className="py-[14px]">
-                  <X2 className="h-[20px] w-[20px] text-[#667085] opacity-50" />
-                </Button>
+              <DialogClose asChild>
+                <IconButton
+                  className="h-7 w-7 text-gray-500 hover:text-gray-900"
+                  variant="ghost"
+                  visual="gray"
+                >
+                  <X1 className="h-[18px] w-[18px]" />
+                </IconButton>
               </DialogClose>
             </Button>
           </div>
@@ -75,6 +78,7 @@ export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
               rotate={rotateControlState}
               scaleValue={avatarScale}
               renderedImage={"/defaultavatarprofile.webp"} // Pass the image file here if needed
+              shape="circle"
             />
           </div>
         </div>
