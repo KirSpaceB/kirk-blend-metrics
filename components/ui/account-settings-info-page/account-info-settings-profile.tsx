@@ -4,8 +4,6 @@ import {
   DialogTrigger,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-  DialogDescription,
   DialogFooter,
   DialogClose,
 } from "../dialog";
@@ -21,18 +19,20 @@ import { ImageIcon } from "@/components/icons";
 import ChangeProfileImageDialog from "./accountinfosettingsprofileui/change-profile-image-diaglog";
 import AvatarEditorDialog from "./accountinfosettingsprofileui/avatar-editor-dialog";
 
-export default function AccountInfoSettingsProfile() {
-  const [isDialog1Open, setDialog1Open] = useState(false);
-  const [isDialog2Open, setDialog2Open] = useState(false);
+
+export type ProfileMachineEvents =
+  | { type: 'REMOVE_PHOTO' }
+  | { type: 'CHANGE_PROFILE_IMAGE_DIALOG' }
+  | { type: 'CUSTOM_AVATAR_EDITOR' };
+interface IProfile {
+  send:(event: string) => void;
+}
+
+export default function AccountInfoSettingsProfile({ send }: IProfile) {
 
   return (
     <>
-      {/* {isDialog1Open && (
-        <ChangeProfileImageDialog
-          isOpen={isDialog1Open}
-          onClose={() => setDialog1Open(false)}
-        />
-      )} */}
+      {/* {isDialog1Open && <ChangeProfileImageDialog isOpen={isDialog1Open} />} */}
 
       {/* {isDialog1Open && (
         <RemovePhotoDialogSection
@@ -41,12 +41,12 @@ export default function AccountInfoSettingsProfile() {
         />
       )} */}
 
-      {isDialog1Open && (
+      {/* {isDialog1Open && (
         <AvatarEditorDialog
           isOpen={isDialog1Open}
           onClose={() => setDialog1Open(false)}
         />
-      )}
+      )} */}
 
       <Dialog>
         <DialogTrigger
@@ -83,10 +83,10 @@ export default function AccountInfoSettingsProfile() {
               <Button
                 variant="light"
                 visual="error"
-                onClick={() => setDialog1Open(true)}
                 leftIcon={<Trash />}
+                onClick={() => send("REMOVE_PHOTO")}
               >
-                RemovePhoto
+                Remove Photo
               </Button>
             </DialogClose>
 
@@ -95,6 +95,7 @@ export default function AccountInfoSettingsProfile() {
                 variant="outlined"
                 visual="gray"
                 leftIcon={<ImageIcon width={17} height={17} />}
+                onClick={() => send("CHANGE_PROFILE_IMAGE_DIALOG_FROM_INITAL")}
               >
                 Change Profile Image
               </Button>

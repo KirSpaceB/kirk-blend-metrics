@@ -1,4 +1,3 @@
-import { Avatar, AvatarImage, AvatarFallback } from "../avatar";
 import { Input } from "../input";
 
 import {
@@ -13,8 +12,7 @@ import {
 import { Label } from "../label";
 
 import React from "react";
-import { Badge } from "../badge";
-import { AvatarPencil, ImageIcon, Trash } from "@/components/icons";
+
 import {
   Listbox,
   ListboxButton,
@@ -24,16 +22,7 @@ import {
 import AccountInfoSettingsProfile from "./account-info-settings-profile";
 import {
   Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTrigger,
 } from "../dialog";
-import { AcmeLogo } from "../settings-security/acme-logo";
-import { Button } from "../button";
-import { InputGroup } from "../input-group";
-import { InputLeftAddon } from "../input-addon";
 
 const people = [
   { id: 0, name: "Kirk" },
@@ -50,10 +39,20 @@ const languages = [
   { id: 3, langname: "Language4" },
   { id: 4, langname: "Language5" },
 ];
+import { useMachine } from "@xstate/react";
+import { machine } from "@/machines/account-info-settings-page-machine";
+import RemovePhotoDialogSection from "./accountinfosettingsprofileui/remove-photo-dialog-section";
+import ChangeProfileImageDialog from "./accountinfosettingsprofileui/change-profile-image-diaglog";
+import CustomAvatarEditor from "./accountinfosettingsprofileui/avatar-editor/avatar-editor";
+import AvatarEditorDialog from "./accountinfosettingsprofileui/avatar-editor-dialog";
+
 export default function PersonalInfoInterface() {
   const [selected, setSelected] = React.useState<string>();
   const [langState, setLangState] = React.useState<string>();
-
+  const [state, send] = useMachine(machine);
+  const isDialogOpen = state.matches('removePhoto');
+  const isChangeProfileDialogOpen = state.matches('addProfileImage')
+  const isAvatarDialogOpen = state.matches('customAvatarEditor');
   return (
     <main className="pl-[278px] pt-[54px]">
       <div className="h-[580px] w-[664px] px-8 pt-8">
@@ -65,46 +64,12 @@ export default function PersonalInfoInterface() {
         </p>
         <div className="mt-6">
           <Dialog>
-            <DialogTrigger asChild className="h-full w-full">
-              {/* Investigate the margin top issue with this component specifically. */}
-              {/* This is where profile picture is suppose to be */}
-              <AccountInfoSettingsProfile />
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <div className="flex flex-col items-center justify-center gap-5">
-                  <h1 className="text-[18px] font-semibold">
-                    Change Profile Image
-                  </h1>
-                  <Avatar className="h-[160px] w-[160px]">
-                    <AvatarImage alt="Man" />
-                    <AvatarFallback>
-                      <div className="text-[60px] font-medium text-[#D0D5DD] text-opacity-50">
-                        CT
-                      </div>
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-              </DialogHeader>
-
-              <DialogFooter className="mt-8">
-                <DialogClose asChild>
-                  <Button variant="light" visual="error" leftIcon={<Trash />}>
-                    RemovePhoto
-                  </Button>
-                </DialogClose>
-
-                <DialogClose asChild>
-                  <Button
-                    variant="outlined"
-                    visual="gray"
-                    leftIcon={<ImageIcon width={17} height={17} />}
-                  >
-                    Change Profile Image
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
+            <div className="h-full w-full">
+              {state.matches('profile') && <AccountInfoSettingsProfile send={send} />}
+              {state.matches('removePhoto') && <RemovePhotoDialogSection openDialog={isDialogOpen} send={send}/>}
+              {state.matches('addProfileImage') && <ChangeProfileImageDialog openDialog={isChangeProfileDialogOpen} send={send}/>}
+              {state.matches('customAvatarEditor') && <AvatarEditorDialog openDialog={isAvatarDialogOpen} send={send}/>}
+            </div>
           </Dialog>
         </div>
         <div id="Grid Parent" className="mt-8 h-[580px] w-[664px]">

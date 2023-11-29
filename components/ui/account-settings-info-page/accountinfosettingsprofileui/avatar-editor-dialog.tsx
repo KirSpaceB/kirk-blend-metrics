@@ -15,12 +15,13 @@ import { X1, ZoomIn } from "@blend-metrics/icons";
 import { ZoomOut } from "@blend-metrics/icons";
 import { RotateCw } from "@blend-metrics/icons";
 import { IconButton } from "../../icon-button";
-interface IDialogArgs {
-  isOpen: boolean;
-  onClose: React.Dispatch<React.SetStateAction<boolean>>;
+
+interface IRemovePhotoDialogProps {
+  openDialog: boolean;
+  send:(event: string) => void;
 }
 
-export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
+export default function AvatarEditorDialog({openDialog, send}:IRemovePhotoDialogProps) {
   const [rotateControlState, setRotateControlState] = useState(0);
   const [avatarScale, setAvatarScale] = useState(1.0);
 
@@ -42,88 +43,93 @@ export default function AvatarEditorDialog({ isOpen, onClose }: IDialogArgs) {
 
   // Update design system to use new button variant
   return (
-    <Dialog open={isOpen}>
-      <DialogContent className="min-h-[505px] max-w-[486px] gap-8 pb-[24px] pl-[24px] pr-[24px] pt-[24px]">
-        <DialogHeader className="flex h-[38px] w-[446px] flex-row items-center justify-between">
-          <div className="ml-1 flex h-[38px] w-[38px] items-center justify-center gap-2 p-[10px]">
-            <Button
-              leftIcon={<ArrowLeft className="h-[16px] w-[16px]" />}
-              variant="link"
-              className="gap-1"
-            >
-              Back
-            </Button>
-          </div>
-          <h2 className="text-[18px] font-semibold leading-7">
-            Edit Profile Image
-          </h2>
-          <div className="flex h-[38px] w-[38px] items-center justify-center gap-4 ">
-            <Button variant="link">
-              <DialogClose asChild>
-                <IconButton
-                  className="h-7 w-7 text-gray-500 hover:text-gray-900"
-                  variant="ghost"
-                  visual="gray"
-                >
-                  <X1 className="h-[18px] w-[18px]" />
-                </IconButton>
-              </DialogClose>
-            </Button>
-          </div>
-        </DialogHeader>
+    <>
+      <div>Avatar Dialog Page</div>
+      <Dialog open={openDialog}>
+        <DialogContent className="min-h-[505px] max-w-[486px] gap-8 pb-[24px] pl-[24px] pr-[24px] pt-[24px]">
+          <DialogHeader className="flex h-[38px] w-[446px] flex-row items-center justify-between">
+            <div className="ml-1 flex h-[38px] w-[38px] items-center justify-center gap-2 p-[10px]">
+              <Button
+                leftIcon={<ArrowLeft className="h-[16px] w-[16px]" />}
+                variant="link"
+                className="gap-1"
+                onClick={() => send("GO_TO_CHANGE_PROFILE_IMAGE")}
+              >
+                Back
+              </Button>
+            </div>
+            <h2 className="text-[18px] font-semibold leading-7">
+              Edit Profile Image
+            </h2>
+            <div className="flex h-[38px] w-[38px] items-center justify-center gap-4 ">
+              <Button variant="link">
+                <DialogClose asChild>
+                  <IconButton
+                    className="h-7 w-7 text-gray-500 hover:text-gray-900"
+                    variant="ghost"
+                    visual="gray"
+                  >
+                    <X1 className="h-[18px] w-[18px]" />
+                  </IconButton>
+                </DialogClose>
+              </Button>
+            </div>
+          </DialogHeader>
 
-        <div className="mt-[15px] flex h-full w-full items-center justify-center">
-          <div className="">
-            <CustomAvatarEditor
-              rotate={rotateControlState}
-              scaleValue={avatarScale}
-              renderedImage={"/defaultavatarprofile.webp"} // Pass the image file here if needed
-              shape="circle"
+          <div className="mt-[15px] flex h-full w-full items-center justify-center">
+            <div className="">
+              <CustomAvatarEditor
+                rotate={rotateControlState}
+                scaleValue={avatarScale}
+                renderedImage={"/defaultavatarprofile.webp"} // Pass the image file here if needed
+                shape="circle"
+              />
+            </div>
+          </div>
+
+          <div
+            id="Slider"
+            className="mb-[32px] mt-[32px] flex items-center justify-between"
+          >
+            <ZoomOut
+              className="h-[24px] w-[24px] cursor-pointer text-[#667085] opacity-80 delay-300 hover:opacity-100"
+              onClick={handleZoomOut}
+            />
+            <AvatarEditorSlider
+              avatarScale={avatarScale}
+              setScale={setAvatarScale}
+            />
+            <ZoomIn
+              className="h-[24px] w-[24px] cursor-pointer text-[#667085] opacity-80 delay-300 hover:opacity-100"
+              onClick={handleZoomIn}
             />
           </div>
-        </div>
-
-        <div
-          id="Slider"
-          className="mb-[32px] mt-[32px] flex items-center justify-between"
-        >
-          <ZoomOut
-            className="h-[24px] w-[24px] cursor-pointer text-[#667085] opacity-80 delay-300 hover:opacity-100"
-            onClick={handleZoomOut}
-          />
-          <AvatarEditorSlider
-            avatarScale={avatarScale}
-            setScale={setAvatarScale}
-          />
-          <ZoomIn
-            className="h-[24px] w-[24px] cursor-pointer text-[#667085] opacity-80 delay-300 hover:opacity-100"
-            onClick={handleZoomIn}
-          />
-        </div>
-        <DialogFooter className="mt-8 flex items-start justify-between">
-          <Button
-            leftIcon={<RotateCw className="h-[15px] w-[15px]" />}
-            variant="outlined"
-            visual="gray"
-            onClick={handleRotate}
-          >
-            Rotate
-          </Button>
-          <div className="flex justify-center gap-3">
-            <DialogClose asChild>
-              <Button variant="outlined" visual="gray">
-                Cancel
-              </Button>
-            </DialogClose>
+          <DialogFooter className="mt-8 flex items-start justify-between">
             <Button
-              leftIcon={<CheckIcon className="h-[15px] w-[15px]" />}
-              visual="primary"
+              leftIcon={<RotateCw className="h-[15px] w-[15px]" />}
+              variant="outlined"
+              visual="gray"
+              onClick={handleRotate}
             >
-              Save
+              Rotate
             </Button>
-          </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            <div className="flex justify-center gap-3">
+              <DialogClose asChild>
+                <Button variant="outlined" visual="gray">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                leftIcon={<CheckIcon className="h-[15px] w-[15px]" />}
+                visual="primary"
+              >
+                Save
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+ 
   );
 }
