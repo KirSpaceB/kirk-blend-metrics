@@ -5,7 +5,7 @@ export const machine = createMachine({
   initial: "profile",
   states: {
     profile: {
-      on: { REMOVE_PHOTO: "removePhoto",CHANGE_PROFILE_IMAGE_DIALOG_FROM_INITAL: "addProfileImage" },
+      on: { REMOVE_PHOTO: "removePhoto",CHANGE_PROFILE_IMAGE_DIALOG_FROM_INITAL: "addProfileImage", BACK_TO_INITIAL_STATE:'profile' },
       
     },
     removePhoto: {
@@ -15,8 +15,9 @@ export const machine = createMachine({
       on:{CUSTOM_AVATAR_EDITOR: "customAvatarEditor"}
     },
     customAvatarEditor: {
-      on:{GO_TO_CHANGE_PROFILE_IMAGE: "addProfileImage"}
-    }
+      on:{GO_TO_CHANGE_PROFILE_IMAGE: "addProfileImage", BACK_TO_INITIAL:'profile'}
+    },
+
   },
 });
 

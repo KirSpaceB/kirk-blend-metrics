@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect,useContext } from "react";
+import { AvatarEditorImageContext } from "./avatar-editor-image-context";
 
 interface IAvatarEditor {
   rotate: number;
@@ -16,6 +17,12 @@ const CustomAvatarEditor = ({
   renderedImage,
   shape,
 }: IAvatarEditor) => {
+  const { imageVal, setImageVal } = useContext(AvatarEditorImageContext);
+  useEffect(() => {
+    console.log('Updated imageVal:', imageVal);
+  }, [imageVal]);
+  
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [imagePos, setImagePos] = useState({ x: 0, y: 0 });
@@ -33,7 +40,7 @@ const CustomAvatarEditor = ({
   // Load the image and set initial position and scale
   useEffect(() => {
     const img = new Image();
-    img.src = renderedImage;
+    img.src = '/defaultavatarprofile.webp';
     img.onload = () => {
       setImage(img);
       centerImage(img);
@@ -99,13 +106,14 @@ const CustomAvatarEditor = ({
         // Draw the original image with transformations
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.save();
-
-        // The image scaling should be independent of the circle
-        // Apply the scale transformation to the image only
-        ctx.translate(imagePos.x, imagePos.y);
+        // CenterX and CenterY are logic for the rotation
+        const centerX = imagePos.x + (image.width * scaleValue) / 2;
+        const centerY = imagePos.y + (image.height * scaleValue) / 2;
+        ctx.translate(centerX, centerY);
         ctx.rotate((rotate * Math.PI) / 180);
+        ctx.translate(-centerX, -centerY);
         ctx.scale(scaleValue, scaleValue);
-        ctx.drawImage(image, 0, 0);
+        ctx.drawImage(image, imagePos.x / scaleValue, imagePos.y / scaleValue);
         ctx.restore();
 
         // Draw the original image onto the off-screen canvas
@@ -167,6 +175,49 @@ const CustomAvatarEditor = ({
     setImagePos({ x: newX, y: newY });
   };
 
+  const cropImage = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return "Check Crop Image Function"
+
+    const cropCanvas = document.createElement('canvas');
+    const ctx = cropCanvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size based on shape
+    if (shape === "circle") {
+      cropCanvas.width = cropCanvas.height = radius * 2;
+      ctx.beginPath();
+      ctx.arc(radius, radius, radius, 0, Math.PI * 2);
+      ctx.clip();
+    } else if (shape === "rectangle") {
+      cropCanvas.width = rectWidth;
+      cropCanvas.height = rectHeight;
+      ctx.rect(0, 0, rectWidth, rectHeight);
+      ctx.clip();
+    }
+
+    // Calculate the position to draw the image
+    const drawX = shape === "circle" ? -circlePos.x + radius : -circlePos.x + rectWidth / 2;
+    const drawY = shape === "circle" ? -circlePos.y + radius : -circlePos.y + rectHeight / 2;
+
+    // Draw the image portion onto the crop canvas
+    ctx.drawImage(canvas, drawX, drawY);
+
+    // Convert canvas to blob and then download
+    cropCanvas.toBlob(blob => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'cropped-image.png'; 
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }, 'image/png');
+    const croppedImageUrl = cropCanvas.toDataURL('image/png');
+    console.log(typeof croppedImageUrl)
+    setImageVal(croppedImageUrl);
+    console.log(imageVal)
+  };
+
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
     setIsDragging(true);
@@ -192,6 +243,8 @@ const CustomAvatarEditor = ({
 
   return (
     <>
+      <button onClick={cropImage}>Download Cropped Image</button>
+
       <canvas
         ref={canvasRef}
         width={438}

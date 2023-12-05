@@ -10,6 +10,7 @@ import { ImageIcon } from "@/components/icons";
 import { Button } from "../../button";
 import { Avatar, AvatarFallback } from "../../avatar";
 import { Dropzone } from "../../dropzone";
+import AccountInfoSettingsProfile from "../account-info-settings-profile";
 
 interface IRemovePhotoDialogProps {
   openDialog: boolean;
@@ -20,6 +21,7 @@ interface IRemovePhotoDialogProps {
 export default function ChangeProfileImageDialog({openDialog,send}: IRemovePhotoDialogProps) {
   return (
     <>
+      <AccountInfoSettingsProfile/>
       <Dialog open={openDialog}>
         <DialogContent>
           <DialogHeader>
